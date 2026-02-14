@@ -7,11 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
-        /* 기본 폰트 및 배경 */
-        body { font-family: 'Pretendard', sans-serif; background-color: #FDF5E6; color: #4E342E; 
-            /* 드래그 및 선택 방지 보안 */
-            -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; 
-        }
+        body { font-family: 'Pretendard', sans-serif; background-color: #FDF5E6; color: #4E342E; -webkit-user-select:none; user-select:none; }
         .gold-point { color: #D4AF37; }
         .gold-wave {
             background: linear-gradient(90deg, #D4AF37, #E1C16E, #4E342E, #D4AF37);
@@ -29,6 +25,11 @@
         .modal-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 450px; max-height: 80vh; overflow-y: auto; }
         .modal-body-text { font-size: 13px; line-height: 1.8; color: #555; text-align: justify; }
         .custom-chk { width: 1.25rem; height: 1.25rem; cursor: pointer; }
+        
+        /* 로딩 스피너 디자인 */
+        .loading-spin { border: 4px solid #f3f3f3; border-top: 4px solid #D4AF37; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .hidden { display: none; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-10 px-4">
@@ -38,7 +39,7 @@
         <p class="gold-wave font-bold text-lg">고품격 횡재수 분석 리포트</p>
     </header>
 
-    <main class="w-full max-w-md bg-white rounded-[40px] shadow-sm p-10">
+    <main id="input-area" class="w-full max-w-md bg-white rounded-[40px] shadow-sm p-10">
         <div class="space-y-6">
             <div>
                 <label class="block text-sm font-bold mb-3">성함</label>
@@ -65,7 +66,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="pt-4 border-t border-gray-50">
                 <div class="flex items-center mb-6 bg-[#F8F7F3] p-5 rounded-2xl cursor-pointer" id="all-agree-area">
                     <input type="checkbox" id="all-agree" class="custom-chk mr-3 accent-[#4E342E]">
@@ -95,12 +95,24 @@
                     </div>
                 </div>
             </div>
-
             <button onclick="runAnalysis()" id="submit-btn" class="w-full py-5 bg-[#4E342E] text-white rounded-[25px] text-xl font-bold mt-4 shadow-lg active:scale-95 transition-all">
                 무료 횡재수 분석 시작
             </button>
         </div>
     </main>
+
+    <div id="loading-area" class="hidden w-full max-w-md bg-white rounded-[40px] shadow-sm p-20 text-center">
+        <div class="loading-spin"></div>
+        <p class="text-xl font-bold">대감님이 사주를 분석 중입니다...</p>
+        <p class="text-sm text-gray-400 mt-2">잠시만 기다려 주십시오.</p>
+    </div>
+
+    <div id="result-area" class="hidden w-full max-w-md bg-white rounded-[40px] shadow-sm p-10 border-4 border-[#D4AF37]">
+        <h2 class="text-2xl font-black text-center mb-6">🏮 분석 결과 리포트 🏮</h2>
+        <div id="analysis-text" class="space-y-4 text-lg border-t pt-6">
+            </div>
+        <button onclick="location.reload()" class="w-full py-4 bg-gray-100 text-gray-600 rounded-2xl font-bold mt-8">다시 분석하기</button>
+    </div>
 
     <footer class="mt-12 text-center">
         <p class="text-[11px] text-gray-300">© 2026 인생대감 Insaeng Daegam. All Rights Reserved.</p>
@@ -115,16 +127,16 @@
     </div>
 
     <script>
-        // --- 보안 기능: 우클릭/F12 방지 ---
+        // --- 보안 자물쇠 (우클릭, F12 차단) ---
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = function(e) {
             if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) return false;
         };
 
         const legalContents = {
-            privacy: { title: "개인정보 수집 및 이용 동의 (필수)", content: "인생대감 서비스 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다.\n\n1. 수집하는 개인정보 항목\n- 필수항목: 성명, 휴대폰 번호, 생년월일, 태어난 시간\n\n2. 개인정보의 수집 및 이용 목적\n- 명리학 기반의 사주 분석 및 운세 결과 제공\n\n3. 개인정보의 보유 및 이용 기간\n- 목적 달성 후 지체 없이 파기합니다." },
-            terms: { title: "서비스 이용약관 (필수)", content: "제1조 (목적)\n본 약관은 인생대감이 제공하는 운세 분석 서비스의 이용 조건을 규정합니다.\n\n제2조 (책임 제한)\n- 모든 결과는 참고 자료일 뿐이며, 투자 결과에 대해 회사는 책임지지 않습니다." },
-            marketing: { title: "마케팅 활용 동의 (선택)", content: "신규 서비스 알림 및 혜택 정보를 제공합니다. 거부하시더라도 서비스 이용에는 제한이 없습니다." }
+            privacy: { title: "개인정보 수집 및 이용 동의 (필수)", content: "인생대감 서비스 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다..." },
+            terms: { title: "서비스 이용약관 (필수)", content: "제1조 (목적)\n본 약관은 인생대감이 제공하는 운세 분석 서비스의 이용 조건을 규정합니다..." },
+            marketing: { title: "마케팅 활용 동의 (선택)", content: "신규 서비스 알림 및 혜택 정보를 제공합니다." }
         };
 
         function openModal(type) {
@@ -146,40 +158,32 @@
             });
         });
 
-        // --- 분석 실행 함수 (서버 없이 즉시 결과 도출) ---
+        // --- 분석 실행 (애니메이션 버전) ---
         function runAnalysis() {
             const name = document.getElementById('name').value;
             const phone = document.getElementById('phone').value;
-            const privacyOk = document.getElementById('privacy-agree').checked;
-            const termsOk = document.getElementById('terms-agree').checked;
+            if(!name || !phone || !document.getElementById('privacy-agree').checked) return alert("필수 항목을 입력하고 동의해주세요.");
 
-            if(!name) return alert("성함을 입력해주세요.");
-            if(!phone) return alert("휴대폰 번호를 입력해주세요.");
-            if(!privacyOk || !termsOk) return alert("필수 항목에 동의하셔야 분석이 가능합니다.");
+            // 화면 전환
+            document.getElementById('input-area').classList.add('hidden');
+            document.getElementById('loading-area').classList.remove('hidden');
 
-            const btn = document.getElementById('submit-btn');
-            btn.innerText = "대감님이 사주를 분석 중...";
-            btn.disabled = true;
-
-            // 정밀 분석 연출 (2초 대기)
             setTimeout(() => {
-                alert(`🏮 ${name} 대감님의 정밀 분석 결과가 도착했습니다 🏮\n\n` +
-                      `● 타고난 본신(本身) 기운: 토(土)의 기운\n` +
-                      `● 부족함을 채우는 행운 기운: 목(木)의 기운\n` +
-                      `* 본신의 기운이 강하더라도, 행운의 기운을 가까이해야 발복(發福)합니다.\n` +
-                      `------------------------------------------\n` +
-                      `● 🎨 행운의 색: 청색 및 녹색 계열\n` +
-                      `● 🍀 행운의 번호: 3, 8, 15, 22, 31\n` +
-                      `● 🧭 행운의 방향: 동쪽 및 남동쪽\n` +
-                      `● 🔮 행운의 물건: 나무 소재의 소품이나 화분`);
+                document.getElementById('loading-area').classList.add('hidden');
+                document.getElementById('result-area').classList.remove('hidden');
                 
-                btn.innerText = "무료 횡재수 분석 시작";
-                btn.disabled = false;
-            }, 2000);
+                document.getElementById('analysis-text').innerHTML = `
+                    <p class="text-center font-bold text-xl text-[#D4AF37] mb-4">${name} 대감님의 <br> 본신(本身) 기운은 '토(土)'입니다!</p>
+                    <div class="bg-orange-50 p-6 rounded-2xl space-y-3 shadow-inner">
+                        <p>🎨 <b>행운의 색:</b> 청색 및 녹색 계열</p>
+                        <p>🍀 <b>행운의 번호:</b> 3, 8, 15, 22, 31</p>
+                        <p>🧭 <b>행운의 방향:</b> 동쪽 및 남동쪽</p>
+                        <p>🔮 <b>행운의 물건:</b> 나무 소재 소품</p>
+                    </div>
+                    <p class="text-center text-sm text-gray-500 mt-4 leading-relaxed italic">"지금 대감님께 큰 재복이 들어오고 있으니 <br> 행운의 번호를 가까이 하심이 좋습니다."</p>
+                `;
+            }, 3000); // 3초 로딩
         }
     </script>
 </body>
 </html>
-</body>
-</html>
-
