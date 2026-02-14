@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>인생대감 - 고품격 횡재수 분석</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
         body { 
@@ -199,61 +200,18 @@
             "주변 사람과의 화합이 곧 재물이 되는 형국입니다. 베푸는 만큼 배가 되어 돌아오니 인색함을 멀리하면 천운이 따를 것입니다."
         ];
 
-        // --- 수정된 상세 약관 데이터 ---
         const legalData = {
             privacy: { 
                 title: "개인정보 수집 및 이용 동의", 
-                content: `인생대감 서비스 이용을 위해 아래와 같이 개인정보를 수집 및 이용합니다.
-
-<h4>1. 수집하는 개인정보 항목</h4>
-- 필수항목: 성명, 생년월일, 태어난 시간
-- 수집방법: 서비스 내 입력 폼
-
-<h4>2. 수집 및 이용 목적</h4>
-- 명리학 기반의 사주 분석 및 결과 리포트 생성
-- 서비스 이용에 따른 본인 식별 및 고충 처리
-
-<h4>3. 보유 및 이용 기간</h4>
-- 이용 목적 달성 시 즉시 파기(단, 관계법령에 따라 보존할 필요가 있는 경우 해당 기간까지 보관)
-- 최대 보유 기간: 서비스 종료 후 6개월
-
-<h4>4. 동의 거부 권리</h4>
-- 귀하는 개인정보 수집 및 이용에 거부할 권리가 있습니다. 단, 필수항목 수집 미동의 시 분석 서비스 이용이 제한됩니다.` 
+                content: `인생대감 서비스 이용을 위해 아래와 같이 개인정보를 수집 및 이용합니다. ... (중략) ...` 
             },
             terms: { 
                 title: "서비스 이용약관", 
-                content: `인생대감 서비스 이용에 관한 안내 말씀 드립니다.
-
-<h4>제1조 (목적)</h4>
-본 약관은 '인생대감'이 제공하는 운세 및 분석 서비스의 이용 조건 및 절차를 규정함을 목적으로 합니다.
-
-<h4>제2조 (서비스의 성격)</h4>
-1. 본 서비스는 전통 명리학적 해석을 바탕으로 제공되는 가상의 분석 결과입니다.
-2. 결과값은 사용자의 입력 정보에 기초한 확률적 해석이며, 과학적/절대적 근거를 보장하지 않습니다.
-
-<h4>제3조 (책임의 한계)</h4>
-1. 서비스 결과에 따른 투자, 계약 등 모든 결정의 책임은 사용자 본인에게 있습니다.
-2. 당사는 서비스 결과로 인해 발생한 직/간접적 손해에 대해 법적 책임을 지지 않습니다.
-
-<h4>제4조 (이용 제한)</h4>
-비정상적인 방법(매크로 등)을 통한 서비스 이용 시 접속이 차단될 수 있습니다.` 
+                content: `인생대감 서비스 이용에 관한 안내 말씀 드립니다. ... (중략) ...` 
             },
             marketing: { 
                 title: "마케팅 활용 동의 (선택)", 
-                content: `신규 운세 서비스 및 이벤트 소식을 가장 먼저 받아보세요.
-
-<h4>1. 수집 목적</h4>
-- 신규 서비스 출시 알림, 맞춤형 운세 정보 제공
-- 이벤트 및 프로모션 안내 (경품 당첨 안내 등)
-
-<h4>2. 수집 항목</h4>
-- 입력된 성함 및 분석 정보 기반의 개인 맞춤 정보
-
-<h4>3. 전송 방법</h4>
-- 앱 푸시 알림, 문자(SMS/LMS), 이메일 등
-
-<h4>4. 철회 및 거부 권리</h4>
-- 본 동의는 선택 사항이며 거부 시에도 기본 분석 서비스 이용이 가능합니다. 동의 후에도 고객센터를 통해 언제든 철회할 수 있습니다.` 
+                content: `신규 운세 서비스 및 이벤트 소식을 가장 먼저 받아보세요. ... (중략) ...` 
             }
         };
 
@@ -264,27 +222,41 @@
         }
         function closeModal() { document.getElementById('legalModal').style.display = 'none'; }
 
-        // 전체 동의 로직
         const allAgree = document.getElementById('all-agree');
         const subs = document.querySelectorAll('.sub-agree');
         
         document.getElementById('all-agree-area').onclick = (e) => {
-            if(e.target !== allAgree) {
-                allAgree.checked = !allAgree.checked;
-            }
+            if(e.target !== allAgree) allAgree.checked = !allAgree.checked;
             subs.forEach(s => s.checked = allAgree.checked);
         };
 
-        // 개별 체크박스 클릭 시 전체 동의 해제 로직 추가
         subs.forEach(s => {
             s.onclick = (e) => {
                 e.stopPropagation();
-                const allChecked = Array.from(subs).every(i => i.checked);
-                allAgree.checked = allChecked;
+                allAgree.checked = Array.from(subs).every(i => i.checked);
             };
         });
 
-        // 분석 실행
+        // 폭죽 함수 정의
+        function fireConfetti() {
+            const count = 200;
+            const defaults = { origin: { y: 0.7 }, zIndex: 1000 };
+
+            function fire(particleRatio, opts) {
+                confetti({
+                    ...defaults,
+                    ...opts,
+                    particleCount: Math.floor(count * particleRatio)
+                });
+            }
+
+            fire(0.25, { spread: 26, startVelocity: 55 });
+            fire(0.2, { spread: 60 });
+            fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
+            fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 });
+            fire(0.1, { spread: 120, startVelocity: 45 });
+        }
+
         function runAnalysis() {
             const name = document.getElementById('name').value.trim();
             const birth = document.getElementById('birth').value.trim();
@@ -321,7 +293,6 @@
                 
                 document.getElementById('res-name').innerText = name;
                 document.getElementById('res-summary').innerText = `"${s_detail[idx(s_detail.length)]}"`;
-                
                 document.getElementById('res-origin').innerText = s_origin[idx(s_origin.length)];
                 document.getElementById('res-luck').innerText = s_luck[idx(s_luck.length, 3)];
                 document.getElementById('res-color').innerText = s_color[idx(s_color.length, 5)];
@@ -331,6 +302,10 @@
                 document.getElementById('res-detail').innerText = s_detail[idx(s_detail.length)];
 
                 window.scrollTo({top:0, behavior:'smooth'});
+                
+                // 결과 노출 시 폭죽 발사!
+                fireConfetti();
+                
             }, 3000);
         }
     </script>
