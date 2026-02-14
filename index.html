@@ -150,7 +150,7 @@
                 </div>
                 <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl">
                     <span class="text-2xl">🔢</span>
-                    <div><p class="text-xs text-gray-400 font-bold">행운의 번호</p><p id="res-num" class="font-bold text-lg"></p></div>
+                    <div><p class="text-xs text-gray-400 font-bold">행운의 번호</p><p id="res-num" class="font-bold text-lg text-amber-600"></p></div>
                 </div>
                 <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl">
                     <span class="text-2xl">🧭</span>
@@ -181,7 +181,7 @@
 
     <script>
         // --- 데이터 라이브러리 ---
-        const s_origin = ["강직한 소나무 (甲木)", "유연한 담쟁이 (乙木)", "태양의 열정 (丙火)", "따뜻한 등불 (丁火)", "넓은 대지 (戊土)", "비옥한 논밭 (己土)", "단단한 바위 (庚金)", "빛나는 보석 (辛金)", "깊은 바다 (壬水)", "맑은 샘물 (癸水)"];
+        const s_origin = ["강직한 소나무 (甲木)", "유연한 담쟁이 (乙木)", "태양의 열정 (丙火)", "따뜻한 등불 (丁火)", "넓은 대지 (戊土)", "비옥한 논밭 (己토)", "단단한 바위 (庚金)", "빛나는 보석 (辛金)", "깊은 바다 (壬水)", "맑은 샘물 (癸水)"];
         const s_luck = ["성장을 돕는 물", "따스한 햇살", "단단한 뿌리", "날카로운 결단력", "차분한 지혜", "활기찬 에너지"];
         const s_color = ["청색, 에메랄드", "적색, 버건디", "황색, 골드", "백색, 실버", "흑색, 네이비"];
         const s_dir = ["동쪽 (새로운 기운)", "서쪽 (재물의 창고)", "남쪽 (명예의 상승)", "북쪽 (지혜의 원천)", "중앙 (안정의 터전)"];
@@ -193,19 +193,19 @@
             "주변 사람과의 화합이 곧 재물이 되는 형국입니다. 베푸는 만큼 배가 되어 돌아오니 인색함을 멀리하면 천운이 따를 것입니다."
         ];
 
-        // --- 상세 법적 약관 데이터 ---
+        // --- 약관 데이터 ---
         const legalData = {
             privacy: { 
-                title: "개인정보 수집 및 이용 동의 (필수)", 
-                content: "본 서비스(인생대감)는 이용자의 소중한 개인정보 보호를 위해 최선을 다하고 있습니다.\n\n1. 수집항목\n- 필수항목: 성명, 생년월일, 태어난 시간\n\n2. 수집 및 이용 목적\n- 명리학 기반 개인 맞춤형 운세(횡재수) 분석 결과 도출 및 리포트 제공\n- 서비스 이용에 따른 본인 식별 및 부정한 이용 방지\n\n3. 보유 및 이용 기간\n- 원칙적으로 서비스 제공 목적 달성 후 6개월간 보관하며, 이후 지체 없이 파기합니다.\n- 단, 전자상거래법 등 관계 법령에 의해 보존할 필요가 있는 경우 해당 기간까지 보관합니다.\n\n4. 동의 거부 권리 및 불이익\n- 귀하는 본 개인정보 수집 및 이용에 대한 동의를 거부할 권리가 있습니다. 다만, 필수 항목에 대한 동의를 거부하실 경우 운세 분석 서비스 이용이 제한됩니다." 
+                title: "개인정보 수집 및 이용 동의", 
+                content: "1. 수집항목: 성명, 생년월일, 태어난 시간\n2. 목적: 사주 기반 횡재수 분석 리포트 제공\n3. 보유기간: 서비스 목적 달성 후 6개월 보관 후 파기." 
             },
             terms: { 
-                title: "서비스 이용약관 (필수)", 
-                content: "제1조 (목적)\n본 약관은 '인생대감'이 제공하는 운세 서비스의 이용 조건 및 절차에 관한 사항을 규정함을 목적으로 합니다.\n\n제2조 (서비스의 성격)\n1. 본 서비스는 전통 명리학 및 통계적 알고리즘을 바탕으로 제공되는 정보 서비스입니다.\n2. 서비스 결과값은 이용자의 인생 및 재무적 판단에 대한 과학적 근거나 확정적 미래를 보장하지 않습니다.\n\n제3조 (책임의 제한)\n1. 분석 결과는 오직 참고용으로만 사용되어야 하며, 실제 투자나 중요한 결정에 대한 책임은 전적으로 이용자 본인에게 있습니다.\n2. 서비스 이용 과정에서 발생하는 직접적, 간접적 손실에 대해 본 서비스는 어떠한 법적 책임도 지지 않습니다.\n\n제4조 (정보의 정확성)\n이용자가 입력한 정보(성명, 생년월일 등)의 오류로 인해 잘못된 결과가 도출된 경우, 그 책임은 이용자에게 있습니다." 
+                title: "서비스 이용약관", 
+                content: "본 서비스는 명리학적 해석을 바탕으로 제공되며, 과학적 근거를 보장하지 않습니다. 결과에 대한 최종적인 판단과 책임은 사용자 본인에게 있습니다." 
             },
             marketing: { 
-                title: "마케팅 활용 및 광고 수신 동의 (선택)", 
-                content: "1. 마케팅 활용 목적\n- 신규 서비스 안내, 계절별 맞춤 운세 정보 제공, 이벤트 혜택 및 광고성 정보 발송\n- 서비스 개선을 위한 통계적 분석 및 서비스 고도화\n\n2. 수집 항목\n- 입력하신 성함 및 분석 결과 요약\n\n3. 보유 및 이용 기간\n- 동의일로부터 1년 또는 서비스 종료 시까지 (동의 철회 시 즉시 파기)\n\n4. 동의 거부 권리\n- 본 선택 약관에 동의하지 않으셔도 횡재수 분석 서비스 이용은 가능합니다. 다만, 대감님이 드리는 특별 혜택 및 알림 정보를 받지 못하실 수 있습니다." 
+                title: "마케팅 활용 동의 (선택)", 
+                content: "신규 운세 서비스 알림 및 이벤트 정보를 제공합니다." 
             }
         };
 
@@ -216,6 +216,7 @@
         }
         function closeModal() { document.getElementById('legalModal').style.display = 'none'; }
 
+        // 전체 동의 로직
         const allAgree = document.getElementById('all-agree');
         const subs = document.querySelectorAll('.sub-agree');
         document.getElementById('all-agree-area').onclick = (e) => {
@@ -223,6 +224,7 @@
             subs.forEach(s => s.checked = allAgree.checked);
         };
 
+        // 분석 실행
         function runAnalysis() {
             const name = document.getElementById('name').value.trim();
             const birth = document.getElementById('birth').value.trim();
@@ -239,45 +241,44 @@
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
 
-       // --- runAnalysis 함수 내의 결과 출력 로직 수정 ---
+            setTimeout(() => {
+                const seed = parseInt(birth);
+                const idx = (n, offset = 0) => (seed + offset) % n;
 
-setTimeout(() => {
-    const seed = parseInt(birth);
-    const idx = (n) => seed % n;
+                // [수정] 행운의 번호 생성 로직 (중복 제거 및 정렬)
+                const generateLuckyNumbers = (seed) => {
+                    let numbers = new Set();
+                    let i = 0;
+                    while (numbers.size < 3) {
+                        // 단순히 %45만 하면 중복 가능성이 높아지므로 소수를 곱해 변동폭을 줌
+                        let num = ((seed * (i + 7)) % 45) + 1;
+                        numbers.add(num);
+                        i++;
+                    }
+                    // 오름차순 정렬 후 콤마로 연결
+                    return Array.from(numbers).sort((a, b) => a - b).join(', ');
+                };
 
-    // 행운의 번호 생성 로직 (중복 제거 및 정렬)
-    const generateLuckyNumbers = (seed) => {
-        let numbers = new Set();
-        let i = 0;
-        while (numbers.size < 3) {
-            // seed와 각기 다른 상수를 조합해 중복 확률을 낮춤
-            let num = ((seed * (i + 1)) % 45) + 1;
-            numbers.add(num);
-            i++;
+                document.getElementById('input-section').classList.add('hidden');
+                document.getElementById('result-section').classList.remove('hidden');
+                
+                document.getElementById('res-name').innerText = name;
+                document.getElementById('res-summary').innerText = `"${s_detail[idx(s_detail.length)]}"`;
+                
+                document.getElementById('res-origin').innerText = s_origin[idx(s_origin.length)];
+                document.getElementById('res-luck').innerText = s_luck[idx(s_luck.length, 3)];
+                document.getElementById('res-color').innerText = s_color[idx(s_color.length, 5)];
+                
+                // 수정된 번호 로직 적용
+                document.getElementById('res-num').innerText = generateLuckyNumbers(seed);
+                
+                document.getElementById('res-dir').innerText = s_dir[idx(s_dir.length, 2)];
+                document.getElementById('res-obj').innerText = s_obj[idx(s_obj.length, 4)];
+                document.getElementById('res-detail').innerText = s_detail[idx(s_detail.length)];
+
+                window.scrollTo({top:0, behavior:'smooth'});
+            }, 3000);
         }
-        // 배열로 변환 후 오름차순 정렬
-        return Array.from(numbers).sort((a, b) => a - b).join(', ');
-    };
-
-    document.getElementById('input-section').classList.add('hidden');
-    document.getElementById('result-section').classList.remove('hidden');
-    
-    document.getElementById('res-name').innerText = name;
-    document.getElementById('res-summary').innerText = `"${s_detail[idx(s_detail.length)]}"`;
-    
-    document.getElementById('res-origin').innerText = s_origin[idx(s_origin.length)];
-    document.getElementById('res-luck').innerText = s_luck[idx(s_luck.length)];
-    document.getElementById('res-color').innerText = s_color[idx(s_color.length)];
-    
-    // 이 부분이 수정되었습니다.
-    document.getElementById('res-num').innerText = generateLuckyNumbers(seed);
-    
-    document.getElementById('res-dir').innerText = s_dir[idx(s_dir.length)];
-    document.getElementById('res-obj').innerText = s_obj[idx(s_obj.length)];
-    document.getElementById('res-detail').innerText = s_detail[idx(s_detail.length)];
-
-    window.scrollTo({top:0, behavior:'smooth'});
-}, 3000);
     </script>
 </body>
 </html>
