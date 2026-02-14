@@ -12,12 +12,18 @@
         .gold-text { color: #B5A47D; }
         .hidden { display: none; }
         input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; transition: 0.2s; }
+        input:focus { border-color: #B5A47D !important; }
         .loader { width: 40px; height: 40px; border: 4px solid #E1C16E; border-bottom-color: #4E342E; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: white; padding: 30px; border-radius: 40px; width: 100%; max-width: 500px; max-height: 80vh; overflow-y: auto; text-align: left; }
         .legal-box { font-size: 13px; line-height: 1.8; color: #555; white-space: pre-wrap; word-break: break-all; }
         .lotto-ball { width: 40px; height: 40px; border-radius: 50%; display: inline-flex; items-center; justify-content: center; font-weight: 800; color: white; margin: 3px; line-height: 40px; text-shadow: 1px 1px 1px rgba(0,0,0,0.2); }
+        
+        /* 시간 선택 체크박스 스타일 */
+        .time-chip { cursor: pointer; border: 1px solid #E5E7EB; border-radius: 12px; padding: 8px 15px; font-weight: bold; transition: 0.3s; background: white; }
+        .time-chip input { display: none; }
+        .time-chip.active { background: #4E342E; color: white; border-color: #4E342E; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-12 px-4" oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
@@ -31,13 +37,24 @@
         <div id="form-inner" class="space-y-6">
             <div><label class="block text-lg font-bold mb-3">성함</label><input type="text" id="name" class="w-full p-5 rounded-2xl text-lg" placeholder="성함을 입력하세요"></div>
             <div><label class="block text-lg font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-5 rounded-2xl text-lg" placeholder="01012345678"></div>
-            <div class="flex gap-4">
-                <div class="w-1/2"><label class="block text-lg font-bold mb-3">생년월일</label><input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg" placeholder="19950815"></div>
-                <div class="w-1/2">
-                    <label class="block text-lg font-bold mb-3 text-center">태어난 시간</label>
-                    <div class="flex gap-2">
-                        <select id="ampm" class="w-1/2 p-5 rounded-2xl text-sm font-bold"><option value="0">오전</option><option value="12">오후</option></select>
-                        <select id="birth-hour" class="w-1/2 p-5 rounded-2xl text-sm font-bold"></select>
+            
+            <div class="space-y-4">
+                <div><label class="block text-lg font-bold mb-3">생년월일</label><input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg" placeholder="19950815"></div>
+                <div>
+                    <label class="block text-lg font-bold mb-3">태어난 시간 (오전/오후 선택 및 입력)</label>
+                    <div class="flex flex-col gap-3">
+                        <div class="flex gap-2">
+                            <label class="time-chip active flex-1 text-center" id="label-am">
+                                <input type="radio" name="ampm" value="0" checked onchange="updateTimeUI()"> 오전
+                            </label>
+                            <label class="time-chip flex-1 text-center" id="label-pm">
+                                <input type="radio" name="ampm" value="12" onchange="updateTimeUI()"> 오후
+                            </label>
+                        </div>
+                        <div class="flex gap-2">
+                            <input type="number" id="birth-hour" class="w-1/2 p-5 rounded-2xl text-center font-bold" placeholder="시 (0~11)" min="0" max="11">
+                            <input type="number" id="birth-min" class="w-1/2 p-5 rounded-2xl text-center font-bold" placeholder="분 (0~59)" min="0" max="59">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -120,9 +137,11 @@
             }
         });
 
-        // 시간 데이터 생성
-        const hS = document.getElementById('birth-hour');
-        for(let i=0; i<12; i++) { let o=document.createElement('option'); o.value=i; o.innerText=`${i==0?12:i}시`; hS.appendChild(o); }
+        function updateTimeUI() {
+            const am = document.querySelector('input[name="ampm"][value="0"]').checked;
+            document.getElementById('label-am').className = am ? "time-chip active flex-1 text-center" : "time-chip flex-1 text-center";
+            document.getElementById('label-pm').className = am ? "time-chip flex-1 text-center" : "time-chip active flex-1 text-center";
+        }
 
         function toggleAll() { const c = document.getElementById('all-agree').checked; document.querySelectorAll('.sub-agree').forEach(s => s.checked = !c); document.getElementById('all-agree').checked = !c; }
 
@@ -147,29 +166,36 @@
         function runAnalysis() {
             const name = document.getElementById('name').value;
             const birth = document.getElementById('birth').value;
-            const hour = parseInt(document.getElementById('birth-hour').value) + parseInt(document.getElementById('ampm').value);
+            const ampmOffset = parseInt(document.querySelector('input[name="ampm"]:checked').value);
+            const rawHour = document.getElementById('birth-hour').value;
+            const rawMin = document.getElementById('birth-min').value;
 
-            if(!name || birth.length !== 8) return alert("정보를 정확히 입력하십시오.");
+            if(!name || birth.length !== 8 || rawHour === "" || rawMin === "") return alert("정보를 모두 정확히 입력하십시오.");
+            
+            const hour = parseInt(rawHour);
+            const min = parseInt(rawMin);
+
+            if(hour < 0 || hour > 11 || min < 0 || min > 59) return alert("시간(0~11)과 분(0~59)을 올바르게 입력하십시오.");
             if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) return alert("필수 약관에 동의하셔야 합니다.");
 
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
 
-            // [로직] 이름 획수 + 생일 + 생시 조합 알고리즘
+            // [로직] 이름 획수 + 생일 + 시각(분 포함) 조합 알고리즘
             let nScore = 0; for(let i=0; i<name.length; i++) nScore += name.charCodeAt(i);
-            const seed = nScore + parseInt(birth) + hour;
+            const totalHour = hour + ampmOffset;
+            const seed = nScore + parseInt(birth) + totalHour + min;
             
             const database = [
-                { el: "목(木)", summary: "청룡의 기운이 문서를 물고 오니 새로운 계약이나 투자가 횡재로 이어질 형국입니다.", origin: "강직한 소나무의 기운", luck: "따뜻한 화(火)의 기운", color: "청록색, 에메랄드", dir: "동쪽", obj: "나무 재질의 액세서리", detail: `성함(${name})에 깃든 목(木)의 에너지가 태어나신 ${hour}시의 정기와 조화를 이루어 '수생목'의 형국을 완성했습니다. 현재 대감님의 운세는 땅 위로 솟구치는 나무와 같아, 동쪽 방향에서 귀인을 만나거나 뜻밖의 정보를 얻어 큰 재물을 얻을 상입니다. 붉은색 계열의 옷차림이 기운을 돋워줄 것입니다.` },
-                { el: "화(火)", summary: "타오르는 불길이 황금을 녹여 담는 격이니, 과감한 결단이 곧 거대한 재물이 될 것입니다.", origin: "정열적인 태양의 기운", luck: "안정적인 토(土)의 기운", color: "진홍색, 오렌지", dir: "남쪽", obj: "가죽 지갑, 안경", detail: `대감님의 사주는 뜨거운 열기가 가득하여 추진력이 매우 뛰어납니다. 이름에서 오는 수치와 생시의 합이 '식신생재'의 흐름을 만들어내고 있으니, 남쪽에서 비치는 행운의 서광을 놓치지 마십시오. 금속 재질보다는 흙의 기운을 담은 도자기나 가죽 제품을 소지하면 재물이 흩어지지 않고 쌓이게 됩니다.` },
-                { el: "토(土)", summary: "모든 만물을 품는 비옥한 대지의 기운이니, 기다림 끝에 거대한 횡재가 땅에서 솟아날 상입니다.", origin: "풍요로운 대지의 기운", luck: "결실의 금(金)의 기운", color: "황금색, 브라운", dir: "중앙 및 거주지 인근", obj: "반지, 노란 손수건", detail: `모든 사주의 중재자인 토(土)의 기운을 타고나셨습니다. 성함의 획수가 태어난 날의 숫자와 합쳐져 '진술축미'의 강력한 재물창고를 형성했습니다. 횡재수는 멀리 있지 않고 대감님의 활동 반경 중앙에 숨어 있습니다. 반짝이는 금속 장신구를 착용하여 땅속의 보석을 일깨우면 횡재의 문이 활짝 열릴 것입니다.` },
-                { el: "금(金)", summary: "백호의 날카로운 기세가 재물을 베어내는 격이니 정확한 타이밍에 큰 이득을 취할 것입니다.", origin: "냉철한 바위의 기운", luck: "유연한 수(水)의 기운", color: "흰색, 실버", dir: "서쪽", obj: "시계, 스마트 기기", detail: `대감님은 칼날처럼 날카로운 직관과 결단력을 사주에 품고 계십니다. 이름에서 오는 기운이 금(金)의 기세를 보좌하여 재물을 취하는 데 있어 타의 추종을 불허하는 상입니다. 서쪽 방향에서 강력한 금전운이 흐르고 있으니, 흰색 코디와 세련된 금속 시계를 활용하십시오. 유연한 태도가 곧 재물을 가두는 그물이 될 것입니다.` },
-                { el: "수(水)", summary: "천하의 물줄기가 대감님의 연못으로 모이는 형국이니 가만히 있어도 재물이 스며들 상입니다.", origin: "지혜로운 바다의 기운", luck: "성장의 목(木)의 기운", color: "검은색, 네이비", dir: "북쪽", obj: "향수, 검은 신발", detail: `끊임없이 흐르는 지혜로운 수(水)의 기운이 대감님의 본신입니다. 성함과 생년월일의 조화가 '재성'을 자극하여 사방에서 재물이 흘러 들어오는 형국입니다. 북쪽 방향이 길하며, 밤 시간대의 행운이 매우 강합니다. 검은색 계열의 옷차림이 기운을 정화하고 재물운을 갈무리해 줄 것이니, 향기를 몸에 지니면 횡재수가 배가될 것입니다.` }
+                { el: "목(木)", summary: "청룡의 기운이 문서를 물고 오니 새로운 계약이나 투자가 횡재로 이어질 형국입니다.", origin: "강직한 소나무의 기운", luck: "따뜻한 화(火)의 기운", color: "청록색, 에메랄드", dir: "동쪽", obj: "나무 재질의 액세서리", detail: `성함(${name})에 깃든 목(木)의 에너지가 태어나신 ${totalHour}시 ${min}분의 정기와 조화를 이루어 '수생목'의 형국을 완성했습니다. 현재 대감님의 운세는 땅 위로 솟구치는 나무와 같아, 동쪽 방향에서 귀인을 만나거나 뜻밖의 정보를 얻어 큰 재물을 얻을 상입니다. 붉은색 계열의 옷차림이 기운을 돋워줄 것입니다.` },
+                { el: "화(火)", summary: "타오르는 불길이 황금을 녹여 담는 격이니, 과감한 결단이 곧 거대한 재물이 될 것입니다.", origin: "정열적인 태양의 기운", luck: "안정적인 토(土)의 기운", color: "진홍색, 오렌지", dir: "남쪽", obj: "가죽 지갑, 안경", detail: `대감님의 사주는 뜨거운 열기가 가득하여 추진력이 매우 뛰어납니다. 이름에서 오는 수치와 생시 ${totalHour}시 ${min}분의 합이 '식신생재'의 흐름을 만들어내고 있으니, 남쪽에서 비치는 행운의 서광을 놓치지 마십시오. 금속 재질보다는 흙의 기운을 담은 도자기나 가죽 제품을 소지하면 재물이 흩어지지 않고 쌓이게 됩니다.` },
+                { el: "토(土)", summary: "모든 만물을 품는 비옥한 대지의 기운이니, 기다림 끝에 거대한 횡재가 땅에서 솟아날 상입니다.", origin: "풍요로운 대지의 기운", luck: "결실의 금(金)의 기운", color: "황금색, 브라운", dir: "중앙 및 거주지 인근", obj: "반지, 노란 손수건", detail: `모든 사주의 중재자인 토(土)의 기운을 타고나셨습니다. 성함의 획수가 태어난 ${totalHour}시 ${min}분의 숫자와 합쳐져 '진술축미'의 강력한 재물창고를 형성했습니다. 횡재수는 멀리 있지 않고 대감님의 활동 반경 중앙에 숨어 있습니다. 반짝이는 금속 장신구를 착용하여 땅속의 보석을 일깨우면 횡재의 문이 활짝 열릴 것입니다.` },
+                { el: "금(金)", summary: "백호의 날카로운 기세가 재물을 베어내는 격이니 정확한 타이밍에 큰 이득을 취할 것입니다.", origin: "냉철한 바위의 기운", luck: "유연한 수(水)의 기운", color: "흰색, 실버", dir: "서쪽", obj: "시계, 스마트 기기", detail: `대감님은 칼날처럼 날카로운 직관과 결단력을 사주에 품고 계십니다. 이름과 생시 ${totalHour}시 ${min}분의 기운이 금(金)의 기세를 보좌하여 재물을 취하는 데 있어 타의 추종을 불허하는 상입니다. 서쪽 방향에서 강력한 금전운이 흐르고 있으니, 흰색 코디와 세련된 금속 시계를 활용하십시오. 유연한 태도가 곧 재물을 가두는 그물이 될 것입니다.` },
+                { el: "수(水)", summary: "천하의 물줄기가 대감님의 연못으로 모이는 형국이니 가만히 있어도 재물이 스며들 상입니다.", origin: "지혜로운 바다의 기운", luck: "성장의 목(木)의 기운", color: "검은색, 네이비", dir: "북쪽", obj: "향수, 검은 신발", detail: `끊임없이 흐르는 지혜로운 수(水)의 기운이 대감님의 본신입니다. 성함과 생시 ${totalHour}시 ${min}분의 조화가 '재성'을 자극하여 사방에서 재물이 흘러 들어오는 형국입니다. 북쪽 방향이 길하며, 밤 시간대의 행운이 매우 강합니다. 검은색 계열의 옷차림이 기운을 정화하고 재물운을 갈무리해 줄 것이니, 향기를 몸에 지니면 횡재수가 배가될 것입니다.` }
             ];
 
             const res = database[seed % 5];
             
-            // 행운의 번호 생성 알고리즘 (이름+생일+시각 조합 랜덤)
             let nums = [];
             while(nums.length < 6) {
                 let n = Math.floor(Math.abs(Math.sin(seed + nums.length)) * 45) + 1;
