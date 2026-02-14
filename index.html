@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>인생대감 - 고품격 횡재수 분석</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/korean-lunar-calendar@1.0.4/dist/korean-lunar-calendar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/korean-lunar-calendar@0.1.6/lib/korean-lunar-calendar.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
         body { 
@@ -188,25 +188,22 @@
 
         const sajuDatabase = [
             { el: "갑목(甲木)", summary: "거대한 소나무의 기운이 하늘을 찌르니, 올해는 큰 재물을 뿌리 아래 두는 형국입니다.", luck: "화(火)와 토(土)", color: "청록색, 황금색", nums: "3, 8, 5", dir: "동쪽 및 중앙", obj: "나무 향수, 원목 액세서리", detail: "강직한 성품이 재물을 부릅니다. 독불장군처럼 굴기보다는 주변 사람들과 정보를 나누면 횡재가 두 배로 돌아옵니다." },
-            { el: "을목(乙木)", summary: "유연한 넝쿨의 기운입니다. 바람을 타고 위기 속에서 예상치 못한 횡재을 거머쥘 운입니다.", luck: "수(水)와 목(木)", color: "연두색, 하늘색", nums: "1, 6, 3", dir: "북쪽 및 동쪽", obj: "작은 화분, 가죽 지갑", detail: "예술적 감각과 직관이 돈이 되는 사주입니다. 남들이 무시하는 작은 기회에서 큰 금전적 이득을 챙기게 될 것입니다." },
+            { el: "을목(乙木)", summary: "유연한 넝쿨의 기운입니다. 바람을 타고 위기 속에서 예상치 못한 횡재를 거머쥘 운입니다.", luck: "수(水)와 목(木)", color: "연두색, 하늘색", nums: "1, 6, 3", dir: "북쪽 및 동쪽", obj: "작은 화분, 가죽 지갑", detail: "예술적 감각과 직관이 돈이 되는 사주입니다. 남들이 무시하는 작은 기회에서 큰 금전적 이득을 챙기게 될 것입니다." },
             { el: "병화(丙火)", summary: "만물을 비추는 태양의 기운입니다. 숨겨진 보물을 찾아내는 안목이 이번 달 정점에 달합니다.", luck: "토(土)와 금(金)", color: "진한 빨강, 노란색", nums: "2, 7, 0", dir: "남쪽 및 서쪽", obj: "화려한 시계, 금테 안경", detail: "당신의 에너지가 가장 강할 때 횡재운이 터집니다. 정오 무렵이나 햇볕이 좋은 날 중요한 금전적 결정을 내리십시오." },
             { el: "정화(丁火)", summary: "어둠을 밝히는 등불의 기운입니다. 세밀한 분석력으로 복권이나 투자에서 남다른 감각을 보입니다.", luck: "금(金)과 수(수)", color: "보라색, 은색", nums: "4, 9, 6", dir: "서쪽 및 북쪽", obj: "향초, 금속제 만년필", detail: "조용히 기회를 엿보다가 한 번에 낚아채는 운입니다. 꿈자리가 맑은 날, 동북쪽에서 들려오는 소식에 귀를 기울이세요." },
             { el: "무토(戊土)", summary: "깊고 넓은 황금 대지의 기운입니다. 가만히 있어도 재물이 발밑으로 모여드는 길조가 보입니다.", luck: "화(火)와 금(金)", color: "황토색, 흰색", nums: "5, 0, 4", dir: "중앙 및 서쪽", obj: "수석(돌), 벨트", detail: "인내심의 끝에 큰 보상이 기다립니다. 성급한 투자보다는 장기적인 안목으로 기다리면 대박의 기운이 스며듭니다." },
-            { el: "기토(己土)", summary: "비옥한 전답의 기운입니다. 씨를 뿌린 것 이상의 수확을 거두는 '상생'의 횡재수가 강합니다.", luck: "목(木)과 화(화)", color: "갈색, 분홍색", nums: "0, 2, 7", dir: "동쪽 및 남쪽", obj: "도자기 그릇, 차(Tea) 세트", detail: "사람들과의 관계에서 돈이 들어옵니다. 예상치 못한 귀인의 도움으로 금전적 곤란이 해결되고 목돈이 생길 상입니다." },
+            { el: "기토(己土)", summary: "비옥한 전답의 기운입니다. 씨를 뿌린 것 이상의 수확을 거두는 '상생'의 횡재수가 강합니다.", luck: "목(木)과 화(火)", color: "갈색, 분홍색", nums: "0, 2, 7", dir: "동쪽 및 남쪽", obj: "도자기 그릇, 차(Tea) 세트", detail: "사람들과의 관계에서 돈이 들어옵니다. 예상치 못한 귀인의 도움으로 금전적 곤란이 해결되고 목돈이 생길 상입니다." },
             { el: "경금(庚金)", summary: "단단한 바위와 원석의 기운입니다. 결단력이 곧 돈입니다. 망설이지 않을 때 큰 돈을 만집니다.", luck: "수(수)와 토(土)", color: "백색, 회색", nums: "4, 9, 5", dir: "서쪽 및 북쪽", obj: "은반지, 거울", detail: "강한 카리스마가 재운을 압도합니다. 큰 판을 벌릴수록 횡재의 크기도 커지니 본인의 직관을 100% 믿으셔도 좋습니다." },
             { el: "신금(辛金)", summary: "정교한 보석의 기운입니다. 타고난 복이 많아 평생 금전적 마름이 없는 귀한 명식입니다.", luck: "목(木)과 수(수)", color: "투명한 색, 은회색", nums: "1, 4, 8", dir: "북쪽 및 동쪽", obj: "크리스탈 소품, 보석함", detail: "섬세한 정보 수집이 부를 만듭니다. 고급 정보나 남들이 모르는 틈새시장을 공략하면 순식간에 자산이 불어납니다." },
             { el: "임수(壬수)", summary: "끝없이 흐르는 강물의 기운입니다. 유통과 변화 속에서 큰 재물을 낚아올리는 형상입니다.", luck: "목(木)과 금(金)", color: "검은색, 청색", nums: "1, 6, 9", dir: "북쪽 및 동쪽", obj: "어항, 푸른색 손수건", detail: "지혜가 곧 재물입니다. 먼 곳에서 재운이 들어오니 새로운 환경에 도전하거나 여행 중에 뜻밖의 횡재를 만납니다." },
-            { el: "계수(癸수)", summary: "만물을 적시는 단비의 기운입니다. 소리 없이 스며드는 비처럼 재산이 소리 없이 불어납니다.", luck: "화(화)와 토(토)", color: "남색, 검은색", nums: "6, 2, 8", dir: "남쪽 및 중앙", obj: "검정 우산, 만년필", detail: "부드러움이 강함을 이깁니다. 무리한 경쟁보다는 유연한 대처로 실속을 챙기십시오. 하반기에 큰 횡재수가 기다립니다." }
+            { el: "계수(癸수)", summary: "만물을 적시는 단비의 기운입니다. 소리 없이 스며드는 비처럼 재산이 소리 없이 불어납니다.", luck: "화(火)와 토(토)", color: "남색, 검은색", nums: "6, 2, 8", dir: "남쪽 및 중앙", obj: "검정 우산, 만년필", detail: "부드러움이 강함을 이깁니다. 무리한 경쟁보다는 유연한 대처로 실속을 챙기십시오. 하반기에 큰 횡재수가 기다립니다." }
         ];
 
-        // --- 수정된 실제 만세력 기반 분석 함수 ---
         function runAnalysis() {
             const name = document.getElementById('name').value.trim();
             const birth = document.getElementById('birth').value.trim();
             const hour = document.getElementById('birth-hour').value.trim();
-            const min = document.getElementById('birth-min').value.trim() || "0";
-            
-            // 유효성 검사
+
             if(!name || birth.length !== 8 || !hour) {
                 alert("성함, 생년월일(8자리), 태어난 시를 모두 정확히 입력하십시오.");
                 return;
@@ -216,45 +213,48 @@
                 return;
             }
 
-            // 로딩 애니메이션 활성화
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
 
-            // 1. 만세력 라이브러리를 이용한 데이터 추출
-            const calendar = new KoreanLunarCalendar();
-            const year = parseInt(birth.substring(0, 4));
-            const month = parseInt(birth.substring(4, 6));
-            const day = parseInt(birth.substring(6, 8));
+            try {
+                // 실제 만세력 라이브러리 활용
+                const calendar = new KoreanLunarCalendar();
+                const year = parseInt(birth.substring(0, 4));
+                const month = parseInt(birth.substring(4, 6));
+                const day = parseInt(birth.substring(6, 8));
 
-            // 양력 날짜 설정 (만세력 계산)
-            calendar.setSolarDate(year, month, day);
-            const sajuData = calendar.getSaju(); // 결과 예: "을미년 갑신월 경진일"
-            
-            // 2. 일주(日柱)에서 천간 글자 하나를 따옴 (본신의 기운)
-            const sajuArray = sajuData.split(' '); 
-            const ilju = sajuArray[2]; // 세 번째 단어인 "XX일" 가져오기
-            const ilgan = ilju[0];    // 그 중 첫 번째 글자 (예: '경')
-
-            // 3. 데이터베이스에서 해당 글자가 포함된 유형 찾기
-            const res = sajuDatabase.find(item => item.el.includes(ilgan));
-
-            // 결과 화면 처리
-            setTimeout(() => {
-                document.getElementById('input-section').classList.add('hidden');
-                document.getElementById('result-section').classList.remove('hidden');
+                calendar.setSolarDate(year, month, day);
+                const sajuData = calendar.getSaju(); // "XX년 XX월 XX일" 형식
                 
-                document.getElementById('res-name').innerText = name;
-                document.getElementById('res-summary').innerText = `"${res.summary}"`;
-                document.getElementById('res-origin').innerText = res.el + "의 기운";
-                document.getElementById('res-luck').innerText = res.luck + "의 기운";
-                document.getElementById('res-color').innerText = res.color;
-                document.getElementById('res-num').innerText = res.nums;
-                document.getElementById('res-dir').innerText = res.dir;
-                document.getElementById('res-obj').innerText = res.obj;
-                document.getElementById('res-detail').innerText = res.detail;
-                
-                window.scrollTo({top:0, behavior:'smooth'});
-            }, 3000);
+                // 일간(日干) 한 글자 추출 (예: '갑', '을', '병' 등)
+                const ilgan = sajuData.split(' ')[2][0]; 
+
+                // 데이터베이스 매칭
+                const res = sajuDatabase.find(item => item.el.includes(ilgan));
+
+                // 1초(1000ms) 후 결과 표시
+                setTimeout(() => {
+                    document.getElementById('input-section').classList.add('hidden');
+                    document.getElementById('result-section').classList.remove('hidden');
+                    
+                    document.getElementById('res-name').innerText = name;
+                    document.getElementById('res-summary').innerText = `"${res.summary}"`;
+                    document.getElementById('res-origin').innerText = res.el + "의 기운";
+                    document.getElementById('res-luck').innerText = res.luck + "의 기운";
+                    document.getElementById('res-color').innerText = res.color;
+                    document.getElementById('res-num').innerText = res.nums;
+                    document.getElementById('res-dir').innerText = res.dir;
+                    document.getElementById('res-obj').innerText = res.obj;
+                    document.getElementById('res-detail').innerText = res.detail;
+                    
+                    window.scrollTo({top:0, behavior:'smooth'});
+                }, 1000); 
+
+            } catch (e) {
+                console.error(e);
+                alert("분석 도중 오류가 발생했습니다. 생년월일을 확인해주세요.");
+                location.reload();
+            }
         }
     </script>
 </body>
