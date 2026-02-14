@@ -61,23 +61,28 @@
     </div>
 
     <script>
-        // 보안: 우클릭 및 소스보기 차단
+        // 보안: 우클릭 및 소스보기 차단 (100% 유지)
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = e => { if(e.keyCode == 123 || (e.ctrlKey && e.keyCode == 85)) return false; };
 
         function runAnalysis() {
             const name = document.getElementById('name').value;
-            if(!name) return alert("성함을 입력해주세요.");
+            // 필수 입력 체크만 최소한으로 유지
+            if(!name) {
+                alert("성함을 입력해주세요.");
+                return;
+            }
 
-            // 화면 전환 애니메이션
+            // [수정 핵심] 화면 전환: 입력창 가리고 로딩창 보여주기
             document.getElementById('input-section').classList.add('hidden');
             document.getElementById('loading-section').classList.remove('hidden');
 
-            // 3초 후 결과 표시
+            // 3초 기운 모으기 후 결과 표시
             setTimeout(() => {
                 document.getElementById('loading-section').classList.add('hidden');
                 document.getElementById('result-section').classList.remove('hidden');
                 
+                // [수정 핵심] alert 대신 이미 만들어두신 result-content에 내용을 채워 넣습니다.
                 document.getElementById('result-content').innerHTML = `
                     <p class="text-center font-bold text-xl text-[#D4AF37] mb-2">${name} 대감님은</p>
                     <p class="text-center font-medium mb-6">타고난 본신 기운이 <b>'토(土)'</b>입니다.</p>
