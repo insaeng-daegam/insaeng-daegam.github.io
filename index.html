@@ -7,7 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
-        body { font-family: 'Pretendard', sans-serif; background-color: #F7F3E9; color: #4E342E; }
+        /* 드래그 및 선택 방지 추가 */
+        body { 
+            font-family: 'Pretendard', sans-serif; background-color: #F7F3E9; color: #4E342E;
+            -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+        }
         .card-shadow { box-shadow: 0 10px 40px rgba(0,0,0,0.06); }
         .gold-wave { 
             background: linear-gradient(90deg, #B5A47D, #F9F1D0, #B5A47D, #E1C16E, #B5A47D);
@@ -16,17 +20,15 @@
         }
         @keyframes shine { to { background-position: 200% center; } }
         .hidden { display: none; }
-        input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; transition: 0.2s; }
-        input:focus { border-color: #B5A47D !important; }
+        input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; transition: 0.2s; -webkit-user-select: text; user-select: text; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 550px; max-height: 70vh; overflow-y: auto; }
+        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 550px; max-height: 70vh; overflow-y: auto; -webkit-user-select: text; user-select: text; }
         .legal-box { font-size: 13px; line-height: 1.7; color: #444; }
-        .legal-box h4 { font-weight: bold; color: #000; margin-top: 15px; margin-bottom: 5px; }
         .loader { width: 40px; height: 40px; border: 4px solid #E1C16E; border-bottom-color: #4E342E; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-12 px-4">
+<body class="min-h-screen flex flex-col items-center py-12 px-4" oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
 
     <header class="text-center mb-10">
         <h1 class="text-4xl font-black mb-2">인생대감</h1>
@@ -55,10 +57,10 @@
                     <input type="checkbox" id="all-agree" class="w-6 h-6 accent-[#4E342E]">
                     <span class="font-bold text-lg">모든 약관에 전체 동의하기</span>
                 </div>
-                <div class="space-y-3 pt-2">
-                    <div class="flex justify-between items-center text-sm"><label class="flex items-center gap-2"><input type="checkbox" id="p-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 개인정보 수집 및 이용</span></label><button onclick="openModal('privacy')" class="underline text-gray-400">보기</button></div>
-                    <div class="flex justify-between items-center text-sm"><label class="flex items-center gap-2"><input type="checkbox" id="t-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 서비스 이용약관</span></label><button onclick="openModal('terms')" class="underline text-gray-400">보기</button></div>
-                    <div class="flex justify-between items-center text-sm"><label class="flex items-center gap-2"><input type="checkbox" id="m-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[선택] 마케팅 활용 동의</span></label><button onclick="openModal('marketing')" class="underline text-gray-400">보기</button></div>
+                <div class="space-y-3 pt-2 text-sm text-gray-600">
+                    <div class="flex justify-between items-center"><label class="flex items-center gap-2"><input type="checkbox" id="p-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 개인정보 수집 및 이용</span></label><button onclick="openModal('privacy')" class="underline">보기</button></div>
+                    <div class="flex justify-between items-center"><label class="flex items-center gap-2"><input type="checkbox" id="t-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 서비스 이용약관</span></label><button onclick="openModal('terms')" class="underline">보기</button></div>
+                    <div class="flex justify-between items-center"><label class="flex items-center gap-2"><input type="checkbox" id="m-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[선택] 마케팅 활용 동의</span></label><button onclick="openModal('marketing')" class="underline">보기</button></div>
                 </div>
             </div>
             <button onclick="runAnalysis()" class="w-full py-6 bg-[#4E342E] text-white rounded-[35px] text-2xl font-bold shadow-xl active:scale-95 transition-all">무료 횡재수 분석 시작</button>
@@ -80,37 +82,34 @@
                 <p class="text-amber-800 font-bold mb-2 italic">대감님의 타고난 본신 기운</p>
                 <p id="res-ohaeng" class="text-3xl font-black text-[#4E342E]"></p>
             </div>
-            
             <div class="space-y-4">
-                <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
-                    <span class="text-2xl">🍀</span>
-                    <div><p class="text-xs text-gray-400 font-bold">행운의 보완 기운</p><p id="res-lucky" class="font-bold"></p></div>
-                </div>
-                <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl">
-                    <span class="text-2xl">🧭</span>
-                    <div><p class="text-xs text-gray-400 font-bold">재물이 들어오는 방향</p><p id="res-dir" class="font-bold"></p></div>
-                </div>
+                <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl"><span class="text-2xl">🍀</span><div><p class="text-xs text-gray-400 font-bold">행운의 보완 기운</p><p id="res-lucky" class="font-bold"></p></div></div>
+                <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl"><span class="text-2xl">🧭</span><div><p class="text-xs text-gray-400 font-bold">재물이 들어오는 방향</p><p id="res-dir" class="font-bold"></p></div></div>
             </div>
-
             <div class="bg-gray-50 rounded-3xl p-6 space-y-3">
                 <p class="font-bold flex items-center gap-2">📜 대감님을 위한 훈수</p>
                 <p id="res-desc" class="text-gray-600 leading-relaxed text-sm"></p>
             </div>
-
             <button onclick="location.reload()" class="w-full py-5 bg-gray-100 text-gray-500 rounded-2xl font-bold">다시 분석하기</button>
         </div>
     </div>
 
-    <div id="legalModal" class="modal"><div class="modal-content"><h3 id="modalTitle" class="text-xl font-bold mb-4 border-b pb-2"></h3><div id="modalBody" class="legal-box whitespace-pre-wrap"></div><button onclick="closeModal()" class="w-full mt-6 py-4 bg-[#4E342E] text-white rounded-xl font-bold">닫기</button></div></div>
+    <div id="legalModal" class="modal"><div class="modal-content"><h3 id="modalTitle" class="text-xl font-bold mb-4 border-b pb-2"></h3><div id="modalBody" class="legal-box whitespace-pre-wrap text-sm leading-relaxed"></div><button onclick="closeModal()" class="w-full mt-6 py-4 bg-[#4E342E] text-white rounded-xl font-bold">닫기</button></div></div>
 
     <script>
-        // 시간 선택 셀렉트 박스
+        // [보안] 우클릭 및 단축키 방지
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.onkeydown = function(e) {
+            if(e.keyCode == 123) return false; // F12 방지
+            if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) return false; // Ctrl+Shift+I/J/C 방지
+            if(e.ctrlKey && e.keyCode == 85) return false; // 소스 보기(Ctrl+U) 방지
+        };
+
         const hS = document.getElementById('birth-hour');
         const mS = document.getElementById('birth-min');
         for(let i=0; i<12; i++) { let o=document.createElement('option'); o.value=i; o.innerText=`${i===0?12:i}시`; hS.appendChild(o); }
         for(let i=0; i<60; i++) { let o=document.createElement('option'); o.value=i; o.innerText=`${i}분`; mS.appendChild(o); }
 
-        // 사주오행 데이터셋
         const ohaengData = [
             { type: "목(木) - 푸른 나무의 기운", lucky: "화(火)의 열기", dir: "동쪽 (청룡의 방향)", desc: "대감님은 성장과 시작을 의미하는 나무의 기운을 타고나셨습니다. 새로운 투자나 계획이 횡재로 이어질 확률이 높으니 동쪽에서 들려오는 소식을 귀담아들으십시오." },
             { type: "화(火) - 타오르는 불의 기운", lucky: "토(土)의 안정", dir: "남쪽 (주작의 방향)", desc: "열정적이고 화려한 불의 기운입니다. 단기간에 큰 재물을 얻는 폭발적인 횡재수가 있으나, 이를 담을 흙의 기운이 필요하니 주변 사람들과의 신뢰를 먼저 쌓으소서." },
@@ -120,9 +119,9 @@
         ];
 
         const legalData = {
-            privacy: { title: "개인정보 수집 및 이용 동의", content: "1. 수집항목: 성명, 휴대폰 번호, 생년월일, 시간\n2. 목적: 사주 기반 횡재수 리포트 생성\n3. 보유기간: 목적 달성 후 즉시 파기(법령 보존 시 제외)" },
-            terms: { title: "서비스 이용약관", content: "본 서비스는 명리학적 알고리즘에 기초한 참고용 리포트이며, 실제 결과에 대한 법적 책임은 이용자에게 있습니다." },
-            marketing: { title: "마케팅 활용 동의 (선택)", content: "이벤트 및 맞춤형 행운 정보를 SMS 등으로 받아보실 수 있습니다." }
+            privacy: { title: "개인정보 수집 및 이용 동의", content: "1. 수집항목: 성명, 휴대폰 번호, 생년월일, 태어난 시간\n2. 수집목적: 사주오행 기반 횡재수 분석 리포트 제공 및 본인 식별\n3. 보유 및 이용기간: 이용 목적 달성 시 즉시 파기(단, 관련 법령에 따라 3년 보존)" },
+            terms: { title: "서비스 이용약관", content: "제1조: 본 서비스는 명리학적 알고리즘을 통한 참고용 데이터입니다.\n제2조: 회사는 본 결과로 인한 사용자의 주관적 투자 및 금전 거래 결과에 대해 어떠한 법적 책임도 지지 않습니다." },
+            marketing: { title: "마케팅 활용 동의 (선택)", content: "새로운 운세 소식 및 맞춤형 혜택 정보를 카카오톡이나 SMS로 받아보실 수 있습니다." }
         };
 
         function openModal(t) { document.getElementById('modalTitle').innerText = legalData[t].title; document.getElementById('modalBody').innerText = legalData[t].content; document.getElementById('legalModal').style.display = 'flex'; }
@@ -132,33 +131,28 @@
         function runAnalysis() {
             const name = document.getElementById('name').value;
             const birth = document.getElementById('birth').value;
-            const hour = parseInt(document.getElementById('birth-hour').value) + parseInt(document.getElementById('ampm').value);
-            const min = parseInt(document.getElementById('birth-min').value);
-
-            if(!name || birth.length !== 8) return alert("성함과 생년월일(8자리)을 정확히 입력하십시오.");
+            if(!name || birth.length !== 8) return alert("정보를 정확히 입력하십시오.");
             if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) return alert("필수 약관에 동의하셔야 합니다.");
 
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
 
-            // 오행 계산 로직 (이름 + 생일 + 시간 조합)
             const nameScore = name.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-            const seed = parseInt(birth.substring(4)) + hour + min + (nameScore % 10);
+            const seed = parseInt(birth.substring(4)) + nameScore;
             const res = ohaengData[seed % 5];
 
             setTimeout(() => {
                 document.getElementById('input-section').classList.add('hidden');
                 document.getElementById('result-section').classList.remove('hidden');
-                
                 document.getElementById('res-name').innerText = name;
                 document.getElementById('res-ohaeng').innerText = res.type;
                 document.getElementById('res-lucky').innerText = res.lucky;
                 document.getElementById('res-dir').innerText = res.dir;
                 document.getElementById('res-desc').innerText = res.desc;
-
                 window.scrollTo({top:0, behavior:'smooth'});
             }, 2500);
         }
     </script>
 </body>
 </html>
+       
