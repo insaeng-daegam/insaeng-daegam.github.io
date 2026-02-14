@@ -41,6 +41,9 @@
         .modal-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 550px; max-height: 80vh; overflow-y: auto; }
         .legal-text { font-size: 13px; line-height: 1.6; color: #555; }
         .legal-text h4 { font-weight: bold; color: #222; margin-top: 15px; margin-bottom: 5px; font-size: 14px; }
+        .legal-table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 12px; }
+        .legal-table th, .legal-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        .legal-table th { background: #f9f9f9; }
         .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -182,7 +185,7 @@
     <div id="legalModal" class="modal">
         <div class="modal-content">
             <h3 id="modalTitle" class="text-xl font-bold mb-4 text-[#4E342E] border-b pb-4"></h3>
-            <div id="modalBody" class="legal-text whitespace-pre-wrap"></div>
+            <div id="modalBody" class="legal-text"></div>
             <button onclick="closeModal()" class="w-full mt-8 py-5 gold-gradient-bg text-white rounded-2xl font-bold shadow-lg">확인 및 닫기</button>
         </div>
     </div>
@@ -203,15 +206,40 @@
         const legalData = {
             privacy: { 
                 title: "개인정보 수집 및 이용 동의", 
-                content: `인생대감 서비스 이용을 위해 아래와 같이 개인정보를 수집 및 이용합니다. ... (중략) ...` 
+                content: `
+                    <h4>1. 수집하는 개인정보 항목</h4>
+                    <p>성명, 생년월일, 태어난 시간</p>
+                    <h4>2. 수집 및 이용 목적</h4>
+                    <p>사주팔자 기반의 운세 및 횡재수 분석 결과 제공, 본인 식별 서비스 제공</p>
+                    <h4>3. 보유 및 이용 기간</h4>
+                    <p><strong>서비스 제공 완료 및 분석 목적 달성 시 즉시 파기</strong> (단, 관계 법령에 따라 보존할 필요가 있는 경우 해당 기간 동안 보관)</p>
+                    <h4>4. 동의 거부 권리</h4>
+                    <p>귀하는 본 개인정보 수집 및 이용에 거부할 권리가 있습니다. 단, 거부 시 운세 분석 서비스 이용이 제한됩니다.</p>
+                ` 
             },
             terms: { 
                 title: "서비스 이용약관", 
-                content: `인생대감 서비스 이용에 관한 안내 말씀 드립니다. ... (중략) ...` 
+                content: `
+                    <h4>제1조 (목적)</h4>
+                    <p>본 약관은 '인생대감'이 제공하는 운세 정보 서비스의 이용 조건 및 절차를 규정함을 목적으로 합니다.</p>
+                    <h4>제2조 (정보의 정확성)</h4>
+                    <p>제공되는 모든 운세 정보는 과학적 근거가 아닌 전통 명리학 해석에 기반하며, 결과에 대한 최종 책임은 이용자 본인에게 있습니다.</p>
+                    <h4>제3조 (서비스 중단)</h4>
+                    <p>시스템 점검이나 서버 교체 등 운영상 필요 시 서비스가 일시 중단될 수 있습니다.</p>
+                    <h4>제4조 (면책 조항)</h4>
+                    <p>회사는 이용자가 본 서비스를 통해 얻은 결과로 행한 투자, 계약 등의 유무형적 손실에 대해 책임을 지지 않습니다.</p>
+                ` 
             },
             marketing: { 
                 title: "마케팅 활용 동의 (선택)", 
-                content: `신규 운세 서비스 및 이벤트 소식을 가장 먼저 받아보세요. ... (중략) ...` 
+                content: `
+                    <h4>1. 마케팅 및 광고에의 활용</h4>
+                    <p>신규 서비스 안내, 맞춤형 행운 알림 서비스, 이벤트 및 광고성 정보 제공</p>
+                    <h4>2. 전송 방법</h4>
+                    <p>문자메시지(SMS/LMS), 이메일, 앱 푸시 알림</p>
+                    <h4>3. 수신 동의 및 철회</h4>
+                    <p>본 동의는 선택 사항이며, 거부하셔도 기본 운세 분석 서비스는 이용 가능합니다. 설정 메뉴에서 언제든지 수신 철회가 가능합니다.</p>
+                ` 
             }
         };
 
@@ -237,19 +265,12 @@
             };
         });
 
-        // 폭죽 함수 정의
         function fireConfetti() {
             const count = 200;
             const defaults = { origin: { y: 0.7 }, zIndex: 1000 };
-
             function fire(particleRatio, opts) {
-                confetti({
-                    ...defaults,
-                    ...opts,
-                    particleCount: Math.floor(count * particleRatio)
-                });
+                confetti({ ...defaults, ...opts, particleCount: Math.floor(count * particleRatio) });
             }
-
             fire(0.25, { spread: 26, startVelocity: 55 });
             fire(0.2, { spread: 60 });
             fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 });
@@ -266,7 +287,7 @@
                 return;
             }
             if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) {
-                alert("필수 약관에 동의하셔야 합니다.");
+                alert("필수 약관에 동의하셔야 분석을 시작할 수 있습니다.");
                 return;
             }
 
@@ -302,10 +323,7 @@
                 document.getElementById('res-detail').innerText = s_detail[idx(s_detail.length)];
 
                 window.scrollTo({top:0, behavior:'smooth'});
-                
-                // 결과 노출 시 폭죽 발사!
                 fireConfetti();
-                
             }, 3000);
         }
     </script>
