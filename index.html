@@ -121,22 +121,6 @@
     <section id="result-section" class="hidden w-full max-w-lg space-y-6 animate-fadeIn">
         <div class="gold-gradient-bg rounded-t-[50px] p-12 text-center text-white space-y-4 shadow-lg">
             <div class="text-4xl drop-shadow-md">🧧</div>
-            <h2 class="text-3xl font-bold drop-shadow-sm"><span id="res-name"></span>님의</h2>
-            <p class="text-white/90 text-xl font-bold">정밀 횡재수 분석 리포트</p>
-        </div>
-        <div class="bg-white rounded-b-[50px] card-shadow p-8 space-y-8 -mt-2">
-            <div class="bg-[#FDF9F0] rounded-3xl p-8 text-center border border-[#F1EAD7] relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-1 gold-gradient-bg"></div>
-                <p class="text-[#B5A47D] font-bold mb-4 italic">분석 총평</p>
-                <p id="res-summary" class="text-xl font-bold leading-relaxed text-[#4E342E]"></p>
-            </div>
-            <div class="space-y-4" id="res-items">
-                </div>
-            <button onclick="location.reload()" class="w-full py-6 border-2 border-[#B5A47D] text-[#B5A47D] 
-
-<div id="result-section" class="hidden w-full max-w-lg space-y-6 animate-fadeIn">
-        <div class="gold-gradient-bg rounded-t-[50px] p-12 text-center text-white space-y-4 shadow-lg">
-            <div class="text-4xl drop-shadow-md">🧧</div>
             <h2 class="text-3xl font-bold drop-shadow-sm"><span id="res-name"></span> 대표님의</h2>
             <p class="text-white/90 text-xl font-bold">정밀 횡재수 분석 리포트</p>
         </div>
@@ -146,29 +130,43 @@
                 <p class="text-[#B5A47D] font-bold mb-4 italic">분석 총평</p>
                 <p id="res-summary" class="text-xl font-bold leading-relaxed text-[#4E342E]"></p>
             </div>
+            
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-white border border-gray-100 rounded-3xl p-6 text-center space-y-2 shadow-sm">
-                    <span class="text-2xl">🧘</span><p class="text-xs text-gray-400 font-bold">타고난 본신 기운</p><p id="res-origin" class="text-lg font-bold"></p>
+                    <span class="text-2xl">🧘</span><p class="text-xs text-gray-400 font-bold">타고난 본신 기운</p>
+                    <p id="res-origin" class="text-lg font-bold text-[#4E342E]"></p>
                 </div>
                 <div class="bg-white border border-gray-100 rounded-3xl p-6 text-center space-y-2 shadow-sm">
-                    <span class="text-2xl">🍀</span><p class="text-xs text-gray-400 font-bold">채워야 할 행운 기운</p><p id="res-luck" class="text-lg font-bold"></p>
+                    <span class="text-2xl">🍀</span><p class="text-xs text-gray-400 font-bold">채워야 할 행운 기운</p>
+                    <p id="res-luck" class="text-lg font-bold text-[#4E342E]"></p>
                 </div>
             </div>
+
             <div class="space-y-4">
-                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🎨</span><div><p class="text-xs text-gray-400 font-bold">행운의 색</p><p id="res-color" class="font-bold text-lg"></p></div></div>
-                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🔢</span><div><p class="text-xs text-gray-400 font-bold">행운의 번호</p><p id="res-num" class="font-bold text-lg"></p></div></div>
-                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🧭</span><div><p class="text-xs text-gray-400 font-bold">행운의 방향</p><p id="res-dir" class="font-bold text-lg"></p></div></div>
-                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🔮</span><div><p class="text-xs text-gray-400 font-bold">행운의 물건</p><p id="res-obj" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors">
+                    <span class="text-2xl">🎨</span>
+                    <div><p class="text-xs text-gray-400 font-bold">행운의 색</p><p id="res-color" class="font-bold text-lg"></p></div>
+                </div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors">
+                    <span class="text-2xl">🔢</span>
+                    <div><p class="text-xs text-gray-400 font-bold">행운의 번호</p><p id="res-num" class="font-bold text-lg"></p></div>
+                </div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors">
+                    <span class="text-2xl">🧭</span>
+                    <div><p class="text-xs text-gray-400 font-bold">행운의 방향</p><p id="res-dir" class="font-bold text-lg"></p></div>
+                </div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors">
+                    <span class="text-2xl">🔮</span>
+                    <div><p class="text-xs text-gray-400 font-bold">행운의 물건</p><p id="res-obj" class="font-bold text-lg"></p></div>
+                </div>
             </div>
+
             <div class="bg-gray-50 rounded-3xl p-8 space-y-4 border-l-4 border-[#B5A47D]">
                 <div class="flex items-center gap-2 font-bold text-lg text-[#4E342E]"><span>📜</span> 대감님의 훈수 (상세 해석)</div>
                 <p id="res-detail" class="text-gray-600 leading-relaxed text-base"></p>
             </div>
-            <button onclick="location.reload()" class="w-full py-6 border-2 border-[#B5A47D] text-[#B5A47D] rounded-[35px] text-2xl font-bold hover:bg-[#B5A47D] hover:text-white transition-all">다시 분석하기</button>
-        </div>
-    </div>
 
-rounded-[35px] text-2xl font-bold hover:bg-[#B5A47D] hover:text-white transition-all">다시 분석하기</button>
+            <button onclick="location.reload()" class="w-full py-6 border-2 border-[#B5A47D] text-[#B5A47D] rounded-[35px] text-2xl font-bold hover:bg-[#B5A47D] hover:text-white transition-all">다시 분석하기</button>
         </div>
     </section>
 
@@ -181,37 +179,18 @@ rounded-[35px] text-2xl font-bold hover:bg-[#B5A47D] hover:text-white transition
     </div>
 
     <script>
-        // 약관 데이터 상세화
         const legalData = {
             privacy: {
                 title: "개인정보 수집 및 이용 동의",
-                content: `인생대감 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.
-
-1. 수집항목: 성명, 생년월일, 태어난 시간, 연락처(분석용).
-2. 수집목적: 사주팔자 기반 횡재수 분석 결과 제공 및 본인 확인.
-3. 보유 및 이용기간: 서비스 제공 완료 후 6개월간 보관 (상담 기록 확인용) 또는 관련 법령에 따른 기간.
-4. 동의 거부권: 귀하는 동의를 거부할 권리가 있으나, 거부 시 분석 서비스 이용이 불가합니다.`
+                content: `인생대감 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다. \n\n1. 수집항목: 성명, 생년월일, 태어난 시간.\n2. 수집목적: 사주팔자 기반 운세 분석.\n3. 보유기간: 서비스 완료 후 6개월.`
             },
             terms: {
                 title: "서비스 이용약관",
-                content: `제1조 (목적)
-본 약관은 '인생대감'이 제공하는 운세 및 분석 서비스의 이용 조건 및 절차를 규정함을 목적으로 합니다.
-
-제2조 (서비스 성격)
-본 서비스에서 제공하는 분석 결과는 사주 명리학적 해석을 바탕으로 한 참고 자료이며, 금전적 이득을 보장하거나 법적 효력을 갖지 않습니다. 최종 결정의 책임은 사용자 본인에게 있습니다.
-
-제3조 (이용 제한)
-만 14세 미만 아동의 이용을 제한할 수 있습니다. 타인의 정보를 도용하여 서비스를 이용할 경우 발생하는 법적 책임은 사용자에게 있습니다.`
+                content: `본 서비스는 사주 명리학적 해석을 바탕으로 한 참고 자료이며, 금전적 이득을 보장하지 않습니다. 최종 결정의 책임은 사용자에게 있습니다.`
             },
             marketing: {
                 title: "마케팅 활용 동의 (선택)",
-                content: `인생대감의 새로운 운세 소식 및 횡재수 알림을 받아보세요.
-
-1. 수집항목: 휴대폰 번호, 카카오톡 프로필 정보.
-2. 수집목적: 신규 서비스 런칭 안내, 이벤트 정보 발송, 주간 운세 발송.
-3. 철회방법: 고객센터를 통해 언제든지 수신 동의를 철회할 수 있습니다.
-
-* 본 동의를 거부하셔도 횡재수 분석 서비스 이용에는 제한이 없습니다.`
+                content: `신규 서비스 런칭 및 주간 운세 알림을 받아보실 수 있습니다.`
             }
         };
 
@@ -222,7 +201,6 @@ rounded-[35px] text-2xl font-bold hover:bg-[#B5A47D] hover:text-white transition
         }
         function closeModal() { document.getElementById('legalModal').style.display = 'none'; }
 
-        // 전체 동의 로직
         const allAgree = document.getElementById('all-agree');
         const subs = document.querySelectorAll('.sub-agree');
         document.getElementById('all-agree-area').onclick = (e) => {
@@ -230,7 +208,6 @@ rounded-[35px] text-2xl font-bold hover:bg-[#B5A47D] hover:text-white transition
             subs.forEach(s => s.checked = allAgree.checked);
         };
 
-        // 분석 실행
         function runAnalysis() {
             const name = document.getElementById('name').value.trim();
             const birth = document.getElementById('birth').value.trim();
@@ -247,12 +224,23 @@ rounded-[35px] text-2xl font-bold hover:bg-[#B5A47D] hover:text-white transition
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
 
-            // 3초 로딩 후 결과 표시 (실제 서비스 시 사주 로직 연동)
             setTimeout(() => {
                 document.getElementById('input-section').classList.add('hidden');
                 document.getElementById('result-section').classList.remove('hidden');
+                
+                // 데이터 할당 로직
                 document.getElementById('res-name').innerText = name;
-                document.getElementById('res-summary').innerText = `"올해는 금(金)의 기운이 문 앞에 머무니, 작은 노력으로도 큰 결실을 맺을 천운의 해입니다. 특히 북쪽에서 귀인의 소식이 들려오니 귀를 기울이십시오."`;
+                document.getElementById('res-summary').innerText = `"올해는 금(金)의 기운이 문 앞에 머무니, 작은 노력으로도 큰 결실을 맺을 천운의 해입니다."`;
+                
+                // 추가된 상세 항목들
+                document.getElementById('res-origin').innerText = "강직한 소나무 (甲木)";
+                document.getElementById('res-luck').innerText = "따뜻한 등불 (丁火)";
+                document.getElementById('res-color').innerText = "청색, 황금색";
+                document.getElementById('res-num').innerText = "3, 8, 11";
+                document.getElementById('res-dir').innerText = "동북쪽 (재물운이 오는 방향)";
+                document.getElementById('res-obj').innerText = "나무 반지 또는 녹색 원석";
+                document.getElementById('res-detail').innerText = "귀하의 사주는 본래 재물운의 뿌리가 깊으나, 올해는 그 뿌리가 꽃을 피우는 시기입니다. 북쪽에서 오는 귀인을 귀하게 여기고, 투자보다는 내실을 기할 때 횡재수가 강하게 작용할 것입니다.";
+
                 window.scrollTo({top:0, behavior:'smooth'});
             }, 3000);
         }
