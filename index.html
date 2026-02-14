@@ -7,41 +7,72 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
-        body { font-family: 'Pretendard', sans-serif; background-color: #F7F3E9; color: #4E342E; }
-        .card-shadow { box-shadow: 0 10px 40px rgba(0,0,0,0.06); }
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            /* 황금색 물결 그라데이션 배경 */
+            background: linear-gradient(-45deg, #F7F3E9, #E1C16E, #F7F3E9, #B5A47D);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #4E342E; 
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .card-shadow { box-shadow: 0 20px 50px rgba(78, 52, 46, 0.15); }
         .gold-text { color: #B5A47D; }
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #B5A47D 0%, #E1C16E 50%, #B5A47D 100%);
+        }
+        
         .hidden { display: none; }
         input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; }
-        /* Chrome, Safari, Edge, Opera - 화살표 제거 */
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        .loader { width: 40px; height: 40px; border: 4px solid #E1C16E; border-bottom-color: #4E342E; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
+        
+        .loader { 
+            width: 48px; height: 48px; 
+            border: 5px solid #FFF; border-bottom-color: #B5A47D; 
+            border-radius: 50%; display: inline-block; 
+            animation: rotation 1s linear infinite; 
+        }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: white; padding: 30px; border-radius: 40px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
         .legal-text { font-size: 12px; line-height: 1.8; color: #666; }
+
+        /* 결과창 애니메이션 */
+        .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-12 px-4">
 
     <header class="text-center mb-10">
-        <h1 class="text-4xl font-black mb-2 tracking-tight">인생대감</h1>
-        <p class="text-xl font-bold"><span class="text-gray-600">고품격 횡재수</span> <span class="gold-text text-2xl">분석 리포트</span></p>
+        <h1 class="text-4xl font-black mb-2 tracking-tight drop-shadow-sm">인생대감</h1>
+        <p class="text-xl font-bold">
+            <span class="text-gray-700">고품격 횡재수</span> 
+            <span class="gold-text text-2xl underline decoration-double decoration-[#E1C16E]">분석 리포트</span>
+        </p>
     </header>
 
-    <main id="input-section" class="w-full max-w-lg bg-white rounded-[50px] card-shadow p-10 space-y-8">
+    <main id="input-section" class="w-full max-w-lg bg-white/90 backdrop-blur-sm rounded-[50px] card-shadow p-10 space-y-8">
         <div id="form-inner" class="space-y-6">
-            <div><label class="block text-lg font-bold mb-3">성함</label><input type="text" id="name" class="w-full p-5 rounded-2xl text-lg" placeholder="성함을 입력하세요"></div>
-            <div><label class="block text-lg font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-5 rounded-2xl text-lg" placeholder="01012345678"></div>
+            <div><label class="block text-lg font-bold mb-3">성함</label><input type="text" id="name" class="w-full p-5 rounded-2xl text-lg focus:ring-2 focus:ring-[#B5A47D]" placeholder="성함을 입력하세요"></div>
+            <div><label class="block text-lg font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-5 rounded-2xl text-lg focus:ring-2 focus:ring-[#B5A47D]" placeholder="01012345678"></div>
             
             <div class="flex gap-4">
                 <div class="w-1/2">
                     <label class="block text-lg font-bold mb-3">생년월일</label>
-                    <input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg" placeholder="19950815">
+                    <input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg focus:ring-2 focus:ring-[#B5A47D]" placeholder="19950815">
                 </div>
                 <div class="w-1/2">
                     <label class="block text-lg font-bold mb-3 text-center">태어난 시간</label>
                     <div class="flex flex-col gap-2">
-                        <select id="ampm" class="w-full p-4 rounded-2xl text-sm font-bold appearance-none text-center">
+                        <select id="ampm" class="w-full p-4 rounded-2xl text-sm font-bold appearance-none text-center bg-gray-50">
                             <option value="AM">오전</option>
                             <option value="PM">오후</option>
                         </select>
@@ -54,8 +85,8 @@
                 </div>
             </div>
 
-            <div class="bg-gray-50 rounded-3xl p-6 space-y-4">
-                <div class="flex items-center gap-3 cursor-pointer pb-4 border-b border-gray-200" id="all-agree-area">
+            <div class="bg-amber-50/50 rounded-3xl p-6 space-y-4 border border-amber-100">
+                <div class="flex items-center gap-3 cursor-pointer pb-4 border-b border-amber-200" id="all-agree-area">
                     <input type="checkbox" id="all-agree" class="w-6 h-6 accent-[#4E342E]">
                     <span class="font-bold text-lg">모든 약관에 전체 동의하기</span>
                 </div>
@@ -75,23 +106,24 @@
                 </div>
             </div>
 
-            <button onclick="runAnalysis()" class="w-full py-6 bg-[#4E342E] text-white rounded-[35px] text-2xl font-bold shadow-xl active:scale-95 transition-all">무료 횡재수 분석 시작</button>
+            <button onclick="runAnalysis()" class="w-full py-6 gold-gradient-bg text-white rounded-[35px] text-2xl font-bold shadow-xl active:scale-95 transition-all hover:brightness-110">무료 횡재수 분석 시작</button>
         </div>
 
         <div id="loading-area" class="hidden flex flex-col items-center py-20 space-y-6 text-center">
             <span class="loader"></span>
-            <p class="text-xl font-black text-gray-700 animate-pulse">대감님이 천기를 살피는 중입니다...</p>
+            <p class="text-xl font-black text-[#4E342E] animate-pulse">대감님이 천기를 살피는 중입니다...</p>
         </div>
     </main>
 
     <div id="result-section" class="hidden w-full max-w-lg space-y-6 animate-fadeIn">
-        <div class="bg-[#4E342E] rounded-t-[50px] p-12 text-center text-white space-y-4">
-            <div class="text-3xl">🏮</div>
-            <h2 class="text-3xl font-bold"><span id="res-name"></span> 대감님의</h2>
-            <p class="gold-text text-xl font-bold">정밀 횡재수 분석 리포트</p>
+        <div class="gold-gradient-bg rounded-t-[50px] p-12 text-center text-white space-y-4 shadow-lg">
+            <div class="text-4xl drop-shadow-md">🏮</div>
+            <h2 class="text-3xl font-bold drop-shadow-sm"><span id="res-name"></span> 대감님의</h2>
+            <p class="text-white/90 text-xl font-bold">정밀 횡재수 분석 리포트</p>
         </div>
         <div class="bg-white rounded-b-[50px] card-shadow p-8 space-y-8 -mt-2">
-            <div class="bg-[#FDF9F0] rounded-3xl p-8 text-center border border-[#F1EAD7]">
+            <div class="bg-[#FDF9F0] rounded-3xl p-8 text-center border border-[#F1EAD7] relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 gold-gradient-bg"></div>
                 <p class="text-[#B5A47D] font-bold mb-4 italic">분석 총평</p>
                 <p id="res-summary" class="text-xl font-bold leading-relaxed text-[#4E342E]"></p>
             </div>
@@ -104,16 +136,16 @@
                 </div>
             </div>
             <div class="space-y-4">
-                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🎨</span><div><p class="text-xs text-gray-400 font-bold">행운의 색</p><p id="res-color" class="font-bold text-lg"></p></div></div>
-                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🔢</span><div><p class="text-xs text-gray-400 font-bold">행운의 번호</p><p id="res-num" class="font-bold text-lg"></p></div></div>
-                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🧭</span><div><p class="text-xs text-gray-400 font-bold">행운의 방향</p><p id="res-dir" class="font-bold text-lg"></p></div></div>
-                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🔮</span><div><p class="text-xs text-gray-400 font-bold">행운의 물건</p><p id="res-obj" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🎨</span><div><p class="text-xs text-gray-400 font-bold">행운의 색</p><p id="res-color" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🔢</span><div><p class="text-xs text-gray-400 font-bold">행운의 번호</p><p id="res-num" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🧭</span><div><p class="text-xs text-gray-400 font-bold">행운의 방향</p><p id="res-dir" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🔮</span><div><p class="text-xs text-gray-400 font-bold">행운의 물건</p><p id="res-obj" class="font-bold text-lg"></p></div></div>
             </div>
-            <div class="bg-gray-50 rounded-3xl p-8 space-y-4">
-                <div class="flex items-center gap-2 font-bold text-lg"><span>📜</span> 대감님의 훈수 (상세 해석)</div>
+            <div class="bg-gray-50 rounded-3xl p-8 space-y-4 border-l-4 border-[#B5A47D]">
+                <div class="flex items-center gap-2 font-bold text-lg text-[#4E342E]"><span>📜</span> 대감님의 훈수 (상세 해석)</div>
                 <p id="res-detail" class="text-gray-600 leading-relaxed text-base"></p>
             </div>
-            <button onclick="location.reload()" class="w-full py-6 border-2 border-[#4E342E] text-[#4E342E] rounded-[35px] text-2xl font-bold hover:bg-[#4E342E] hover:text-white transition-all">다시 분석하기</button>
+            <button onclick="location.reload()" class="w-full py-6 border-2 border-[#B5A47D] text-[#B5A47D] rounded-[35px] text-2xl font-bold hover:bg-[#B5A47D] hover:text-white transition-all">다시 분석하기</button>
         </div>
     </div>
 
@@ -121,7 +153,7 @@
         <div class="modal-content">
             <h3 id="modalTitle" class="text-xl font-bold mb-6 text-[#4E342E] border-b pb-4"></h3>
             <div id="modalBody" class="legal-text whitespace-pre-wrap"></div>
-            <button onclick="closeModal()" class="w-full mt-8 py-5 bg-[#4E342E] text-white rounded-2xl font-bold">확인 및 닫기</button>
+            <button onclick="closeModal()" class="w-full mt-8 py-5 gold-gradient-bg text-white rounded-2xl font-bold">확인 및 닫기</button>
         </div>
     </div>
 
@@ -129,15 +161,15 @@
         const legalData = {
             privacy: {
                 title: "개인정보 수집 및 이용 동의",
-                content: `인생대감 서비스 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다.\n\n1. 수집하는 개인정보 항목\n- 필수: 성명, 휴대폰 번호, 생년월일, 태어난 시간\n- 서비스 이용 과정에서 생성되는 정보: 접속 로그, 쿠키, IP주소\n\n2. 개인정보의 수집 및 이용 목적\n- 사용자 식별 및 본인 여부 확인\n- 개인별 사주/운세 분석 리포트 결과 생성 및 제공\n- 서비스 이용 기록 분석을 통한 품질 개선\n- 민원 처리 등 고객지원\n\n3. 개인정보의 보유 및 이용 기간\n- 회원 탈퇴 시까지 또는 서비스 제공 목적 달성 시까지 보관합니다.\n- 단, 관계법령(전자상거래법 등)에 의거하여 일정 기간 보존이 필요한 경우 해당 기간 동안 보관합니다.\n\n4. 동의 거부권 및 불이익\n- 귀하는 본 동의를 거부할 권리가 있으나, 거부 시 분석 서비스 이용이 불가능합니다.`
+                content: `인생대감 서비스 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다.\n\n1. 수집하는 개인정보 항목\n- 필수: 성명, 휴대폰 번호, 생년월일, 태어난 시간\n\n2. 수집 및 이용 목적\n- 개인별 사주/운세 분석 리포트 생성 및 제공\n\n3. 보유 및 이용 기간\n- 서비스 제공 목적 달성 시까지`
             },
             terms: {
                 title: "서비스 이용약관",
-                content: `제1조 (목적)\n본 약관은 '인생대감'에서 제공하는 운세 콘텐츠 및 제반 서비스의 이용 조건과 절차를 규정합니다.\n\n제2조 (서비스의 성격)\n1. 본 서비스는 동양 철학적 데이터를 바탕으로 한 오락용 콘텐츠입니다.\n2. 회사는 분석 결과의 절대적인 정확성이나 경제적 이익을 보장하지 않습니다.\n3. 결과에 근거한 이용자의 판단과 행동에 대한 책임은 이용자 본인에게 있습니다.\n\n제3조 (이용자의 의무)\n이용자는 타인의 정보를 도용하여 서비스를 신청해서는 안 되며, 시스템에 위해를 가하는 행위를 금지합니다.\n\n제4조 (지식재산권)\n본 리포트의 구성과 디자인, 텍스트에 대한 권리는 '인생대감'에 귀속됩니다.`
+                content: `본 서비스는 동양 철학 데이터를 바탕으로 한 오락용 콘텐츠입니다. 분석 결과에 대한 최종적인 판단과 행동의 책임은 이용자 본인에게 있습니다.`
             },
             marketing: {
                 title: "마케팅 활용 동의 (선택)",
-                content: `인생대감의 새로운 서비스 소식과 행운 알림을 받아보세요.\n\n1. 마케팅 활용 목적\n- 신규 서비스 안내 및 이벤트 광고성 정보 전송\n- 운세 기반 맞춤형 행운 아이템 추천\n\n2. 수신 방법\n- 문자메시지(SMS), 카카오 알림톡 등\n\n3. 보유 기간\n- 동의 철회 시 또는 서비스 이용 종료 시까지\n\n* 본 동의는 거부하셔도 기본 서비스 이용에 아무런 제한이 없습니다.`
+                content: `인생대감의 새로운 서비스 소식과 행운 알림을 받아보세요.`
             }
         };
 
@@ -159,14 +191,14 @@
             {
                 el: "목(木)", summary: "강한 생명력이 재물로 변모하는 시기이니, 밝고 따뜻한 에너지를 가까이하면 뜻밖의 횡재가 따를 것입니다.",
                 origin: "목(木)의 기운", luck: "화(火)와 토(土)의 기운", color: "빨간색, 주황색 및 노란색 계열",
-                nums: "2, 7, 5, 0", dir: "남쪽 및 중앙", obj: "붉은색 지갑이나 흙으로 만든 도자기 소품",
-                detail: "갑목(甲木) 일간이 봄의 절정인 묘월에 태어나 주체성이 매우 강하며 스스로 운명을 개척하는 에너지가 넘치는 사주입니다. 이러한 강한 기운을 외부로 발산하여 결실을 맺게 돕는 화(火)의 기운이 행운의 핵심이며, 흙(土)의 기운을 보강해 재물을 안정적으로 담아낼 때 횡재수가 크게 상승하게 됩니다."
+                nums: "2, 7, 5, 0", dir: "남쪽 및 중앙", obj: "붉은색 지갑이나 도자기 소품",
+                detail: "갑목(甲木) 일간의 에너지가 넘치는 사주입니다. 화(火)의 기운으로 결실을 맺고 흙(土)의 기운으로 재물을 담아낼 때 횡재수가 크게 상승합니다."
             },
             {
                 el: "화(火)", summary: "열정의 불꽃이 황금을 녹여 담는 형국입니다. 냉철한 판단력보다 직관을 믿고 움직일 때 횡재가 찾아옵니다.",
                 origin: "화(火)의 기운", luck: "토(土)와 금(金)의 기운", color: "노란색, 금색 및 흰색 계열",
-                nums: "5, 0, 4, 9", dir: "중앙 및 서쪽", obj: "황토색 소품이나 금속 재질의 액세서리",
-                detail: "병화(丙火)의 열기가 가득한 명식으로, 넘치는 에너지를 정착시킬 터전이 필요합니다. 토(土)의 기운으로 기운을 갈무리하고 금(金)의 기운을 통해 실질적인 재화의 형태를 갖추는 것이 중요합니다. 서쪽에서 들어오는 서늘한 기운이 재물운을 단단하게 굳혀줄 것입니다."
+                nums: "5, 0, 4, 9", dir: "중앙 및 서쪽", obj: "금속 재질의 액세서리",
+                detail: "병화(丙火)의 열기가 가득한 명식입니다. 토(土)로 기운을 다스리고 금(金)을 통해 실질적인 재물을 얻는 서쪽의 기운이 매우 길합니다."
             }
         ];
 
@@ -174,9 +206,8 @@
             const name = document.getElementById('name').value;
             const birth = document.getElementById('birth').value;
             const hour = document.getElementById('birth-hour').value;
-            const min = document.getElementById('birth-min').value;
 
-            if(!name || birth.length !== 8 || !hour) return alert("정보를 정확히 입력하십시오. (태어난 시는 필수입니다)");
+            if(!name || birth.length !== 8 || !hour) return alert("정보를 정확히 입력하십시오.");
             if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) return alert("필수 약관에 동의하셔야 합니다.");
 
             document.getElementById('form-inner').classList.add('hidden');
@@ -202,4 +233,5 @@
     </script>
 </body>
 </html>
+
 
