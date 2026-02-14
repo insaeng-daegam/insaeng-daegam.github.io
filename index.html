@@ -31,13 +31,12 @@
         input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; transition: all 0.2s; }
         input:focus, select:focus { border-color: #B5A47D !important; ring: 2px; ring-color: #B5A47D; }
         
-        /* 드롭다운 화살표 커스텀 */
         select {
             appearance: none;
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23B5A47D'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1.2em;
+            background-position: right 0.7rem center;
+            background-size: 1em;
         }
 
         .loader { 
@@ -50,7 +49,6 @@
         
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: white; padding: 30px; border-radius: 40px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
-        .legal-text { font-size: 12px; line-height: 1.8; color: #666; }
 
         .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
@@ -96,7 +94,7 @@
                             </select>
                             <span class="font-bold">:</span>
                             <select id="birth-min" class="w-1/2 p-4 rounded-2xl text-sm text-center font-bold">
-                                <option value="0">00분</option>
+                                <option value="">분</option>
                             </select>
                         </div>
                     </div>
@@ -116,10 +114,6 @@
                     <div class="flex justify-between items-center text-sm text-gray-500">
                         <div class="flex items-center gap-2"><input type="checkbox" id="t-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 서비스 이용약관 동의</span></div>
                         <button onclick="openModal('terms')" class="underline">보기</button>
-                    </div>
-                    <div class="flex justify-between items-center text-sm text-gray-500">
-                        <div class="flex items-center gap-2"><input type="checkbox" id="m-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[선택] 마케팅 활용 동의</span></div>
-                        <button onclick="openModal('marketing')" class="underline">보기</button>
                     </div>
                 </div>
             </div>
@@ -154,13 +148,13 @@
                 </div>
             </div>
             <div class="space-y-4">
-                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🎨</span><div><p class="text-xs text-gray-400 font-bold">행운의 색</p><p id="res-color" class="font-bold text-lg"></p></div></div>
-                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🔢</span><div><p class="text-xs text-gray-400 font-bold">행운의 번호</p><p id="res-num" class="font-bold text-lg"></p></div></div>
-                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🧭</span><div><p class="text-xs text-gray-400 font-bold">행운의 방향</p><p id="res-dir" class="font-bold text-lg"></p></div></div>
-                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🔮</span><div><p class="text-xs text-gray-400 font-bold">행운의 물건</p><p id="res-obj" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🎨</span><div><p class="text-xs text-gray-400 font-bold">행운의 색</p><p id="res-color" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🔢</span><div><p class="text-xs text-gray-400 font-bold">행운의 번호</p><p id="res-num" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🧭</span><div><p class="text-xs text-gray-400 font-bold">행운의 방향</p><p id="res-dir" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🔮</span><div><p class="text-xs text-gray-400 font-bold">행운의 물건</p><p id="res-obj" class="font-bold text-lg"></p></div></div>
             </div>
             <div class="bg-gray-50 rounded-3xl p-8 space-y-4 border-l-4 border-[#B5A47D]">
-                <div class="flex items-center gap-2 font-bold text-lg text-[#4E342E]"><span>📜</span> 대감님의 훈수 (상세 해석)</div>
+                <div class="flex items-center gap-2 font-bold text-lg text-[#4E342E]"><span>📜</span> 대감님의 훈수</div>
                 <p id="res-detail" class="text-gray-600 leading-relaxed text-base"></p>
             </div>
             <button onclick="location.reload()" class="w-full py-6 border-2 border-[#B5A47D] text-[#B5A47D] rounded-[35px] text-2xl font-bold hover:bg-[#B5A47D] hover:text-white transition-all">다시 분석하기</button>
@@ -170,13 +164,13 @@
     <div id="legalModal" class="modal">
         <div class="modal-content">
             <h3 id="modalTitle" class="text-xl font-bold mb-6 text-[#4E342E] border-b pb-4"></h3>
-            <div id="modalBody" class="legal-text whitespace-pre-wrap"></div>
-            <button onclick="closeModal()" class="w-full mt-8 py-5 gold-gradient-bg text-white rounded-2xl font-bold">확인 및 닫기</button>
+            <div id="modalBody" class="text-sm leading-relaxed whitespace-pre-wrap"></div>
+            <button onclick="closeModal()" class="w-full mt-8 py-5 gold-gradient-bg text-white rounded-2xl font-bold">확인</button>
         </div>
     </div>
 
     <script>
-        // 시간/분 셀렉트 박스 생성
+        // 시간(1-12) 및 분(0-59) 드롭다운 생성
         const hourSelect = document.getElementById('birth-hour');
         const minSelect = document.getElementById('birth-min');
 
@@ -185,16 +179,19 @@
             opt.value = i; opt.innerText = i + "시";
             hourSelect.appendChild(opt);
         }
-        for(let i=0; i<=50; i+=10) {
+        
+        // 0분부터 59분까지 1분 단위로 추가
+        for(let i=0; i<=59; i++) {
             let opt = document.createElement('option');
-            opt.value = i; opt.innerText = i + "분";
+            let minVal = i < 10 ? '0' + i : i; // 01, 02... 형태
+            opt.value = i; 
+            opt.innerText = minVal + "분";
             minSelect.appendChild(opt);
         }
 
         const legalData = {
-            privacy: { title: "개인정보 수집 및 이용 동의", content: "운세 분석을 위해 성함, 생년월일 정보를 수집합니다." },
-            terms: { title: "서비스 이용약관", content: "본 서비스는 참고용이며 법적 효력이 없습니다." },
-            marketing: { title: "마케팅 활용 동의", content: "이벤트 및 광고 정보를 수신합니다." }
+            privacy: { title: "개인정보 동의", content: "운세 분석용 정보 수집에 동의합니다." },
+            terms: { title: "이용약관", content: "본 분석 결과는 참고용 오락 콘텐츠입니다." }
         };
 
         function openModal(type) {
@@ -204,7 +201,6 @@
         }
         function closeModal() { document.getElementById('legalModal').style.display = 'none'; }
 
-        // 전체 동의 로직
         const allAgree = document.getElementById('all-agree');
         const subs = document.querySelectorAll('.sub-agree');
         document.getElementById('all-agree-area').onclick = (e) => {
@@ -213,16 +209,16 @@
         };
 
         const sajuDatabase = [
-            { el: "갑목(甲木)", summary: "거대한 소나무의 기운이 하늘을 찌르니, 올해는 큰 재물을 뿌리 아래 두는 형국입니다.", luck: "화(火)와 토(土)", color: "청록색, 황금색", nums: "3, 8, 5", dir: "동쪽 및 중앙", obj: "나무 향수, 원목 액세서리", detail: "강직한 성품이 재물을 부릅니다. 독불장군처럼 굴기보다는 주변 사람들과 정보를 나누면 횡재가 두 배로 돌아옵니다." },
-            { el: "을목(乙木)", summary: "유연한 넝쿨의 기운입니다. 바람을 타고 위기 속에서 예상치 못한 횡재를 거머쥘 운입니다.", luck: "수(水)와 목(木)", color: "연두색, 하늘색", nums: "1, 6, 3", dir: "북쪽 및 동쪽", obj: "작은 화분, 가죽 지갑", detail: "예술적 감각과 직관이 돈이 되는 사주입니다. 남들이 무시하는 작은 기회에서 큰 금전적 이득을 챙기게 될 것입니다." },
-            { el: "병화(丙火)", summary: "만물을 비추는 태양의 기운입니다. 숨겨진 보물을 찾아내는 안목이 이번 달 정점에 달합니다.", luck: "토(土)와 금(金)", color: "진한 빨강, 노란색", nums: "2, 7, 0", dir: "남쪽 및 서쪽", obj: "화려한 시계, 금테 안경", detail: "당신의 에너지가 가장 강할 때 횡재운이 터집니다. 정오 무렵이나 햇볕이 좋은 날 중요한 금전적 결정을 내리십시오." },
-            { el: "정화(丁火)", summary: "어둠을 밝히는 등불의 기운입니다. 세밀한 분석력으로 복권이나 투자에서 남다른 감각을 보입니다.", luck: "금(金)과 수(수)", color: "보라색, 은색", nums: "4, 9, 6", dir: "서쪽 및 북쪽", obj: "향초, 금속제 만년필", detail: "조용히 기회를 엿보다가 한 번에 낚아채는 운입니다. 꿈자리가 맑은 날, 동북쪽에서 들려오는 소식에 귀를 기울이세요." },
-            { el: "무토(戊土)", summary: "깊고 넓은 황금 대지의 기운입니다. 가만히 있어도 재물이 발밑으로 모여드는 길조가 보입니다.", luck: "화(火)와 금(金)", color: "황토색, 흰색", nums: "5, 0, 4", dir: "중앙 및 서쪽", obj: "수석(돌), 벨트", detail: "인내심의 끝에 큰 보상이 기다립니다. 성급한 투자보다는 장기적인 안목으로 기다리면 대박의 기운이 스며듭니다." },
-            { el: "기토(己土)", summary: "비옥한 전답의 기운입니다. 씨를 뿌린 것 이상의 수확을 거두는 '상생'의 횡재수가 강합니다.", luck: "목(木)과 화(火)", color: "갈색, 분홍색", nums: "0, 2, 7", dir: "동쪽 및 남쪽", obj: "도자기 그릇, 차(Tea) 세트", detail: "사람들과의 관계에서 돈이 들어옵니다. 예상치 못한 귀인의 도움으로 금전적 곤란이 해결되고 목돈이 생길 상입니다." },
-            { el: "경금(庚金)", summary: "단단한 바위와 원석의 기운입니다. 결단력이 곧 돈입니다. 망설이지 않을 때 큰 돈을 만집니다.", luck: "수(水)와 토(土)", color: "백색, 회색", nums: "4, 9, 5", dir: "서쪽 및 북쪽", obj: "은반지, 거울", detail: "강한 카리스마가 재운을 압도합니다. 큰 판을 벌릴수록 횡재의 크기도 커지니 본인의 직관을 100% 믿으셔도 좋습니다." },
-            { el: "신금(辛金)", summary: "정교한 보석의 기운입니다. 타고난 복이 많아 평생 금전적 마름이 없는 귀한 명식입니다.", luck: "목(木)과 수(수)", color: "투명한 색, 은회색", nums: "1, 4, 8", dir: "북쪽 및 동쪽", obj: "크리스탈 소품, 보석함", detail: "섬세한 정보 수집이 부를 만듭니다. 고급 정보나 남들이 모르는 틈새시장을 공략하면 순식간에 자산이 불어납니다." },
-            { el: "임수(壬수)", summary: "끝없이 흐르는 강물의 기운입니다. 유통과 변화 속에서 큰 재물을 낚아올리는 형상입니다.", luck: "목(木)과 금(金)", color: "검은색, 청색", nums: "1, 6, 9", dir: "북쪽 및 동쪽", obj: "어항, 푸른색 손수건", detail: "지혜가 곧 재물입니다. 먼 곳에서 재운이 들어오니 새로운 환경에 도전하거나 여행 중에 뜻밖의 횡재을 만납니다." },
-            { el: "계수(癸수)", summary: "만물을 적시는 단비의 기운입니다. 소리 없이 스며드는 비처럼 재산이 소리 없이 불어납니다.", luck: "화(火)와 토(토)", color: "남색, 검은색", nums: "6, 2, 8", dir: "남쪽 및 중앙", obj: "검정 우산, 만년필", detail: "부드러움이 강함을 이깁니다. 무리한 경쟁보다는 유연한 대처로 실속을 챙기십시오. 하반기에 큰 횡재수가 기다립니다." }
+            { el: "갑목(甲木)", summary: "큰 나무의 기운이 재운을 뚫고 올라옵니다.", luck: "화(火)와 토(土)", color: "청록색, 황금색", nums: "3, 8, 5", dir: "동쪽", obj: "원목 액세서리", detail: "강직한 성품이 재물을 부릅니다. 주변과 정보를 나누면 횡재가 두 배로 돌아옵니다." },
+            { el: "을목(乙木)", summary: "유연한 넝쿨처럼 위기 속에서 횡재를 거머쥘 운입니다.", luck: "수(水)와 목(木)", color: "연두색", nums: "1, 6, 3", dir: "북동쪽", obj: "가죽 지갑", detail: "작은 기회에서 큰 금전적 이득을 챙기게 될 것입니다." },
+            { el: "병화(丙火)", summary: "태양의 기운이 숨겨진 보물을 비추는 형국입니다.", luck: "토(土)와 금(金)", color: "빨간색", nums: "2, 7, 0", dir: "남서쪽", obj: "금테 안경", detail: "정오 무렵이나 햇볕이 좋은 날 중요한 결정을 내리십시오." },
+            { el: "정화(丁火)", summary: "등불의 기운으로 세밀한 투자 감각을 발휘합니다.", luck: "금(金)과 수(수)", color: "보라색", nums: "4, 9, 6", dir: "북서쪽", obj: "향초", detail: "조용히 기회를 엿보다 한 번에 낚아채는 운입니다." },
+            { el: "무토(戊土)", summary: "황금 대지의 기운이 재물을 발밑으로 모읍니다.", luck: "화(火)와 금(金)", color: "황토색", nums: "5, 0, 4", dir: "중앙", obj: "벨트", detail: "인내심 끝에 큰 보상이 기다립니다. 장기적인 안목이 필요합니다." },
+            { el: "기토(己土)", summary: "비옥한 땅에서 씨 뿌린 것 이상의 수확을 거둡니다.", luck: "목(木)과 화(火)", color: "갈색", nums: "0, 2, 7", dir: "남동쪽", obj: "도자기", detail: "예상치 못한 귀인의 도움으로 목돈이 생길 상입니다." },
+            { el: "경금(庚金)", summary: "원석의 기운으로 결단력이 곧 돈이 되는 해입니다.", luck: "수(水)와 토(土)", color: "백색", nums: "4, 9, 5", dir: "서쪽", obj: "은반지", detail: "망설이지 않을 때 큰 돈을 만집니다. 본인의 직관을 믿으세요." },
+            { el: "신금(辛金)", summary: "보석의 기운으로 평생 재물이 마르지 않는 명식입니다.", luck: "목(木)과 수(수)", color: "은색", nums: "1, 4, 8", dir: "동북쪽", obj: "보석함", detail: "남들이 모르는 틈새시장을 공략하면 순식간에 자산이 불어납니다." },
+            { el: "임수(壬수)", summary: "강물처럼 유통과 변화 속에서 재물을 낚습니다.", luck: "목(木)과 금(金)", color: "검은색", nums: "1, 6, 9", dir: "북쪽", obj: "푸른 손수건", detail: "먼 곳에서 재운이 들어오니 새로운 환경에 도전해 보세요." },
+            { el: "계수(癸수)", summary: "단비처럼 재산이 소리 없이 불어나는 형상입니다.", luck: "화(火)와 토(토)", color: "남색", nums: "6, 2, 8", dir: "남쪽", obj: "만년필", detail: "부드러움이 강함을 이깁니다. 유연하게 실속을 챙기십시오." }
         ];
 
         function getSajuIndex(birthStr) {
@@ -240,13 +236,14 @@
             const name = document.getElementById('name').value.trim();
             const birth = document.getElementById('birth').value.trim();
             const hour = document.getElementById('birth-hour').value;
+            const min = document.getElementById('birth-min').value;
 
-            if(!name || birth.length !== 8 || !hour) {
-                alert("성함, 생년월일(8자리), 태어난 시간을 선택하십시오.");
+            if(!name || birth.length !== 8 || hour === "" || min === "") {
+                alert("성함, 생년월일, 태어난 시와 분을 모두 정확히 선택하십시오.");
                 return;
             }
             if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) {
-                alert("필수 이용약관에 동의하셔야 분석이 가능합니다.");
+                alert("필수 약관에 동의하셔야 분석이 가능합니다.");
                 return;
             }
 
@@ -259,7 +256,6 @@
             setTimeout(() => {
                 document.getElementById('input-section').classList.add('hidden');
                 document.getElementById('result-section').classList.remove('hidden');
-                
                 document.getElementById('res-name').innerText = name;
                 document.getElementById('res-summary').innerText = `"${res.summary}"`;
                 document.getElementById('res-origin').innerText = res.el + "의 기운";
@@ -269,7 +265,6 @@
                 document.getElementById('res-dir').innerText = res.dir;
                 document.getElementById('res-obj').innerText = res.obj;
                 document.getElementById('res-detail').innerText = res.detail;
-                
                 window.scrollTo({top:0, behavior:'smooth'});
             }, 2500);
         }
