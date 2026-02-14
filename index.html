@@ -239,27 +239,45 @@
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
 
-            setTimeout(() => {
-                const seed = parseInt(birth);
-                const idx = (n) => seed % n;
+       // --- runAnalysis 함수 내의 결과 출력 로직 수정 ---
 
-                document.getElementById('input-section').classList.add('hidden');
-                document.getElementById('result-section').classList.remove('hidden');
-                
-                document.getElementById('res-name').innerText = name;
-                document.getElementById('res-summary').innerText = `"${s_detail[idx(s_detail.length)]}"`;
-                
-                document.getElementById('res-origin').innerText = s_origin[idx(s_origin.length)];
-                document.getElementById('res-luck').innerText = s_luck[idx(s_luck.length)];
-                document.getElementById('res-color').innerText = s_color[idx(s_color.length)];
-                document.getElementById('res-num').innerText = `${(seed%9)+1}, ${(seed%13)+7}, ${(seed%45)+1}`;
-                document.getElementById('res-dir').innerText = s_dir[idx(s_dir.length)];
-                document.getElementById('res-obj').innerText = s_obj[idx(s_obj.length)];
-                document.getElementById('res-detail').innerText = s_detail[idx(s_detail.length)];
+setTimeout(() => {
+    const seed = parseInt(birth);
+    const idx = (n) => seed % n;
 
-                window.scrollTo({top:0, behavior:'smooth'});
-            }, 3000);
+    // 행운의 번호 생성 로직 (중복 제거 및 정렬)
+    const generateLuckyNumbers = (seed) => {
+        let numbers = new Set();
+        let i = 0;
+        while (numbers.size < 3) {
+            // seed와 각기 다른 상수를 조합해 중복 확률을 낮춤
+            let num = ((seed * (i + 1)) % 45) + 1;
+            numbers.add(num);
+            i++;
         }
+        // 배열로 변환 후 오름차순 정렬
+        return Array.from(numbers).sort((a, b) => a - b).join(', ');
+    };
+
+    document.getElementById('input-section').classList.add('hidden');
+    document.getElementById('result-section').classList.remove('hidden');
+    
+    document.getElementById('res-name').innerText = name;
+    document.getElementById('res-summary').innerText = `"${s_detail[idx(s_detail.length)]}"`;
+    
+    document.getElementById('res-origin').innerText = s_origin[idx(s_origin.length)];
+    document.getElementById('res-luck').innerText = s_luck[idx(s_luck.length)];
+    document.getElementById('res-color').innerText = s_color[idx(s_color.length)];
+    
+    // 이 부분이 수정되었습니다.
+    document.getElementById('res-num').innerText = generateLuckyNumbers(seed);
+    
+    document.getElementById('res-dir').innerText = s_dir[idx(s_dir.length)];
+    document.getElementById('res-obj').innerText = s_obj[idx(s_obj.length)];
+    document.getElementById('res-detail').innerText = s_detail[idx(s_detail.length)];
+
+    window.scrollTo({top:0, behavior:'smooth'});
+}, 3000);
     </script>
 </body>
 </html>
