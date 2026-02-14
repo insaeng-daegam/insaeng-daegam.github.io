@@ -20,8 +20,8 @@
         .loader { width: 40px; height: 40px; border: 4px solid #E1C16E; border-bottom-color: #4E342E; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; padding: 30px; border-radius: 40px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
-        .legal-text { font-size: 12px; line-height: 1.8; color: #666; }
+        .modal-content { background: white; padding: 30px; border-radius: 40px; width: 100%; max-width: 550px; max-height: 80vh; overflow-y: auto; }
+        .legal-text { font-size: 13px; line-height: 1.8; color: #444; text-align: justify; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-12 px-4">
@@ -40,10 +40,19 @@
             <div><label class="block text-lg font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-5 rounded-2xl text-lg" placeholder="01012345678"></div>
             <div class="flex gap-4">
                 <div class="w-1/2"><label class="block text-lg font-bold mb-3">생년월일</label><input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg" placeholder="19950815"></div>
-                <div class="w-1/2"><label class="block text-lg font-bold mb-3 text-center">태어난 시간</label>
+                <div class="w-1/2">
+                    <label class="block text-lg font-bold mb-3 text-center">태어난 시간</label>
                     <div class="flex gap-2">
-                        <select id="ampm" class="w-1/2 p-5 rounded-2xl text-sm font-bold"><option value="0">오전</option><option value="12">오후</option></select>
-                        <input type="number" id="birth-time" class="w-1/2 p-5 rounded-2xl text-sm" placeholder="시">
+                        <select id="ampm" class="w-1/2 p-5 rounded-2xl text-sm font-bold appearance-none text-center">
+                            <option value="0">오전</option>
+                            <option value="12">오후</option>
+                        </select>
+                        <select id="birth-hour" class="w-1/2 p-5 rounded-2xl text-sm font-bold appearance-none text-center">
+                            <option value="0">12시(자)</option><option value="1">1시(축)</option><option value="2">2시(축)</option>
+                            <option value="3">3시(인)</option><option value="4">4시(인)</option><option value="5">5시(묘)</option>
+                            <option value="6">6시(묘)</option><option value="7">7시(진)</option><option value="8">8시(진)</option>
+                            <option value="9">9시(사)</option><option value="10">10시(사)</option><option value="11">11시(오)</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -56,15 +65,15 @@
                 <div class="space-y-3 pt-2">
                     <div class="flex justify-between items-center text-sm text-gray-500">
                         <div class="flex items-center gap-2"><input type="checkbox" id="p-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 개인정보 수집 및 이용 동의</span></div>
-                        <button onclick="openModal('privacy')" class="underline text-xs">보기</button>
+                        <button onclick="openModal('privacy')" class="underline text-xs font-bold">보기</button>
                     </div>
                     <div class="flex justify-between items-center text-sm text-gray-500">
                         <div class="flex items-center gap-2"><input type="checkbox" id="t-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 서비스 이용약관 동의</span></div>
-                        <button onclick="openModal('terms')" class="underline text-xs">보기</button>
+                        <button onclick="openModal('terms')" class="underline text-xs font-bold">보기</button>
                     </div>
                     <div class="flex justify-between items-center text-sm text-gray-500">
                         <div class="flex items-center gap-2"><input type="checkbox" id="m-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[선택] 마케팅 활용 동의</span></div>
-                        <button onclick="openModal('marketing')" class="underline text-xs">보기</button>
+                        <button onclick="openModal('marketing')" class="underline text-xs font-bold">보기</button>
                     </div>
                 </div>
             </div>
@@ -113,14 +122,21 @@
     </div>
 
     <script>
-        // 약관 데이터 유지
         const legalData = {
-            privacy: { title: "개인정보 수집 및 이용 동의", content: "인생대감 서비스 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다.\n\n1. 수집 항목: 성명, 휴대폰 번호, 생년월일, 태어난 시간\n2. 수집 목적: 개인별 사주 분석 및 결과 제공, 서비스 품질 개선\n3. 보유 기간: 서비스 제공 목적 달성 시 혹은 파기 요청 시까지\n\n귀하는 동의를 거부할 수 있으나, 거부 시 서비스 이용이 제한됩니다." },
-            terms: { title: "서비스 이용약관", content: "제1조 (목적)\n본 약관은 인생대감에서 제공하는 운세 콘텐츠의 이용 조건 및 절차를 규정합니다.\n\n제2조 (책임 한계)\n본 서비스는 명리학적 데이터를 기반으로 한 참고용 콘텐츠이며, 결과에 대한 최종 판단은 이용자 본인에게 있습니다.\n\n제3조 (금지사항)\n타인의 정보 도용 및 비정상적인 접근을 금지합니다." },
-            marketing: { title: "마케팅 활용 동의 (선택)", content: "1. 활용 목적: 신규 이벤트 및 맞춤형 행운 소식 안내\n2. 수신 방법: SMS, 알림톡\n3. 철회 방법: 고객센터를 통해 언제든 철회 가능합니다." }
+            privacy: { 
+                title: "개인정보 수집 및 이용 동의 (필수)", 
+                content: "1. 수집하는 개인정보 항목\n- 성명, 휴대폰 번호, 생년월일, 태어난 시간\n\n2. 개인정보의 수집 및 이용 목적\n- 사용자 식별 및 본인 확인\n- 명리학 기반 개인별 사주 분석 결과 및 맞춤 횡재수 리포트 제공\n- 고지사항 전달, 원활한 의사소통 경로 확보\n\n3. 개인정보의 보유 및 이용기간\n- 이용자의 개인정보는 서비스 제공 목적 달성 시까지 보유하며, 법령에서 정한 보존 기간을 준수합니다. 이용자가 삭제를 요청하거나 동의를 철회할 경우 지체 없이 파기합니다.\n\n4. 동의를 거부할 권리 및 거부 시 불이익\n- 귀하는 개인정보 수집 및 이용 동의를 거부할 권리가 있습니다. 단, 필수 항목 동의 거부 시 사주 분석 서비스 이용이 불가능합니다." 
+            },
+            terms: { 
+                title: "서비스 이용약관 (필수)", 
+                content: "제1조 (목적)\n본 약관은 인생대감(이하 '회사')이 제공하는 운세 및 사주 분석 콘텐츠의 이용 조건 및 절차를 규정함을 목적으로 합니다.\n\n제2조 (서비스의 내용)\n회사는 사용자가 입력한 데이터를 바탕으로 명리학적 알고리즘을 적용한 횡재수 분석 결과를 제공합니다.\n\n제3조 (책임 한계 및 면책)\n1. 본 서비스는 오락 및 참고용 콘텐츠로, 결과에 대한 과학적 입증은 불가능합니다.\n2. 분석 결과에 따른 행위의 최종 판단과 책임은 전적으로 사용자 본인에게 있으며, 회사는 결과의 정확성이나 이로 인한 유무형의 손해에 대해 어떠한 법적 책임도 지지 않습니다.\n\n제4조 (금지사항)\n타인의 명의를 도용하여 정보를 입력하거나 시스템에 비정상적인 접근을 시도하는 행위를 금지합니다." 
+            },
+            marketing: { 
+                title: "마케팅 활용 및 광고 수신 동의 (선택)", 
+                content: "1. 수집 목적\n- 신규 이벤트, 사주 기반 맞춤형 행운 소식 알림\n- 횡재수 특집 로또 번호 및 운세 정보 제공\n- 서비스 개선을 위한 설문 및 통계 분석\n\n2. 활용 항목\n- 이름, 휴대폰 번호\n\n3. 수신 방법\n- SMS, 알림톡, 전화 상담 등\n\n4. 동의 철회 안내\n- 귀하는 본 동의를 거부할 수 있으며, 동의 후에도 언제든지 고객센터를 통해 수신 거부 신청을 할 수 있습니다. 동의 거부 시에도 기본 분석 서비스는 이용 가능하나, 혜택 안내가 제한될 수 있습니다." 
+            }
         };
 
-        // 오행 데이터 베이스
         const ohaeng = [
             { name: "목(木)", origin: "나무의 기운", color: "청색", dir: "동쪽", item: "화초, 나무소품", lucky: "화(火)" },
             { name: "화(火)", origin: "불의 기운", color: "적색", dir: "남쪽", item: "향초, 조명", lucky: "토(土)" },
@@ -133,7 +149,7 @@
             const name = document.getElementById('name').value;
             const birth = document.getElementById('birth').value;
             const ampm = document.getElementById('ampm').value;
-            const time = document.getElementById('birth-time').value || "0";
+            const hour = document.getElementById('birth-hour').value;
             
             if(!name || birth.length !== 8) return alert("정보를 정확히 입력하십시오.");
             if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) return alert("필수 약관에 동의하셔야 합니다.");
@@ -141,33 +157,29 @@
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
 
-            // [핵심 로직] 입력값(성함, 생일, 시)을 조합한 고유 인덱스 생성
-            const totalHour = parseInt(ampm) + parseInt(time);
+            const totalHourValue = parseInt(ampm) + parseInt(hour);
             const nameHash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-            const combinedSeed = parseInt(birth) + totalHour + nameHash;
+            const combinedSeed = parseInt(birth) + totalHourValue + nameHash;
             
             const idx = combinedSeed % 5;
             const res = ohaeng[idx];
-            const subIdx = combinedSeed % 3; // 문장 변주용
+            const subIdx = combinedSeed % 3;
 
             setTimeout(() => {
                 document.getElementById('input-section').classList.add('hidden');
                 document.getElementById('result-section').classList.remove('hidden');
                 document.getElementById('res-name').innerText = name;
                 
-                // 1. 분석 총평 (랜덤 변주)
                 const summaries = [
                     `${name} 대감님, 천문이 열리니 막혔던 재물이 봇물 터지듯 쏟아질 형국입니다.`,
                     `현재 ${res.name}의 기운이 강하게 작용하여 예상치 못한 횡재가 문 앞에 와 있습니다.`,
-                    `사주에 숨겨진 황금의 기운이 ${totalHour}시의 기운을 만나 크게 폭발하는 시기입니다.`
+                    `사주에 숨겨진 황금의 기운이 ${totalHourValue}시의 기운을 만나 크게 폭발하는 시기입니다.`
                 ];
                 document.getElementById('res-summary').innerText = `"${summaries[subIdx]}"`;
                 
-                // 2. 본신 및 행운 기운
                 document.getElementById('res-origin').innerText = res.origin;
                 document.getElementById('res-luck').innerText = res.lucky + "의 기운";
                 
-                // 3. 행운 아이템 (실시간 생성)
                 const num1 = (combinedSeed % 9) + 1;
                 const num2 = (combinedSeed % 45) + 1;
                 
@@ -185,9 +197,8 @@
                     </div>
                 `).join('');
 
-                // 4. 대감님의 훈수 (이름+생일+시 기반 조합)
                 document.getElementById('res-detail').innerText = 
-                    `${name} 대감님의 사주 분석 결과, ${birth.substring(0,4)}년의 기운과 ${totalHour}시의 기운이 만나 ${res.name}의 성질을 띠고 있습니다. ` +
+                    `${name} 대감님의 사주 분석 결과, ${birth.substring(0,4)}년의 기운과 ${totalHourValue}시의 기운이 만나 ${res.name}의 성질을 띠고 있습니다. ` +
                     `현재 대감님의 부족한 부분을 ${res.lucky}이(가) 채워주고 있으니, ${res.dir}쪽에서 들어오는 귀인을 반기십시오. ` +
                     `${res.item}을 몸에 지니거나 가까이 두시면 횡재수가 더욱 강해질 것입니다.`;
                 
@@ -195,7 +206,6 @@
             }, 3000);
         }
 
-        // 약관 기능 유지
         function openModal(type) {
             document.getElementById('modalTitle').innerText = legalData[type].title;
             document.getElementById('modalBody').innerText = legalData[type].content;
