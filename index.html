@@ -5,26 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>인생대감 - 고품격 횡재수 분석</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
-        body { font-family: 'Pretendard', sans-serif; background-color: #FDF5E6; color: #4E342E; -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none; }
-        .gold-point { color: #D4AF37; }
-        .gold-wave {
-            background: linear-gradient(90deg, #D4AF37, #E1C16E, #4E342E, #D4AF37);
-            background-size: 200% auto;
-            color: transparent;
-            -webkit-background-clip: text;
-            background-clip: text;
-            animation: shine 3s linear infinite;
-        }
+        body { font-family: sans-serif; background-color: #FDF5E6; color: #4E342E; -webkit-user-select:none; user-select:none; }
+        .gold-wave { background: linear-gradient(90deg, #D4AF37, #E1C16E, #4E342E, #D4AF37); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; animation: shine 3s linear infinite; }
         @keyframes shine { to { background-position: 200% center; } }
-        input, select { background-color: #F8F9FA !important; border: 1px solid #F0F0F0 !important; color: #4E342E !important; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 450px; max-height: 80vh; overflow-y: auto; }
+        input { background-color: #F8F9FA !important; border: 1px solid #F0F0F0 !important; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-10 px-4">
-
     <header class="text-center mb-10">
         <h1 class="text-3xl font-extrabold mb-2">인생대감</h1>
         <p class="gold-wave font-bold text-lg">고품격 횡재수 분석 리포트</p>
@@ -33,70 +21,35 @@
     <main class="w-full max-w-md bg-white rounded-[40px] shadow-sm p-10">
         <div class="space-y-6">
             <div><label class="block text-sm font-bold mb-3">성함</label><input type="text" id="name" class="w-full p-4 rounded-2xl" placeholder="성함을 입력하세요"></div>
-            <div><label class="block text-sm font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-4 rounded-2xl" placeholder="01012345678 (숫자만 입력)"></div>
-            <div class="grid grid-cols-2 gap-4">
-                <div><label class="block text-sm font-bold mb-3">생년월일</label><input type="number" id="birth" class="w-full p-4 rounded-2xl" placeholder="19950815"></div>
-                <div><label class="block text-sm font-bold mb-3">태어난 시간</label>
-                    <div class="flex gap-2">
-                        <select id="ampm" class="w-1/2 p-4 rounded-2xl text-sm font-medium"><option value="오전">오전</option><option value="오후">오후</option><option value="모름">모름</option></select>
-                        <input type="text" id="birth-time" class="w-1/2 p-4 rounded-2xl text-sm" placeholder="시/분">
-                    </div>
-                </div>
-            </div>
-
-            <div class="pt-4 border-t border-gray-50">
-                <div class="flex items-center mb-6 bg-[#F8F7F3] p-5 rounded-2xl cursor-pointer" id="all-agree-area">
-                    <input type="checkbox" id="all-agree" class="w-5 h-5 mr-3 accent-[#4E342E]">
-                    <span class="font-bold text-base">모든 약관에 전체 동의하기</span>
-                </div>
-                <div class="space-y-4 px-2 text-sm text-gray-400">
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center"><input type="checkbox" id="privacy-agree" class="sub-agree w-5 h-5 mr-2 accent-[#4E342E]"><span>[필수] 개인정보 수집 및 이용 동의</span></div>
-                        <button onclick="openModal('privacy')" class="underline">보기</button>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center"><input type="checkbox" id="terms-agree" class="sub-agree w-5 h-5 mr-2 accent-[#4E342E]"><span>[필수] 서비스 이용약관</span></div>
-                        <button onclick="openModal('terms')" class="underline">보기</button>
-                    </div>
-                </div>
-            </div>
-
-            <button onclick="runAnalysis()" id="submit-btn" class="w-full py-5 bg-[#4E342E] text-white rounded-[25px] text-xl font-bold mt-4 shadow-lg active:scale-95 transition-all">무료 횡재수 분석 시작</button>
+            <div><label class="block text-sm font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-4 rounded-2xl" placeholder="01012345678"></div>
+            <div class="flex items-center pt-4"><input type="checkbox" id="agree" class="mr-2"> <span class="text-sm">[필수] 개인정보 및 이용약관 동의</span></div>
+            <button onclick="runAnalysis()" id="btn" class="w-full py-5 bg-[#4E342E] text-white rounded-[25px] text-xl font-bold mt-4 shadow-lg active:scale-95 transition-all">무료 횡재수 분석 시작</button>
         </div>
     </main>
 
     <script>
-        // 1. 보안: 우클릭 방지
-        document.addEventListener('contextmenu', e => { e.preventDefault(); alert("대감님의 비책은 복사할 수 없습니다."); });
+        // 우클릭 방지 보안
+        document.addEventListener('contextmenu', e => { e.preventDefault(); alert("비책 유출 금지입니다!"); });
 
-        // 2. 분석 실행 (서버 없이 즉시 결과 도출)
         function runAnalysis() {
             const name = document.getElementById('name').value;
-            const privacyOk = document.getElementById('privacy-agree').checked;
-            const termsOk = document.getElementById('terms-agree').checked;
-
-            if(!name || !privacyOk || !termsOk) return alert("성함 입력과 필수 약관 동의가 필요합니다.");
-
-            const btn = document.getElementById('submit-btn');
-            btn.innerText = "대감님이 사주를 분석 중...";
+            if(!name || !document.getElementById('agree').checked) return alert("성함 입력과 동의가 필요합니다.");
+            
+            const btn = document.getElementById('btn');
+            btn.innerText = "대감님이 기운을 모으는 중...";
             btn.disabled = true;
 
             setTimeout(() => {
-                alert(`🏮 ${name} 대감님의 분석 결과가 도착했습니다 🏮\n\n` +
-                      `● 타고난 본신 기운: 토(土)의 기운\n` +
-                      `● 부족한 행운 기운: 목(木)의 기운\n` +
-                      `------------------------------------------\n` +
-                      `● 🎨 행운의 색: 청색 및 녹색 계열\n` +
-                      `● 🍀 행운의 번호: 3, 8, 11, 27\n` +
-                      `● 🧭 행운의 방향: 동쪽 및 남동쪽\n` +
-                      `● 🔮 행운의 물건: 나무 소재의 소품`);
+                alert(`🏮 ${name} 대감님의 분석 결과 🏮\n\n` +
+                      `● 행운의 색: 청색 계열\n` +
+                      `● 행운의 번호: 3, 8, 11, 27\n` +
+                      `● 행운의 방향: 동쪽\n` +
+                      `● 행운의 물건: 나무 소재 소품\n\n` +
+                      `조만간 큰 횡재수가 찾아올 기운입니다!`);
                 btn.innerText = "무료 횡재수 분석 시작";
                 btn.disabled = false;
             }, 2000);
         }
-
-        // 모달 제어 함수 (대감님 코드 기반)
-        function openModal(type) { alert(type + " 약관 내용을 확인했습니다."); }
     </script>
 </body>
 </html>
