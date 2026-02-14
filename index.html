@@ -7,28 +7,48 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
-        body { font-family: 'Pretendard', sans-serif; background-color: #F7F3E9; color: #4E342E; -webkit-user-select: none; user-select: none; }
+        body { font-family: 'Pretendard', sans-serif; background-color: #F7F3E9; color: #4E342E; }
         .card-shadow { box-shadow: 0 10px 40px rgba(0,0,0,0.06); }
-        .gold-text { color: #B5A47D; }
+        
+        /* 1번 수정: 고품격 황금색 물결 그라데이션 효과 */
+        .gold-wave-text {
+            background: linear-gradient(
+                to right, 
+                #BF953F 0%, 
+                #FCF6BA 25%, 
+                #B38728 50%, 
+                #FBF5B7 75%, 
+                #AA771C 100%
+            );
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            animation: shine 3s linear infinite;
+        }
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
         .hidden { display: none; }
-        input { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; transition: 0.2s; }
-        input:focus { border-color: #B5A47D !important; box-shadow: 0 0 0 2px rgba(181, 164, 125, 0.2); }
+        input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; }
         .loader { width: 40px; height: 40px; border: 4px solid #E1C16E; border-bottom-color: #4E342E; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; padding: 30px; border-radius: 40px; width: 100%; max-width: 500px; max-height: 80vh; overflow-y: auto; text-align: left; }
-        .legal-box { font-size: 13px; line-height: 1.8; color: #555; white-space: pre-wrap; word-break: break-all; }
-        .lotto-ball { width: 40px; height: 40px; border-radius: 50%; display: inline-flex; items-center; justify-content: center; font-weight: 800; color: white; margin: 3px; line-height: 40px; text-shadow: 1px 1px 1px rgba(0,0,0,0.2); }
-        .time-chip { cursor: pointer; border: 1px solid #E5E7EB; border-radius: 12px; padding: 8px 15px; font-weight: bold; transition: 0.3s; background: white; }
-        .time-chip input { display: none; }
-        .time-chip.active { background: #4E342E; color: white; border-color: #4E342E; }
+        
+        /* 모달 스타일 */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; padding: 30px; border-radius: 40px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
+        .legal-text { font-size: 12px; line-height: 1.8; color: #666; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-12 px-4">
 
     <header class="text-center mb-10">
         <h1 class="text-4xl font-black mb-2 tracking-tight">인생대감</h1>
-        <p class="text-xl font-bold"><span class="text-gray-600">고품격 횡재수</span> <span class="gold-text text-2xl">분석 리포트</span></p>
+        <p class="text-xl font-bold">
+            <span class="gold-wave-text text-2xl">고품격 횡재수 분석 리포트</span>
+        </p>
     </header>
 
     <main id="input-section" class="w-full max-w-lg bg-white rounded-[50px] card-shadow p-10 space-y-8">
@@ -36,30 +56,34 @@
             <div><label class="block text-lg font-bold mb-3">성함</label><input type="text" id="name" class="w-full p-5 rounded-2xl text-lg" placeholder="성함을 입력하세요"></div>
             <div><label class="block text-lg font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-5 rounded-2xl text-lg" placeholder="01012345678"></div>
             
-            <div class="space-y-4">
-                <div><label class="block text-lg font-bold mb-3">생년월일</label><input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg" placeholder="예: 19950815"></div>
+            <div class="flex flex-col gap-6">
                 <div>
-                    <label class="block text-lg font-bold mb-3 text-center">태어난 시간</label>
-                    <div class="flex flex-col gap-3">
-                        <div class="flex gap-2">
-                            <label class="time-chip active flex-1 text-center" id="label-am">
-                                <input type="radio" name="ampm" value="0" checked onchange="updateTimeUI()"> 오전
+                    <label class="block text-lg font-bold mb-3">생년월일</label>
+                    <input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg" placeholder="예: 19950815">
+                </div>
+                
+                <div>
+                    <label class="block text-lg font-bold mb-3">태어난 시간</label>
+                    <div class="flex flex-col gap-4">
+                        <div class="flex justify-around bg-gray-50 p-4 rounded-2xl">
+                            <label class="flex items-center gap-2 cursor-pointer font-bold">
+                                <input type="checkbox" name="ampm" value="오전" class="ampm-checkbox w-5 h-5 accent-[#4E342E]" onclick="checkOnlyOne(this)"> 오전
                             </label>
-                            <label class="time-chip flex-1 text-center" id="label-pm">
-                                <input type="radio" name="ampm" value="12" onchange="updateTimeUI()"> 오후
+                            <label class="flex items-center gap-2 cursor-pointer font-bold">
+                                <input type="checkbox" name="ampm" value="오후" class="ampm-checkbox w-5 h-5 accent-[#4E342E]" onclick="checkOnlyOne(this)"> 오후
                             </label>
                         </div>
                         <div class="flex gap-2">
-                            <input type="number" id="birth-hour" class="w-1/2 p-5 rounded-2xl text-center font-bold" placeholder="시 (0~11)">
-                            <input type="number" id="birth-min" class="w-1/2 p-5 rounded-2xl text-center font-bold" placeholder="분 (0~59)">
+                            <input type="number" id="birth-hour" class="w-1/2 p-5 rounded-2xl text-center text-lg" placeholder="시 (0~12)" min="0" max="12">
+                            <input type="number" id="birth-min" class="w-1/2 p-5 rounded-2xl text-center text-lg" placeholder="분 (0~59)" min="0" max="59">
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="bg-gray-50 rounded-3xl p-6 space-y-4">
-                <div class="flex items-center gap-3 cursor-pointer pb-4 border-b border-gray-200" onclick="toggleAll()">
-                    <input type="checkbox" id="all-agree" class="w-6 h-6 accent-[#4E342E]" onclick="event.stopPropagation(); toggleAll();">
+                <div class="flex items-center gap-3 cursor-pointer pb-4 border-b border-gray-200" id="all-agree-area">
+                    <input type="checkbox" id="all-agree" class="w-6 h-6 accent-[#4E342E]">
                     <span class="font-bold text-lg">모든 약관에 전체 동의하기</span>
                 </div>
                 <div class="space-y-3 pt-2">
@@ -77,6 +101,7 @@
                     </div>
                 </div>
             </div>
+
             <button onclick="runAnalysis()" class="w-full py-6 bg-[#4E342E] text-white rounded-[35px] text-2xl font-bold shadow-xl active:scale-95 transition-all">무료 횡재수 분석 시작</button>
         </div>
 
@@ -86,11 +111,11 @@
         </div>
     </main>
 
-    <div id="result-section" class="hidden w-full max-w-lg space-y-6">
+    <div id="result-section" class="hidden w-full max-w-lg space-y-6 animate-fadeIn">
         <div class="bg-[#4E342E] rounded-t-[50px] p-12 text-center text-white space-y-4">
             <div class="text-3xl">🏮</div>
             <h2 class="text-3xl font-bold"><span id="res-name"></span> 대감님의</h2>
-            <p class="gold-text text-xl font-bold">정밀 횡재수 분석 리포트</p>
+            <p class="gold-wave-text text-xl">정밀 횡재수 분석 리포트</p>
         </div>
         <div class="bg-white rounded-b-[50px] card-shadow p-8 space-y-8 -mt-2">
             <div class="bg-[#FDF9F0] rounded-3xl p-8 text-center border border-[#F1EAD7]">
@@ -102,18 +127,18 @@
                     <span class="text-2xl">🧘</span><p class="text-xs text-gray-400 font-bold">타고난 본신 기운</p><p id="res-origin" class="text-lg font-bold"></p>
                 </div>
                 <div class="bg-white border border-gray-100 rounded-3xl p-6 text-center space-y-2 shadow-sm">
-                    <span class="text-2xl">🍀</span><p class="text-xs text-gray-400 font-bold">행운 보완 기운</p><p id="res-luck" class="text-lg font-bold"></p>
+                    <span class="text-2xl">🍀</span><p class="text-xs text-gray-400 font-bold">채워야 할 행운 기운</p><p id="res-luck" class="text-lg font-bold"></p>
                 </div>
             </div>
             <div class="space-y-4">
                 <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🎨</span><div><p class="text-xs text-gray-400 font-bold">행운의 색</p><p id="res-color" class="font-bold text-lg"></p></div></div>
-                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🔢</span><div><p class="text-xs text-gray-400 font-bold">행운의 번호</p><div id="res-num-area" class="mt-1 flex flex-wrap gap-1"></div></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🔢</span><div><p class="text-xs text-gray-400 font-bold">행운의 번호</p><p id="res-num" class="font-bold text-lg"></p></div></div>
                 <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🧭</span><div><p class="text-xs text-gray-400 font-bold">행운의 방향</p><p id="res-dir" class="font-bold text-lg"></p></div></div>
                 <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🔮</span><div><p class="text-xs text-gray-400 font-bold">행운의 물건</p><p id="res-obj" class="font-bold text-lg"></p></div></div>
             </div>
             <div class="bg-gray-50 rounded-3xl p-8 space-y-4">
                 <div class="flex items-center gap-2 font-bold text-lg"><span>📜</span> 대감님의 훈수 (상세 해석)</div>
-                <p id="res-detail" class="text-gray-600 leading-relaxed text-base text-justify"></p>
+                <p id="res-detail" class="text-gray-600 leading-relaxed text-base"></p>
             </div>
             <button onclick="location.reload()" class="w-full py-6 border-2 border-[#4E342E] text-[#4E342E] rounded-[35px] text-2xl font-bold hover:bg-[#4E342E] hover:text-white transition-all">다시 분석하기</button>
         </div>
@@ -121,92 +146,134 @@
 
     <div id="legalModal" class="modal">
         <div class="modal-content">
-            <h3 id="modalTitle" class="text-xl font-bold mb-6 text-[#4E342E] border-b pb-4 tracking-tight"></h3>
-            <div id="modalBody" class="legal-box"></div>
-            <button onclick="closeModal()" class="w-full mt-8 py-5 bg-[#4E342E] text-white rounded-2xl font-bold shadow-lg">내용을 확인했습니다</button>
+            <h3 id="modalTitle" class="text-xl font-bold mb-6 text-[#4E342E] border-b pb-4"></h3>
+            <div id="modalBody" class="legal-text whitespace-pre-wrap"></div>
+            <button onclick="closeModal()" class="w-full mt-8 py-5 bg-[#4E342E] text-white rounded-2xl font-bold">확인 및 닫기</button>
         </div>
     </div>
 
     <script>
-        function updateTimeUI() {
-            const am = document.querySelector('input[name="ampm"][value="0"]').checked;
-            document.getElementById('label-am').className = am ? "time-chip active flex-1 text-center" : "time-chip flex-1 text-center";
-            document.getElementById('label-pm').className = am ? "time-chip flex-1 text-center" : "time-chip active flex-1 text-center";
-        }
-
-        function toggleAll() { 
-            const master = document.getElementById('all-agree');
-            const subs = document.querySelectorAll('.sub-agree');
-            subs.forEach(s => s.checked = master.checked);
-        }
-
+        // 약관 데이터
         const legalData = {
-            privacy: { title: "개인정보 수집 및 이용 동의", content: "인생대감 서비스 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다.\n\n1. 수집 항목: 성명, 휴대폰 번호, 생년월일, 태어난 시간\n2. 목적: 명리학 기반 분석 리포트 제공\n3. 기간: 목적 달성 시 까지" },
-            terms: { title: "서비스 이용약관 동의", content: "본 서비스는 통계적 명리학 데이터를 바탕으로 한 오락용 콘텐츠입니다. 분석 결과로 인한 경제적 판단의 책임은 이용자 본인에게 있습니다." },
-            marketing: { title: "마케팅 활용 동의 (선택)", content: "이벤트 및 맞춤 혜택 정보를 수신합니다." }
+            privacy: {
+                title: "개인정보 수집 및 이용 동의",
+                content: `인생대감 서비스 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다.\n\n1. 수집하는 개인정보 항목\n- 필수: 성명, 휴대폰 번호, 생년월일, 태어난 시간\n\n2. 개인정보의 수집 및 이용 목적\n- 사용자 식별 및 개인별 사주/운세 분석 리포트 결과 제공`
+            },
+            terms: {
+                title: "서비스 이용약관",
+                content: `제1조 (목적)\n본 약관은 '인생대감'에서 제공하는 운세 콘텐츠의 이용 조건과 절차를 규정합니다.\n\n제2조 (서비스의 성격)\n본 서비스는 오락용 콘텐츠이며 절대적인 정확성을 보장하지 않습니다.`
+            },
+            marketing: {
+                title: "마케팅 활용 동의 (선택)",
+                content: `인생대감의 새로운 서비스 소식과 행운 알림을 받아보세요.\n\n* 본 동의는 거부하셔도 서비스 이용에 제한이 없습니다.`
+            }
         };
 
-        function openModal(t) { document.getElementById('modalTitle').innerText = legalData[t].title; document.getElementById('modalBody').innerText = legalData[t].content; document.getElementById('legalModal').style.display = 'flex'; }
+        function openModal(type) {
+            document.getElementById('modalTitle').innerText = legalData[type].title;
+            document.getElementById('modalBody').innerText = legalData[type].content;
+            document.getElementById('legalModal').style.display = 'flex';
+        }
         function closeModal() { document.getElementById('legalModal').style.display = 'none'; }
+
+        function checkOnlyOne(element) {
+            const checkboxes = document.getElementsByName("ampm");
+            checkboxes.forEach((cb) => {
+                cb.checked = false;
+            });
+            element.checked = true;
+        }
+
+        const allAgree = document.getElementById('all-agree');
+        const subs = document.querySelectorAll('.sub-agree');
+        document.getElementById('all-agree-area').onclick = (e) => {
+            if(e.target !== allAgree) allAgree.checked = !allAgree.checked;
+            subs.forEach(s => s.checked = allAgree.checked);
+        };
+
+        // 데이터베이스 (다양한 결과값 확충)
+        const sajuDatabase = [
+            {
+                el: "목(木)", summary: "강한 생명력이 재물로 변모하는 시기이니, 밝고 따뜻한 에너지를 가까이하면 뜻밖의 횡재가 따를 것입니다.",
+                origin: "목(木)의 기운", luck: "화(火)와 토(土)의 기운", color: "빨간색, 주황색 및 노란색 계열",
+                nums: "2, 7, 5, 0", dir: "남쪽 및 중앙", obj: "붉은색 지갑이나 흙으로 만든 도자기 소품",
+                detail: "주체성이 매우 강하며 스스로 운명을 개척하는 에너지가 넘치는 사주입니다. 주변에 따뜻한 기운(火)을 두어 목마른 나무에 빛을 비추어야 재물이 모입니다."
+            },
+            {
+                el: "화(火)", summary: "열정의 불꽃이 황금을 녹여 담는 형국입니다. 냉철한 판단력보다 직관을 믿고 움직일 때 큰 횡재가 찾아옵니다.",
+                origin: "화(火)의 기운", luck: "토(土)와 금(金)의 기운", color: "노란색, 금색 및 흰색 계열",
+                nums: "5, 0, 4, 9", dir: "중앙 및 서쪽", obj: "황토색 소품이나 금속 재질의 액세서리",
+                detail: "병화(丙火)의 열기가 가득한 명식으로, 넘치는 에너지를 정착시킬 터전이 필요합니다. 금(金)의 기운을 통해 실질적인 재화의 형태를 갖추는 것이 핵심입니다."
+            },
+            {
+                el: "토(土)", summary: "대지가 비옥해져 만물이 결실을 맺는 운입니다. 서두르지 않고 때를 기다리면 거대한 재운이 스스로 굴러옵니다.",
+                origin: "토(土)의 기운", luck: "금(金)과 수(水)의 기운", color: "은색, 흰색 및 검정색 계열",
+                nums: "4, 9, 1, 6", dir: "서쪽 및 북쪽", obj: "은반지나 투명한 유리 장식품",
+                detail: "중심을 지키는 힘이 강하고 신용이 두터운 사주입니다. 막힌 흐름을 뚫어줄 물(水)의 기운을 보강하면 횡재수가 폭발적으로 상승하게 됩니다."
+            },
+            {
+                el: "금(金)", summary: "날카로운 칼날이 보석으로 다듬어지는 시기입니다. 불필요한 인연을 정리하고 나에게 집중할 때 재운이 크게 열립니다.",
+                origin: "금(金)의 기운", luck: "수(水)와 목(木)의 기운", color: "파란색, 녹색 및 검정색 계열",
+                nums: "1, 6, 3, 8", dir: "북쪽 및 동쪽", obj: "작은 화분이나 푸른색 스카프",
+                detail: "강직하고 결단력이 있으나 다소 차가운 기운을 지녔습니다. 생명력 있는 식물이나 유연한 흐름을 가까이하여 재물이 머물 수 있는 환경을 조성하십시오."
+            },
+            {
+                el: "수(水)", summary: "깊은 바다가 보물을 품고 파도치는 형상입니다. 지혜롭게 흐름을 타면 생각지도 못한 곳에서 목돈이 들어올 상입니다.",
+                origin: "수(水)의 기운", luck: "목(木)과 화(火)의 기운", color: "녹색, 빨간색 및 자주색 계열",
+                nums: "3, 8, 2, 7", dir: "동쪽 및 남쪽", obj: "나무 재질의 펜이나 붉은색 포인트 의류",
+                detail: "지혜가 깊고 유연한 사고를 가졌으나 재물을 가둘 열기가 부족할 수 있습니다. 적극적인 대외 활동과 밝은 태양의 기운을 더해 재운을 현실화하십시오."
+            }
+        ];
 
         function runAnalysis() {
             const name = document.getElementById('name').value.trim();
-            const birth = document.getElementById('birth').value.trim();
-            const hourVal = document.getElementById('birth-hour').value;
-            const minVal = document.getElementById('birth-min').value;
-            const ampmOffset = parseInt(document.querySelector('input[name="ampm"]:checked').value);
+            const birth = document.getElementById('birth').value;
+            const ampmChecked = document.querySelector('input[name="ampm"]:checked');
+            const hour = document.getElementById('birth-hour').value;
+            const min = document.getElementById('birth-min').value;
 
-            if(!name) { alert("성함을 입력해주세요."); return; }
-            if(birth.length !== 8) { alert("생년월일 8자리를 입력해주세요. (예: 19950815)"); return; }
-            if(hourVal === "" || minVal === "") { alert("태어난 시와 분을 입력해주세요."); return; }
-            if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) { alert("필수 약관에 동의하셔야 분석이 가능합니다."); return; }
+            // 유효성 검사
+            if(!name || birth.length !== 8 || !ampmChecked || hour === "" || min === "") {
+                return alert("모든 정보를 정확히 입력해 주세요.");
+            }
+            if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) {
+                return alert("필수 약관에 동의하셔야 합니다.");
+            }
 
-            const hour = parseInt(hourVal);
-            const min = parseInt(minVal);
-            const totalHour = hour + ampmOffset;
-
+            // 분석 시작 애니메이션
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
 
-            let nScore = 0; for(let i=0; i<name.length; i++) nScore += name.charCodeAt(i);
-            const seed = nScore + parseInt(birth) + totalHour + min;
-            
-            const database = [
-                { el: "목(木)", summary: "청룡의 기운이 문서를 물고 오니 새로운 계약이나 투자가 횡재로 이어질 형국입니다.", origin: "강직한 소나무의 기운", luck: "따뜻한 화(火)의 기운", color: "청록색, 에메랄드", dir: "동쪽", obj: "나무 재질의 액세서리", detail: `성함(${name})에 깃든 목(木)의 에너지가 태어나신 ${totalHour}시 ${min}분의 정기와 조화를 이루어 '수생목'의 형국을 완성했습니다. 현재 대감님의 운세는 땅 위로 솟구치는 나무와 같아, 동쪽 방향에서 귀인을 만나거나 뜻밖의 정보를 얻어 큰 재물을 얻을 상입니다.` },
-                { el: "화(火)", summary: "타오르는 불길이 황금을 녹여 담는 격이니, 과감한 결단이 곧 거대한 재물이 될 것입니다.", origin: "정열적인 태양의 기운", luck: "안정적인 토(土)의 기운", color: "진홍색, 오렌지", dir: "남쪽", obj: "가죽 지갑, 안경", detail: `대감님의 사주는 뜨거운 열기가 가득하여 추진력이 매우 뛰어납니다. 이름에서 오는 수치와 생시 ${totalHour}시 ${min}분의 합이 '식신생재'의 흐름을 만들어내고 있으니, 남쪽에서 비치는 행운의 서광을 놓치지 마십시오.` },
-                { el: "토(土)", summary: "모든 만물을 품는 비옥한 대지의 기운이니, 기다림 끝에 거대한 횡재가 땅에서 솟아날 상입니다.", origin: "풍요로운 대지의 기운", luck: "결실의 금(金)의 기운", color: "황금색, 브라운", dir: "중앙 및 거주지 인근", obj: "반지, 노란 손수건", detail: `모든 사주의 중재자인 토(土)의 기운을 타고나셨습니다. 성함의 획수가 태어난 ${totalHour}시 ${min}분의 숫자와 합쳐져 강력한 재물창고를 형성했습니다. 횡재수는 멀리 있지 않고 대감님의 활동 반경 중앙에 숨어 있습니다.` },
-                { el: "금(金)", summary: "백호의 날카로운 기세가 재물을 베어내는 격이니 정확한 타이밍에 큰 이득을 취할 것입니다.", origin: "냉철한 바위의 기운", luck: "유연한 수(水)의 기운", color: "흰색, 실버", dir: "서쪽", obj: "시계, 스마트 기기", detail: `대감님은 칼날처럼 날카로운 직관과 결단력을 사주에 품고 계십니다. 이름과 생시 ${totalHour}시 ${min}분의 기운이 금(金)의 기세를 보좌하여 재물을 취하는 데 있어 타의 추종을 불허하는 상입니다.` },
-                { el: "수(水)", summary: "천하의 물줄기가 대감님의 연못으로 모이는 형국이니 가만히 있어도 재물이 스며들 상입니다.", origin: "지혜로운 바다의 기운", luck: "성장의 목(木)의 기운", color: "검은색, 네이비", dir: "북쪽", obj: "향수, 검은 신발", detail: `끊임없이 흐르는 지혜로운 수(水)의 기운이 대감님의 본신입니다. 성함과 생시 ${totalHour}시 ${min}분의 조화가 '재성'을 자극하여 사방에서 재물이 흘러 들어오는 형국입니다. 북쪽 방향이 길하며 밤 시간대의 행운이 강합니다.` }
-            ];
-
-            const res = database[seed % 5];
-            let nums = [];
-            while(nums.length < 6) {
-                let n = Math.floor(Math.abs(Math.sin(seed + nums.length)) * 45) + 1;
-                if(!nums.includes(n)) nums.push(n);
+            // 고정밀 해싱 로직: 이름(유니코드), 생년월일, 오전/오후, 시, 분을 모두 숫자로 변환하여 조합
+            const ampmValue = ampmChecked.value;
+            const seedSource = name + birth + ampmValue + hour + min;
+            let hash = 0;
+            for (let i = 0; i < seedSource.length; i++) {
+                hash = ((hash << 5) - hash) + seedSource.charCodeAt(i);
+                hash |= 0; // 32비트 정수로 변환
             }
-            nums.sort((a,b)=>a-b);
+            
+            // 해시값을 바탕으로 데이터베이스 인덱스 결정 (절대값 사용)
+            const resultIndex = Math.abs(hash) % sajuDatabase.length;
+            const res = sajuDatabase[resultIndex];
 
+            // 3초 후 결과 표시
             setTimeout(() => {
                 document.getElementById('input-section').classList.add('hidden');
                 document.getElementById('result-section').classList.remove('hidden');
+                
                 document.getElementById('res-name').innerText = name;
                 document.getElementById('res-summary').innerText = `"${res.summary}"`;
                 document.getElementById('res-origin').innerText = res.origin;
                 document.getElementById('res-luck').innerText = res.luck;
                 document.getElementById('res-color').innerText = res.color;
+                document.getElementById('res-num').innerText = res.nums;
                 document.getElementById('res-dir').innerText = res.dir;
                 document.getElementById('res-obj').innerText = res.obj;
-                document.getElementById('res-detail').innerText = res.detail;
-
-                const area = document.getElementById('res-num-area');
-                area.innerHTML = '';
-                const ballColors = ['#fbc02d','#1976d2','#e53935','#757575','#43a047'];
-                nums.forEach(n => {
-                    const b = document.createElement('span'); b.className = 'lotto-ball';
-                    b.style.backgroundColor = ballColors[Math.floor(n/10)] || '#8e24aa';
-                    b.innerText = n; area.appendChild(b);
-                });
+                
+                // 상세 해석은 성함을 포함하여 동적 생성 느낌 부여
+                document.getElementById('res-detail').innerText = `${name} 대감님은 ${res.detail}`;
+                
                 window.scrollTo({top:0, behavior:'smooth'});
             }, 3000);
         }
