@@ -5,14 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>인생대감 - 고품격 횡재수 분석</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
-        body { font-family: sans-serif; background-color: #FDF5E6; color: #4E342E; -webkit-user-select:none; user-select:none; }
-        .gold-wave { background: linear-gradient(90deg, #D4AF37, #E1C16E, #4E342E, #D4AF37); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; animation: shine 3s linear infinite; }
+        /* 기본 폰트 및 배경 */
+        body { font-family: 'Pretendard', sans-serif; background-color: #FDF5E6; color: #4E342E; 
+            /* 드래그 및 선택 방지 보안 */
+            -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; 
+        }
+        .gold-point { color: #D4AF37; }
+        .gold-wave {
+            background: linear-gradient(90deg, #D4AF37, #E1C16E, #4E342E, #D4AF37);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shine 3s linear infinite;
+        }
         @keyframes shine { to { background-position: 200% center; } }
-        input { background-color: #F8F9FA !important; border: 1px solid #F0F0F0 !important; }
+        input, select { background-color: #F8F9FA !important; border: 1px solid #F0F0F0 !important; color: #4E342E !important; }
+        input::placeholder { color: #A0A0A0; }
+        input:focus, select:focus { border-color: #D4AF37 !important; outline: none; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 450px; max-height: 80vh; overflow-y: auto; }
+        .modal-body-text { font-size: 13px; line-height: 1.8; color: #555; text-align: justify; }
+        .custom-chk { width: 1.25rem; height: 1.25rem; cursor: pointer; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-10 px-4">
+
     <header class="text-center mb-10">
         <h1 class="text-3xl font-extrabold mb-2">인생대감</h1>
         <p class="gold-wave font-bold text-lg">고품격 횡재수 분석 리포트</p>
@@ -20,32 +40,139 @@
 
     <main class="w-full max-w-md bg-white rounded-[40px] shadow-sm p-10">
         <div class="space-y-6">
-            <div><label class="block text-sm font-bold mb-3">성함</label><input type="text" id="name" class="w-full p-4 rounded-2xl" placeholder="성함을 입력하세요"></div>
-            <div><label class="block text-sm font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-4 rounded-2xl" placeholder="01012345678"></div>
-            <div class="flex items-center pt-4"><input type="checkbox" id="agree" class="mr-2"> <span class="text-sm">[필수] 개인정보 및 이용약관 동의</span></div>
-            <button onclick="runAnalysis()" id="btn" class="w-full py-5 bg-[#4E342E] text-white rounded-[25px] text-xl font-bold mt-4 shadow-lg active:scale-95 transition-all">무료 횡재수 분석 시작</button>
+            <div>
+                <label class="block text-sm font-bold mb-3">성함</label>
+                <input type="text" id="name" class="w-full p-4 rounded-2xl" placeholder="성함을 입력하세요">
+            </div>
+            <div>
+                <label class="block text-sm font-bold mb-3">휴대폰 번호</label>
+                <input type="tel" id="phone" class="w-full p-4 rounded-2xl" placeholder="01012345678 (숫자만 입력)">
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-bold mb-3">생년월일</label>
+                    <input type="number" id="birth" class="w-full p-4 rounded-2xl" placeholder="19950815">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-3">태어난 시간</label>
+                    <div class="flex gap-2">
+                        <select id="ampm" class="w-1/2 p-4 rounded-2xl text-sm font-medium">
+                            <option value="오전" selected>오전</option>
+                            <option value="오후">오후</option>
+                            <option value="모름">모름</option>
+                        </select>
+                        <input type="text" id="birth-time" class="w-1/2 p-4 rounded-2xl text-sm" placeholder="시/분">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-gray-50">
+                <div class="flex items-center mb-6 bg-[#F8F7F3] p-5 rounded-2xl cursor-pointer" id="all-agree-area">
+                    <input type="checkbox" id="all-agree" class="custom-chk mr-3 accent-[#4E342E]">
+                    <span class="font-bold text-base">모든 약관에 전체 동의하기</span>
+                </div>
+                <div class="space-y-4 px-2 text-sm text-gray-400">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="privacy-agree" class="sub-agree custom-chk mr-2 accent-[#4E342E]">
+                            <span>[필수] 개인정보 수집 및 이용 동의</span>
+                        </div>
+                        <button onclick="openModal('privacy')" class="text-gray-400 underline">보기</button>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="terms-agree" class="sub-agree custom-chk mr-2 accent-[#4E342E]">
+                            <span>[필수] 서비스 이용약관</span>
+                        </div>
+                        <button onclick="openModal('terms')" class="text-gray-400 underline">보기</button>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="marketing-agree" class="sub-agree custom-chk mr-2 accent-[#4E342E]">
+                            <span>[선택] 마케팅 활용 동의</span>
+                        </div>
+                        <button onclick="openModal('marketing')" class="text-gray-400 underline">보기</button>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="runAnalysis()" id="submit-btn" class="w-full py-5 bg-[#4E342E] text-white rounded-[25px] text-xl font-bold mt-4 shadow-lg active:scale-95 transition-all">
+                무료 횡재수 분석 시작
+            </button>
         </div>
     </main>
 
-    <script>
-        // 우클릭 방지 보안
-        document.addEventListener('contextmenu', e => { e.preventDefault(); alert("비책 유출 금지입니다!"); });
+    <footer class="mt-12 text-center">
+        <p class="text-[11px] text-gray-300">© 2026 인생대감 Insaeng Daegam. All Rights Reserved.</p>
+    </footer>
 
+    <div id="legalModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle" class="text-lg font-bold mb-4 text-[#4E342E]"></h3>
+            <div id="modalBody" class="modal-body-text whitespace-pre-wrap"></div>
+            <button onclick="closeModal()" class="w-full mt-6 py-3 bg-[#4E342E] text-white rounded-xl font-bold">확인 및 닫기</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 보안 기능: 우클릭/F12 방지 ---
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.onkeydown = function(e) {
+            if(e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) return false;
+        };
+
+        const legalContents = {
+            privacy: { title: "개인정보 수집 및 이용 동의 (필수)", content: "인생대감 서비스 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다.\n\n1. 수집하는 개인정보 항목\n- 필수항목: 성명, 휴대폰 번호, 생년월일, 태어난 시간\n\n2. 개인정보의 수집 및 이용 목적\n- 명리학 기반의 사주 분석 및 운세 결과 제공\n\n3. 개인정보의 보유 및 이용 기간\n- 목적 달성 후 지체 없이 파기합니다." },
+            terms: { title: "서비스 이용약관 (필수)", content: "제1조 (목적)\n본 약관은 인생대감이 제공하는 운세 분석 서비스의 이용 조건을 규정합니다.\n\n제2조 (책임 제한)\n- 모든 결과는 참고 자료일 뿐이며, 투자 결과에 대해 회사는 책임지지 않습니다." },
+            marketing: { title: "마케팅 활용 동의 (선택)", content: "신규 서비스 알림 및 혜택 정보를 제공합니다. 거부하시더라도 서비스 이용에는 제한이 없습니다." }
+        };
+
+        function openModal(type) {
+            document.getElementById('modalTitle').innerText = legalContents[type].title;
+            document.getElementById('modalBody').innerText = legalContents[type].content;
+            document.getElementById('legalModal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('legalModal').style.display = 'none'; }
+
+        const allAgreeChk = document.getElementById('all-agree');
+        const subAgreeChks = document.querySelectorAll('.sub-agree');
+        document.getElementById('all-agree-area').onclick = function(e) {
+            if (e.target !== allAgreeChk) allAgreeChk.checked = !allAgreeChk.checked;
+            subAgreeChks.forEach(chk => chk.checked = allAgreeChk.checked);
+        };
+        subAgreeChks.forEach(chk => {
+            chk.addEventListener('change', () => {
+                allAgreeChk.checked = (document.querySelectorAll('.sub-agree:checked').length === subAgreeChks.length);
+            });
+        });
+
+        // --- 분석 실행 함수 (서버 없이 즉시 결과 도출) ---
         function runAnalysis() {
             const name = document.getElementById('name').value;
-            if(!name || !document.getElementById('agree').checked) return alert("성함 입력과 동의가 필요합니다.");
-            
-            const btn = document.getElementById('btn');
-            btn.innerText = "대감님이 기운을 모으는 중...";
+            const phone = document.getElementById('phone').value;
+            const privacyOk = document.getElementById('privacy-agree').checked;
+            const termsOk = document.getElementById('terms-agree').checked;
+
+            if(!name) return alert("성함을 입력해주세요.");
+            if(!phone) return alert("휴대폰 번호를 입력해주세요.");
+            if(!privacyOk || !termsOk) return alert("필수 항목에 동의하셔야 분석이 가능합니다.");
+
+            const btn = document.getElementById('submit-btn');
+            btn.innerText = "대감님이 사주를 분석 중...";
             btn.disabled = true;
 
+            // 정밀 분석 연출 (2초 대기)
             setTimeout(() => {
-                alert(`🏮 ${name} 대감님의 분석 결과 🏮\n\n` +
-                      `● 행운의 색: 청색 계열\n` +
-                      `● 행운의 번호: 3, 8, 11, 27\n` +
-                      `● 행운의 방향: 동쪽\n` +
-                      `● 행운의 물건: 나무 소재 소품\n\n` +
-                      `조만간 큰 횡재수가 찾아올 기운입니다!`);
+                alert(`🏮 ${name} 대감님의 정밀 분석 결과가 도착했습니다 🏮\n\n` +
+                      `● 타고난 본신(本身) 기운: 토(土)의 기운\n` +
+                      `● 부족함을 채우는 행운 기운: 목(木)의 기운\n` +
+                      `* 본신의 기운이 강하더라도, 행운의 기운을 가까이해야 발복(發福)합니다.\n` +
+                      `------------------------------------------\n` +
+                      `● 🎨 행운의 색: 청색 및 녹색 계열\n` +
+                      `● 🍀 행운의 번호: 3, 8, 15, 22, 31\n` +
+                      `● 🧭 행운의 방향: 동쪽 및 남동쪽\n` +
+                      `● 🔮 행운의 물건: 나무 소재의 소품이나 화분`);
+                
                 btn.innerText = "무료 횡재수 분석 시작";
                 btn.disabled = false;
             }, 2000);
@@ -53,3 +180,6 @@
     </script>
 </body>
 </html>
+</body>
+</html>
+
