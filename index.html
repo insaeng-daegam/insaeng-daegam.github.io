@@ -11,13 +11,19 @@
         .gold-wave { background: linear-gradient(90deg, #D4AF37, #E1C16E, #4E342E, #D4AF37); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; animation: shine 3s linear infinite; }
         @keyframes shine { to { background-position: 200% center; } }
         input, select { background-color: #F8F9FA !important; border: 1px solid #F0F0F0 !important; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 450px; }
         .hidden { display: none; }
         
         /* 로딩 애니메이션 */
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #D4AF37; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #B91C1C; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* [핵심] 부적 느낌의 결과창 스타일 */
+        #result-section { 
+            border: 6px double #B91C1C; /* 부적 특유의 이중 붉은 테두리 */
+            background-color: #FFF9F9; /* 아주 연한 붉은 기운이 도는 배경 */
+            box-shadow: 0 0 20px rgba(185, 28, 28, 0.2); 
+        }
+        .talisman-title { color: #B91C1C; letter-spacing: -1px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-10 px-4">
@@ -50,48 +56,53 @@
 
     <div id="loading-section" class="hidden w-full max-w-md bg-white rounded-[40px] shadow-sm p-20 text-center">
         <div class="loader"></div>
-        <p class="text-xl font-bold">대감님이 사주를 분석 중...</p>
+        <p class="text-xl font-bold text-[#B91C1C]">대감님이 신묘한 기운을 모으는 중...</p>
     </div>
 
-    <div id="result-section" class="hidden w-full max-w-md bg-white rounded-[40px] shadow-sm p-10 border-4 border-[#D4AF37]">
-        <h2 class="text-2xl font-black text-center mb-6">🏮 분석 결과 리포트 🏮</h2>
-        <div id="result-content" class="space-y-4 text-lg">
-            </div>
-        <button onclick="location.reload()" class="w-full py-4 bg-gray-100 text-gray-600 rounded-2xl font-bold mt-8">다시 분석하기</button>
+    <div id="result-section" class="hidden w-full max-w-md rounded-[20px] shadow-sm p-10 border-4 border-[#B91C1C]">
+        <h2 class="text-2xl font-black text-center mb-6 talisman-title">🧧 영험한 분석 리포트 🧧</h2>
+        <div id="result-content" class="space-y-4 text-lg"></div>
+        <button onclick="location.reload()" class="w-full py-4 bg-[#B91C1C] text-white rounded-2xl font-bold mt-8 shadow-md">다시 분석하기</button>
     </div>
 
     <script>
-        // 보안: 우클릭 및 소스보기 차단 (100% 유지)
+        // 보안 설정
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = e => { if(e.keyCode == 123 || (e.ctrlKey && e.keyCode == 85)) return false; };
 
+        const sajuData = [
+            { element: "목(木)", color: "청색 및 녹색 계열", numbers: "3, 8", direction: "동쪽", object: "나무 소재 소품, 화분" },
+            { element: "화(火)", color: "적색 및 분홍 계열", numbers: "2, 7", direction: "남쪽", object: "향초, 화려한 액세서리" },
+            { element: "토(土)", color: "황색 및 브라운 계열", numbers: "5, 10", direction: "중앙 및 북동쪽", object: "도자기 소품, 황토색 지갑" },
+            { element: "금(金)", color: "백색 및 골드 계열", numbers: "4, 9", direction: "서쪽", object: "금속 시계, 코인" },
+            { element: "수(水)", color: "흑색 및 청회색 계열", numbers: "1, 6", direction: "북쪽", object: "어항, 유리 소재 소품" }
+        ];
+
         function runAnalysis() {
             const name = document.getElementById('name').value;
-            // 필수 입력 체크만 최소한으로 유지
-            if(!name) {
-                alert("성함을 입력해주세요.");
-                return;
-            }
+            if(!name) return alert("성함을 입력해주세요.");
 
-            // [수정 핵심] 화면 전환: 입력창 가리고 로딩창 보여주기
             document.getElementById('input-section').classList.add('hidden');
             document.getElementById('loading-section').classList.remove('hidden');
 
-            // 3초 기운 모으기 후 결과 표시
+            const index = name.length % sajuData.length;
+            const res = sajuData[index];
+            const extraNums = Array.from({length: 3}, () => Math.floor(Math.random() * 45) + 1).join(", ");
+
             setTimeout(() => {
                 document.getElementById('loading-section').classList.add('hidden');
                 document.getElementById('result-section').classList.remove('hidden');
                 
-                // [수정 핵심] alert 대신 이미 만들어두신 result-content에 내용을 채워 넣습니다.
                 document.getElementById('result-content').innerHTML = `
-                    <p class="text-center font-bold text-xl text-[#D4AF37] mb-2">${name} 대감님은</p>
-                    <p class="text-center font-medium mb-6">타고난 본신 기운이 <b>'토(土)'</b>입니다.</p>
-                    <div class="bg-orange-50 p-5 rounded-2xl space-y-3 shadow-inner text-base">
-                        <p>🎨 <b>행운의 색:</b> 청색 및 녹색 계열</p>
-                        <p>🍀 <b>행운의 번호:</b> 3, 8, 15, 22, 31</p>
-                        <p>🧭 <b>행운의 방향:</b> 동쪽 및 남동쪽</p>
-                        <p>🔮 <b>행운의 물건:</b> 나무 소재 소품</p>
+                    <p class="text-center font-bold text-xl text-[#B91C1C] mb-2">${name} 대감님의 명식</p>
+                    <p class="text-center font-medium mb-6 italic">"하늘이 내린 ${res.element}의 기운을 품었으니..."</p>
+                    <div class="bg-red-50 p-6 border-l-4 border-red-600 rounded-r-2xl space-y-3 text-base">
+                        <p>🎨 <b class="text-red-800">행운의 색:</b> ${res.color}</p>
+                        <p>🍀 <b class="text-red-800">행운의 번호:</b> ${res.numbers}, ${extraNums}</p>
+                        <p>🧭 <b class="text-red-800">행운의 방향:</b> ${res.direction}</p>
+                        <p>🔮 <b class="text-red-800">행운의 물건:</b> ${res.object}</p>
                     </div>
+                    <p class="text-center text-xs mt-6 text-red-400">※ 이 리포트의 붉은 기운이 횡재를 불러옵니다.</p>
                 `;
             }, 3000);
         }
