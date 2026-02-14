@@ -25,7 +25,8 @@
             background: linear-gradient(135deg, #B5A47D 0%, #E1C16E 50%, #B5A47D 100%);
         }
         .hidden { display: none; }
-        input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; }
+        input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; transition: all 0.2s; }
+        input:focus, select:focus { border-color: #E1C16E !important; ring: 2px; ring-color: #E1C16E; }
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
         .loader { 
             width: 48px; height: 48px; 
@@ -53,26 +54,36 @@
 
     <main id="input-section" class="w-full max-w-lg bg-white/90 backdrop-blur-sm rounded-[50px] card-shadow p-10 space-y-8">
         <div id="form-inner" class="space-y-6">
-            <div><label class="block text-lg font-bold mb-3">성함</label><input type="text" id="name" class="w-full p-5 rounded-2xl text-lg focus:ring-2 focus:ring-[#B5A47D]" placeholder="성함을 입력하세요"></div>
-            <div><label class="block text-lg font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-5 rounded-2xl text-lg focus:ring-2 focus:ring-[#B5A47D]" placeholder="01012345678"></div>
+            <div><label class="block text-lg font-bold mb-3">성함</label><input type="text" id="name" class="w-full p-5 rounded-2xl text-lg" placeholder="성함을 입력하세요"></div>
+            <div><label class="block text-lg font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-5 rounded-2xl text-lg" placeholder="01012345678"></div>
             
-            <div class="flex gap-4">
-                <div class="w-1/2">
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="w-full sm:w-1/2">
                     <label class="block text-lg font-bold mb-3">생년월일</label>
-                    <input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg focus:ring-2 focus:ring-[#B5A47D]" placeholder="19950815">
+                    <input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg" placeholder="19950815">
                 </div>
-                <div class="w-1/2">
-                    <label class="block text-lg font-bold mb-3 text-center">태어난 시간</label>
-                    <div class="flex flex-col gap-2">
-                        <select id="ampm" class="w-full p-4 rounded-2xl text-sm font-bold appearance-none text-center bg-gray-50">
+                <div class="w-full sm:w-1/2">
+                    <label class="block text-lg font-bold mb-3">태어난 시간</label>
+                    <div class="grid grid-cols-3 gap-1">
+                        <select id="ampm" class="p-4 rounded-l-2xl text-sm font-bold appearance-none bg-gray-50 text-center border-r-0">
                             <option value="AM">오전</option>
                             <option value="PM">오후</option>
                         </select>
-                        <div class="flex gap-1 items-center">
-                            <input type="number" id="birth-hour" class="w-1/2 p-4 rounded-2xl text-sm text-center" placeholder="시" min="1" max="12">
-                            <span class="font-bold">:</span>
-                            <input type="number" id="birth-min" class="w-1/2 p-4 rounded-2xl text-sm text-center" placeholder="분" min="0" max="59">
-                        </div>
+                        <select id="birth-hour" class="p-4 text-sm text-center bg-gray-50 border-x-0">
+                            <option value="">시</option>
+                            <script>
+                                for(let i=1; i<=12; i++) document.write(`<option value="${i}">${i}시</option>`);
+                            </script>
+                        </select>
+                        <select id="birth-min" class="p-4 rounded-r-2xl text-sm text-center bg-gray-50 border-l-0">
+                            <option value="0">00분</option>
+                            <option value="10">10분</option>
+                            <option value="20">20분</option>
+                            <option value="30">30분</option>
+                            <option value="40">40분</option>
+                            <option value="50">50분</option>
+                            <option value="unknown">모름</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -90,6 +101,10 @@
                     <div class="flex justify-between items-center text-sm text-gray-500">
                         <div class="flex items-center gap-2"><input type="checkbox" id="t-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 서비스 이용약관 동의</span></div>
                         <button onclick="openModal('terms')" class="underline">보기</button>
+                    </div>
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <div class="flex items-center gap-2"><input type="checkbox" id="m-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[선택] 마케팅 활용 동의</span></div>
+                        <button onclick="openModal('marketing')" class="underline">보기</button>
                     </div>
                 </div>
             </div>
@@ -115,13 +130,11 @@
                 <p class="text-[#B5A47D] font-bold mb-4 italic">분석 총평</p>
                 <p id="res-summary" class="text-xl font-bold leading-relaxed text-[#4E342E]"></p>
             </div>
-
             <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-6 border border-orange-100 space-y-3">
                 <div class="flex items-center gap-2 font-bold text-[#9A7B4F]"><span>⭐</span> 인생의 대운 (황금기 흐름)</div>
                 <div id="res-daeun" class="flex flex-wrap gap-2 py-2 text-xs font-bold text-gray-500"></div>
                 <p class="text-sm leading-relaxed"><span class="font-black text-orange-700">황금기:</span> <span id="res-golden-age"></span>세 전후로 인생 최대의 횡재수가 열립니다.</p>
             </div>
-
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-white border border-gray-100 rounded-3xl p-6 text-center space-y-2 shadow-sm">
                     <span class="text-2xl">🧘</span><p class="text-xs text-gray-400 font-bold">타고난 본신 기운</p><p id="res-origin" class="text-lg font-bold"></p>
@@ -153,12 +166,12 @@
     </div>
 
     <script>
-        // 법적 약관 및 모달 제어
+        // 법률 데이터 및 기본 함수
         const legalData = {
-            privacy: { title: "개인정보 수집 및 이용 동의", content: "인생대감 서비스 제공을 위해 성명, 휴대폰 번호, 생년월일, 태어난 시간을 수집합니다." },
-            terms: { title: "서비스 이용약관", content: "본 분석 결과는 동양 철학 데이터를 바탕으로 하며, 참고용 오락 콘텐츠입니다." }
+            privacy: { title: "개인정보 수집 및 이용 동의", content: "..." },
+            terms: { title: "서비스 이용약관", content: "..." },
+            marketing: { title: "마케팅 활용 동의 (선택)", content: "..." }
         };
-
         function openModal(type) {
             document.getElementById('modalTitle').innerText = legalData[type].title;
             document.getElementById('modalBody').innerText = legalData[type].content;
@@ -174,97 +187,63 @@
             subs.forEach(s => s.checked = allAgree.checked);
         };
 
-        // 사주 데이터베이스
         const sajuDatabase = [
-            { el: "갑목(甲木)", summary: "거대한 소나무의 기운입니다. 올해는 큰 재물을 뿌리 아래 두는 형국입니다.", luck: "화(火)와 토(土)", color: "청록색, 황금색", nums: "3, 8, 5", dir: "동쪽 및 중앙", obj: "나무 향수, 원목 액세서리", detail: "강직한 성품이 재물을 부릅니다. 주변 사람들과 정보를 나누면 횡재가 두 배로 돌아옵니다." },
-            { el: "을목(乙木)", summary: "유연한 넝쿨의 기운입니다. 바람을 타고 위기 속에서 예상치 못한 횡재를 거머쥘 운입니다.", luck: "수(水)와 목(木)", color: "연두색, 하늘색", nums: "1, 6, 3", dir: "북쪽 및 동쪽", obj: "작은 화분, 가죽 지갑", detail: "예술적 감각과 직관이 돈이 되는 사주입니다. 작은 기회에서 큰 금전적 이득을 챙기게 될 것입니다." },
-            { el: "병화(丙火)", summary: "만물을 비추는 태양의 기운입니다. 보물을 찾아내는 안목이 정점에 달합니다.", luck: "토(土)와 금(金)", color: "진한 빨강, 노란색", nums: "2, 7, 0", dir: "남쪽 및 서쪽", obj: "화려한 시계, 금테 안경", detail: "에너지가 강할 때 횡재운이 터집니다. 정오 무렵 중요한 금전적 결정을 내리십시오." },
-            { el: "정화(丁火)", summary: "어둠을 밝히는 등불의 기운입니다. 세밀한 분석력으로 투자에서 남다른 감각을 보입니다.", luck: "금(金)과 수(수)", color: "보라색, 은색", nums: "4, 9, 6", dir: "서쪽 및 북쪽", obj: "향초, 금속제 만년필", detail: "조용히 기회를 엿보다가 한 번에 낚아채는 운입니다. 밤 시간에 들려오는 소식에 귀를 기울이세요." },
-            { el: "무토(戊土)", summary: "넓은 황금 대지의 기운입니다. 가만히 있어도 재물이 발밑으로 모여드는 길조가 보입니다.", luck: "화(火)와 금(金)", color: "황토색, 흰색", nums: "5, 0, 4", dir: "중앙 및 서쪽", obj: "수석(돌), 벨트", detail: "인내심 끝에 큰 보상이 기다립니다. 성급함보다는 장기적인 안목으로 기다리면 대박이 납니다." },
-            { el: "기토(己土)", summary: "비옥한 전답의 기운입니다. 씨를 뿌린 것 이상의 수확을 거두는 횡재수가 강합니다.", luck: "목(木)과 화(火)", color: "갈색, 분홍색", nums: "0, 2, 7", dir: "동쪽 및 남쪽", obj: "도자기 그릇, 차(Tea) 세트", detail: "사람들과의 관계에서 돈이 들어옵니다. 귀인의 도움으로 목돈이 생길 상입니다." },
-            { el: "경금(庚金)", summary: "단단한 바위의 기운입니다. 결단력이 곧 돈입니다. 망설이지 않을 때 큰 돈을 만집니다.", luck: "수(수)와 토(토)", color: "백색, 회색", nums: "4, 9, 5", dir: "서쪽 및 북쪽", obj: "은반지, 거울", detail: "강한 카리스마가 재운을 압도합니다. 큰 판을 벌릴수록 횡재의 크기도 커집니다." },
-            { el: "신금(辛金)", summary: "정교한 보석의 기운입니다. 타고난 복이 많아 금전적 마름이 없는 귀한 명식입니다.", luck: "목(木)과 수(수)", color: "투명한 색, 은회색", nums: "1, 4, 8", dir: "북쪽 및 동쪽", obj: "크리스탈 소품, 보석함", detail: "섬세한 정보가 부를 만듭니다. 틈새시장을 공략하면 순식간에 자산이 불어납니다." },
-            { el: "임수(壬수)", summary: "흐르는 강물의 기운입니다. 유통과 변화 속에서 큰 재물을 낚아올리는 형상입니다.", luck: "목(木)과 금(金)", color: "검은색, 청색", nums: "1, 6, 9", dir: "북쪽 및 동쪽", obj: "어항, 푸른색 손수건", detail: "지혜가 곧 재물입니다. 새로운 환경에 도전하거나 여행 중에 뜻밖의 횡재를 만납니다." },
-            { el: "계수(癸수)", summary: "만물을 적시는 단비의 기운입니다. 소리 없이 재산이 불어나는 길조입니다.", luck: "화(火)와 토(토)", color: "남색, 검은색", nums: "6, 2, 8", dir: "남쪽 및 중앙", obj: "검정 우산, 만년필", detail: "부드러움이 강함을 이깁니다. 유연한 대처로 실속을 챙기십시오. 하반기에 큰 횡재수가 옵니다." }
+            { el: "갑목(甲木)", summary: "거대한 소나무의 기운이 하늘을 찌르니, 올해는 큰 재물을 뿌리 아래 두는 형국입니다.", luck: "화(火)와 토(土)", color: "청록색, 황금색", nums: "3, 8, 5", dir: "동쪽 및 중앙", obj: "나무 향수, 원목 액세서리", detail: "강직한 성품이 재물을 부릅니다. 독불장군처럼 굴기보다는 주변 사람들과 정보를 나누면 횡재가 두 배로 돌아옵니다." },
+            { el: "을목(乙木)", summary: "유연한 넝쿨의 기운입니다. 바람을 타고 위기 속에서 예상치 못한 횡재를 거머쥘 운입니다.", luck: "수(水)와 목(木)", color: "연두색, 하늘색", nums: "1, 6, 3", dir: "북쪽 및 동쪽", obj: "작은 화분, 가죽 지갑", detail: "예술적 감각과 직관이 돈이 되는 사주입니다. 남들이 무시하는 작은 기회에서 큰 금전적 이득을 챙기게 될 것입니다." },
+            { el: "병화(丙火)", summary: "만물을 비추는 태양의 기운입니다. 숨겨진 보물을 찾아내는 안목이 이번 달 정점에 달합니다.", luck: "토(土)와 금(金)", color: "진한 빨강, 노란색", nums: "2, 7, 0", dir: "남쪽 및 서쪽", obj: "화려한 시계, 금테 안경", detail: "당신의 에너지가 가장 강할 때 횡재운이 터집니다. 정오 무렵이나 햇볕이 좋은 날 중요한 금전적 결정을 내리십시오." },
+            { el: "정화(丁火)", summary: "어둠을 밝히는 등불의 기운입니다. 세밀한 분석력으로 복권이나 투자에서 남다른 감각을 보입니다.", luck: "금(金)과 수(수)", color: "보라색, 은색", nums: "4, 9, 6", dir: "서쪽 및 북쪽", obj: "향초, 금속제 만년필", detail: "조용히 기회를 엿보다가 한 번에 낚아채는 운입니다. 꿈자리가 맑은 날, 동북쪽에서 들려오는 소식에 귀를 기울이세요." },
+            { el: "무토(戊土)", summary: "깊고 넓은 황금 대지의 기운입니다. 가만히 있어도 재물이 발밑으로 모여드는 길조가 보입니다.", luck: "화(火)와 금(金)", color: "황토색, 흰색", nums: "5, 0, 4", dir: "중앙 및 서쪽", obj: "수석(돌), 벨트", detail: "인내심의 끝에 큰 보상이 기다립니다. 성급한 투자보다는 장기적인 안목으로 기다리면 대박의 기운이 스며듭니다." },
+            { el: "기토(己土)", summary: "비옥한 전답의 기운입니다. 씨를 뿌린 것 이상의 수확을 거두는 '상생'의 횡재수가 강합니다.", luck: "목(木)과 화(火)", color: "갈색, 분홍색", nums: "0, 2, 7", dir: "동쪽 및 남쪽", obj: "도자기 그릇, 차(Tea) 세트", detail: "사람들과의 관계에서 돈이 들어옵니다. 예상치 못한 귀인의 도움으로 금전적 곤란이 해결되고 목돈이 생길 상입니다." },
+            { el: "경금(庚金)", summary: "단단한 바위와 원석의 기운입니다. 결단력이 곧 돈입니다. 망설이지 않을 때 큰 돈을 만집니다.", luck: "수(수)와 토(토)", color: "백색, 회색", nums: "4, 9, 5", dir: "서쪽 및 북쪽", obj: "은반지, 거울", detail: "강한 카리스마가 재운을 압도합니다. 큰 판을 벌릴수록 횡재의 크기도 커지니 본인의 직관을 100% 믿으셔도 좋습니다." },
+            { el: "신금(辛金)", summary: "정교한 보석의 기운입니다. 타고난 복이 많아 평생 금전적 마름이 없는 귀한 명식입니다.", luck: "목(木)과 수(수)", color: "투명한 색, 은회색", nums: "1, 4, 8", dir: "북쪽 및 동쪽", obj: "크리스탈 소품, 보석함", detail: "섬세한 정보 수집이 부를 만듭니다. 고급 정보나 남들이 모르는 틈새시장을 공략하면 순식간에 자산이 불어납니다." },
+            { el: "임수(壬수)", summary: "끝없이 흐르는 강물의 기운입니다. 유통과 변화 속에서 큰 재물을 낚아올리는 형상입니다.", luck: "목(木)과 금(金)", color: "검은색, 청색", nums: "1, 6, 9", dir: "북쪽 및 동쪽", obj: "어항, 푸른색 손수건", detail: "지혜가 곧 재물입니다. 먼 곳에서 재운이 들어오니 새로운 환경에 도전하거나 여행 중에 뜻밖의 횡재를 만납니다." },
+            { el: "계수(癸수)", summary: "만물을 적시는 단비의 기운입니다. 소리 없이 스며드는 비처럼 재산이 소리 없이 불어납니다.", luck: "화(火)와 토(토)", color: "남색, 검은색", nums: "6, 2, 8", dir: "남쪽 및 중앙", obj: "검정 우산, 만년필", detail: "부드러움이 강함을 이깁니다. 무리한 경쟁보다는 유연한 대처로 실속을 챙기십시오. 하반기에 큰 횡재수가 기다립니다." }
         ];
 
         const GAN = ["갑", "을", "병", "정", "무", "기", "경", "신", "임", "계"];
-        const JI = ["자", "축", "인", "묘", "진", "사", "오", "미", "신", "유", "술", "해"];
 
         function runAnalysis() {
             const name = document.getElementById('name').value.trim();
             const birth = document.getElementById('birth').value.trim();
-            const hour = document.getElementById('birth-hour').value.trim();
-            const min = document.getElementById('birth-min').value.trim() || "0";
+            const hour = document.getElementById('birth-hour').value;
+            const min = document.getElementById('birth-min').value;
             const ampm = document.getElementById('ampm').value;
 
             if(!name || birth.length !== 8 || !hour) {
-                alert("성함, 생년월일, 태어난 시간을 정확히 입력해주세요.");
+                alert("성함, 생년월일(8자리), 태어난 시간을 정확히 선택하십시오.");
                 return;
             }
             if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) {
-                alert("필수 약관에 동의해주세요.");
+                alert("필수 이용약관에 동의하셔야 분석이 가능합니다.");
                 return;
             }
 
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
 
-            // --- 정밀 계산 로직 ---
+            // 분석 엔진
             const year = parseInt(birth.substring(0, 4));
             const month = parseInt(birth.substring(4, 6));
             const day = parseInt(birth.substring(6, 8));
             
-            // 24시간제로 변환
-            let hour24 = ampm === "PM" ? parseInt(hour) + 12 : parseInt(hour);
-            if(ampm === "AM" && hour === "12") hour24 = 0;
-            if(ampm === "PM" && hour === "12") hour24 = 12;
-
-            // 1. 일주(Day) 계산
             const baseDate = new Date(1900, 0, 31);
             const targetDate = new Date(year, month - 1, day);
             const diffDays = Math.floor((targetDate - baseDate) / (24 * 60 * 60 * 1000));
             const dayIndex = (diffDays + 40) % 60;
-            const dayGanIdx = dayIndex % 10;
-            const dayGan = GAN[dayGanIdx];
+            const totalIndex = dayIndex % 10;
 
-            // 2. 시주(Hour) 계산 (시두법 적용)
-            // 지지 결정 (23:30~01:30은 '자'시 등)
-            let jiIdx = 0;
-            const totalMinutes = hour24 * 60 + parseInt(min);
-            if (totalMinutes >= 1350 || totalMinutes < 90) jiIdx = 0; // 자
-            else if (totalMinutes < 210) jiIdx = 1; // 축
-            else if (totalMinutes < 330) jiIdx = 2; // 인
-            else if (totalMinutes < 450) jiIdx = 3; // 묘
-            else if (totalMinutes < 570) jiIdx = 4; // 진
-            else if (totalMinutes < 690) jiIdx = 5; // 사
-            else if (totalMinutes < 810) jiIdx = 6; // 오
-            else if (totalMinutes < 930) jiIdx = 7; // 미
-            else if (totalMinutes < 1050) jiIdx = 8; // 신
-            else if (totalMinutes < 1170) jiIdx = 9; // 유
-            else if (totalMinutes < 1290) jiIdx = 10; // 술
-            else jiIdx = 11; // 해
-
-            // 시두법: 일간의 천간에 따라 시작하는 시의 천간이 달라짐
-            const siStartGanIdx = (dayGanIdx % 5) * 2; 
-            const hourGanIdx = (siStartGanIdx + jiIdx) % 10;
-            const hourGan = GAN[hourGanIdx];
-
-            // 3. 최종 결과 인덱스 (일간 + 시의 기운을 조합하여 결과 도출)
-            const finalIndex = (dayGanIdx + hourGanIdx) % 10;
-            const res = sajuDatabase[finalIndex];
-
-            // 4. 대운/용신 계산 (계절 및 생일 기반)
-            const daeunNum = (day + hour24) % 9 + 1;
-            const daeunPeriods = Array.from({length: 8}, (_, i) => daeunNum + (i * 10));
-            const goldenAge = daeunPeriods[Math.floor((hour24 + day) % 3) + 2];
+            const daeunNum = (day + month) % 9 + 1;
+            const daeunPeriods = [];
+            for(let i=0; i<8; i++) daeunPeriods.push((daeunNum + (i * 10)));
+            const goldenAge = daeunPeriods[Math.floor(Math.random() * 3) + 2];
 
             let needOhaeng = "";
-            const spring = [3, 4, 5], summer = [6, 7, 8], fall = [9, 10, 11];
-            if (spring.includes(month)) needOhaeng = "금(金)";
-            else if (summer.includes(month)) needOhaeng = "수(水)";
-            else if (fall.includes(month)) needOhaeng = "목(木)";
-            else needOhaeng = "화(火)";
+            if ([3, 4, 5].includes(month)) needOhaeng = "금";
+            else if ([6, 7, 8].includes(month)) needOhaeng = "수";
+            else if ([9, 10, 11].includes(month)) needOhaeng = "목";
+            else needOhaeng = "화";
+
+            const res = sajuDatabase[totalIndex];
 
             setTimeout(() => {
                 document.getElementById('input-section').classList.add('hidden');
@@ -273,7 +252,7 @@
                 document.getElementById('res-name').innerText = name;
                 document.getElementById('res-summary').innerText = `"${res.summary}"`;
                 document.getElementById('res-origin').innerText = res.el + "의 기운";
-                document.getElementById('res-luck').innerText = needOhaeng;
+                document.getElementById('res-luck').innerText = needOhaeng + "의 기운";
                 
                 const daeunArea = document.getElementById('res-daeun');
                 daeunArea.innerHTML = daeunPeriods.map(d => `<span class="px-2 py-1 bg-gray-100 rounded-full">${d}세</span>`).join('');
