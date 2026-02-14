@@ -14,7 +14,7 @@
         .hidden { display: none; }
         #result-section { border: 6px double #B91C1C; background-color: #FFF9F9; box-shadow: 0 0 20px rgba(185, 28, 28, 0.2); }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 450px; }
+        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 450px; max-height: 80vh; overflow-y: auto; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-10 px-4">
@@ -58,10 +58,42 @@
         <button onclick="location.reload()" class="w-full py-4 bg-[#B91C1C] text-white rounded-2xl font-bold mt-8 shadow-md">다시 분석하기</button>
     </div>
 
-    <div id="legalModal" class="modal"><div class="modal-content"><h3 id="modalTitle" class="font-bold mb-4"></h3><div id="modalBody" class="text-sm text-gray-600 whitespace-pre-wrap"></div><button onclick="closeModal()" class="w-full mt-6 py-3 bg-[#4E342E] text-white rounded-xl">닫기</button></div></div>
+    <div id="legalModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle" class="text-lg font-bold mb-4 text-[#4E342E]"></h3>
+            <div id="modalBody" class="text-sm text-gray-600 whitespace-pre-wrap leading-relaxed"></div>
+            <button onclick="closeModal()" class="w-full mt-6 py-3 bg-[#4E342E] text-white rounded-xl font-bold">확인 및 닫기</button>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('contextmenu', e => e.preventDefault());
+
+        // 약관 상세 내용
+        const legalContents = {
+            privacy: {
+                title: "개인정보 수집 및 이용 동의 (필수)",
+                content: "1. 수집 항목: 성명, 휴대폰 번호, 생년월일, 태어난 시간\n2. 수집 목적: 운세 및 횡재수 분석 서비스 제공, 본인 확인\n3. 보유 및 이용 기간: 서비스 제공 완료 후 1년 (전자상거래법 등 관련 법령에 의거)"
+            },
+            terms: {
+                title: "서비스 이용약관 (필수)",
+                content: "제1조 (목적)\n본 약관은 '인생대감'이 제공하는 운세 분석 서비스 이용과 관련하여 회사와 이용자의 권리, 의무 및 책임 사항을 규정함을 목적으로 합니다.\n\n제2조 (서비스의 성격)\n본 서비스는 과학적 근거가 없는 통계적/전통적 분석 결과이며, 이용자의 주관적인 판단 하에 이용해야 합니다."
+            },
+            marketing: {
+                title: "마케팅 활용 동의 (선택)",
+                content: "인생대감에서 제공하는 행운의 메시지, 이벤트 알림, 신규 서비스 홍보 등 마케팅 정보를 휴대폰 문자(SMS)나 알림톡으로 받아보실 수 있습니다."
+            }
+        };
+
+        function openModal(type) {
+            document.getElementById('modalTitle').innerText = legalContents[type].title;
+            document.getElementById('modalBody').innerText = legalContents[type].content;
+            document.getElementById('legalModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('legalModal').style.display = 'none';
+        }
 
         const sajuData = [
             { element: "목(木)", color: "청색 및 녹색 계열", numbers: "3, 8", direction: "동쪽", object: "나무 소재 소품, 화분" },
@@ -71,7 +103,6 @@
             { element: "수(水)", color: "흑색 및 청회색 계열", numbers: "1, 6", direction: "북쪽", object: "어항, 유리 소재 소품" }
         ];
 
-        // 동의 로직
         const allAgreeChk = document.getElementById('all-agree');
         const subAgreeChks = document.querySelectorAll('.sub-agree');
         document.getElementById('all-agree-area').onclick = (e) => {
