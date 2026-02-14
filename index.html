@@ -8,22 +8,21 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
         body { font-family: 'Pretendard', sans-serif; background-color: #FDF5E6; color: #4E342E; -webkit-user-select:none; user-select:none; }
+        .gold-point { color: #D4AF37; }
         .gold-wave { background: linear-gradient(90deg, #D4AF37, #E1C16E, #4E342E, #D4AF37); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; animation: shine 3s linear infinite; }
         @keyframes shine { to { background-position: 200% center; } }
-        input, select { background-color: #F8F9FA !important; border: 1px solid #F0F0F0 !important; }
+        input, select { background-color: #F8F9FA !important; border: 1px solid #F0F0F0 !important; color: #4E342E !important; }
+        input::placeholder { color: #A0A0A0; }
+        input:focus, select:focus { border-color: #D4AF37 !important; outline: none; }
+        select { appearance: auto; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 450px; max-height: 80vh; overflow-y: auto; }
+        .modal-body-text { font-size: 13px; line-height: 1.8; color: #555; text-align: justify; }
+        .custom-chk { width: 1.25rem; height: 1.25rem; cursor: pointer; }
         .hidden { display: none; }
         
-        /* 로딩 애니메이션 */
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #B91C1C; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* [핵심] 부적 느낌의 결과창 스타일 */
-        #result-section { 
-            border: 6px double #B91C1C; /* 부적 특유의 이중 붉은 테두리 */
-            background-color: #FFF9F9; /* 아주 연한 붉은 기운이 도는 배경 */
-            box-shadow: 0 0 20px rgba(185, 28, 28, 0.2); 
-        }
-        .talisman-title { color: #B91C1C; letter-spacing: -1px; }
+        /* 팝업 대신 나타날 부적 리포트 스타일 */
+        #result-section { border: 6px double #B91C1C; background-color: #FFF9F9; box-shadow: 0 0 20px rgba(185, 28, 28, 0.2); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-10 px-4">
@@ -36,40 +35,75 @@
     <main id="input-section" class="w-full max-w-md bg-white rounded-[40px] shadow-sm p-10">
         <div class="space-y-6">
             <div><label class="block text-sm font-bold mb-3">성함</label><input type="text" id="name" class="w-full p-4 rounded-2xl" placeholder="성함을 입력하세요"></div>
-            <div><label class="block text-sm font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-4 rounded-2xl" placeholder="01012345678"></div>
+            <div><label class="block text-sm font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-4 rounded-2xl" placeholder="01012345678 (숫자만 입력)"></div>
             <div class="grid grid-cols-2 gap-4">
                 <div><label class="block text-sm font-bold mb-3">생년월일</label><input type="number" id="birth" class="w-full p-4 rounded-2xl" placeholder="19950815"></div>
                 <div><label class="block text-sm font-bold mb-3">태어난 시간</label><div class="flex gap-2">
-                    <select id="ampm" class="w-1/2 p-4 rounded-2xl text-sm font-medium"><option value="오전">오전</option><option value="오후">오후</option></select>
+                    <select id="ampm" class="w-1/2 p-4 rounded-2xl text-sm font-medium">
+                        <option value="오전" selected>오전</option><option value="오후">오후</option><option value="모름">모름</option>
+                    </select>
                     <input type="text" id="birth-time" class="w-1/2 p-4 rounded-2xl text-sm" placeholder="시/분">
                 </div></div>
             </div>
             <div class="pt-4 border-t border-gray-50">
-                <div class="flex items-center mb-6 bg-[#F8F7F3] p-5 rounded-2xl cursor-pointer" onclick="document.getElementById('all-agree').click()">
-                    <input type="checkbox" id="all-agree" class="w-5 h-5 mr-3 accent-[#4E342E]">
+                <div class="flex items-center mb-6 bg-[#F8F7F3] p-5 rounded-2xl cursor-pointer" id="all-agree-area">
+                    <input type="checkbox" id="all-agree" class="custom-chk mr-3 accent-[#4E342E]">
                     <span class="font-bold text-base">모든 약관에 전체 동의하기</span>
+                </div>
+                <div class="space-y-4 px-2 text-sm text-gray-400">
+                    <div class="flex justify-between items-center"><div class="flex items-center"><input type="checkbox" id="privacy-agree" class="sub-agree custom-chk mr-2 accent-[#4E342E]"><span>[필수] 개인정보 수집 및 이용 동의</span></div><button onclick="openModal('privacy')" class="text-gray-400 underline">보기</button></div>
+                    <div class="flex justify-between items-center"><div class="flex items-center"><input type="checkbox" id="terms-agree" class="sub-agree custom-chk mr-2 accent-[#4E342E]"><span>[필수] 서비스 이용약관</span></div><button onclick="openModal('terms')" class="text-gray-400 underline">보기</button></div>
+                    <div class="flex justify-between items-center"><div class="flex items-center"><input type="checkbox" id="marketing-agree" class="sub-agree custom-chk mr-2 accent-[#4E342E]"><span>[선택] 마케팅 활용 동의</span></div><button onclick="openModal('marketing')" class="text-gray-400 underline">보기</button></div>
                 </div>
             </div>
             <button onclick="runAnalysis()" id="submit-btn" class="w-full py-5 bg-[#4E342E] text-white rounded-[25px] text-xl font-bold mt-4 shadow-lg active:scale-95 transition-all">무료 횡재수 분석 시작</button>
         </div>
     </main>
 
-    <div id="loading-section" class="hidden w-full max-w-md bg-white rounded-[40px] shadow-sm p-20 text-center">
-        <div class="loader"></div>
-        <p class="text-xl font-bold text-[#B91C1C]">대감님이 신묘한 기운을 모으는 중...</p>
+    <div id="result-section" class="hidden w-full max-w-md rounded-[30px] p-10 mt-4">
+        <h2 class="text-2xl font-black text-center mb-6 text-[#B91C1C]">🧧 영험한 분석 리포트 🧧</h2>
+        <div id="result-content" class="space-y-4 text-lg"></div>
+        <button onclick="location.reload()" class="w-full py-4 bg-[#B91C1C] text-white rounded-2xl font-bold mt-8">다시 분석하기</button>
     </div>
 
-    <div id="result-section" class="hidden w-full max-w-md rounded-[20px] shadow-sm p-10 border-4 border-[#B91C1C]">
-        <h2 class="text-2xl font-black text-center mb-6 talisman-title">🧧 영험한 분석 리포트 🧧</h2>
-        <div id="result-content" class="space-y-4 text-lg"></div>
-        <button onclick="location.reload()" class="w-full py-4 bg-[#B91C1C] text-white rounded-2xl font-bold mt-8 shadow-md">다시 분석하기</button>
-    </div>
+    <footer class="mt-12 text-center">
+        <p class="text-[11px] text-gray-300">© 2026 인생대감 Insaeng Daegam. All Rights Reserved.</p>
+    </footer>
+
+    <div id="legalModal" class="modal"><div class="modal-content"><h3 id="modalTitle" class="text-lg font-bold mb-4 text-[#4E342E]"></h3><div id="modalBody" class="modal-body-text whitespace-pre-wrap"></div><button onclick="closeModal()" class="w-full mt-6 py-3 bg-[#4E342E] text-white rounded-xl font-bold">확인 및 닫기</button></div></div>
 
     <script>
-        // 보안 설정
+        // 프롬프트 보호 (보안)
         document.addEventListener('contextmenu', e => e.preventDefault());
         document.onkeydown = e => { if(e.keyCode == 123 || (e.ctrlKey && e.keyCode == 85)) return false; };
 
+        const legalContents = {
+            privacy: { title: "개인정보 수집 및 이용 동의 (필수)", content: "인생대감 서비스 제공을 위해..." },
+            terms: { title: "서비스 이용약관 (필수)", content: "제1조 (목적)..." },
+            marketing: { title: "마케팅 활용 동의 (선택)", content: "인생대감의 유익한 혜택 정보를..." }
+        };
+
+        function openModal(type) {
+            document.getElementById('modalTitle').innerText = legalContents[type].title;
+            document.getElementById('modalBody').innerText = legalContents[type].content;
+            document.getElementById('legalModal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('legalModal').style.display = 'none'; }
+
+        const allAgreeChk = document.getElementById('all-agree');
+        const subAgreeChks = document.querySelectorAll('.sub-agree');
+        document.getElementById('all-agree-area').onclick = function(e) {
+            if (e.target !== allAgreeChk) allAgreeChk.checked = !allAgreeChk.checked;
+            subAgreeChks.forEach(chk => chk.checked = allAgreeChk.checked);
+        };
+        subAgreeChks.forEach(chk => {
+            chk.addEventListener('change', () => {
+                const checkedCount = document.querySelectorAll('.sub-agree:checked').length;
+                allAgreeChk.checked = (checkedCount === subAgreeChks.length);
+            });
+        });
+
+        // 오행 랜덤 데이터베이스
         const sajuData = [
             { element: "목(木)", color: "청색 및 녹색 계열", numbers: "3, 8", direction: "동쪽", object: "나무 소재 소품, 화분" },
             { element: "화(火)", color: "적색 및 분홍 계열", numbers: "2, 7", direction: "남쪽", object: "향초, 화려한 액세서리" },
@@ -78,33 +112,41 @@
             { element: "수(水)", color: "흑색 및 청회색 계열", numbers: "1, 6", direction: "북쪽", object: "어항, 유리 소재 소품" }
         ];
 
-        function runAnalysis() {
+        async function runAnalysis() {
             const name = document.getElementById('name').value;
-            if(!name) return alert("성함을 입력해주세요.");
+            const phone = document.getElementById('phone').value;
+            const privacyOk = document.getElementById('privacy-agree').checked;
+            const termsOk = document.getElementById('terms-agree').checked;
 
-            document.getElementById('input-section').classList.add('hidden');
-            document.getElementById('loading-section').classList.remove('hidden');
+            if(!name || !phone) return alert("필수 정보를 입력해주세요.");
+            if(!privacyOk || !termsOk) return alert("필수 약관에 동의해주세요.");
 
-            const index = name.length % sajuData.length;
-            const res = sajuData[index];
+            const btn = document.getElementById('submit-btn');
+            btn.innerText = "대감님이 사주를 분석 중...";
+            btn.disabled = true;
+
+            // 1. 오행 랜덤 로직 (이름 기반으로 고유 결과 생성)
+            const res = sajuData[name.length % 5];
             const extraNums = Array.from({length: 3}, () => Math.floor(Math.random() * 45) + 1).join(", ");
 
+            // 2. 팝업창 완전 제거 및 화면 전환
             setTimeout(() => {
-                document.getElementById('loading-section').classList.add('hidden');
+                document.getElementById('input-section').classList.add('hidden');
                 document.getElementById('result-section').classList.remove('hidden');
                 
                 document.getElementById('result-content').innerHTML = `
-                    <p class="text-center font-bold text-xl text-[#B91C1C] mb-2">${name} 대감님의 명식</p>
-                    <p class="text-center font-medium mb-6 italic">"하늘이 내린 ${res.element}의 기운을 품었으니..."</p>
+                    <p class="text-center font-bold text-xl text-[#B91C1C] mb-2">${name} 대감님</p>
+                    <p class="text-center font-medium mb-6 italic">"하늘이 내린 ${res.element}의 기운이 비칩니다."</p>
                     <div class="bg-red-50 p-6 border-l-4 border-red-600 rounded-r-2xl space-y-3 text-base">
-                        <p>🎨 <b class="text-red-800">행운의 색:</b> ${res.color}</p>
-                        <p>🍀 <b class="text-red-800">행운의 번호:</b> ${res.numbers}, ${extraNums}</p>
-                        <p>🧭 <b class="text-red-800">행운의 방향:</b> ${res.direction}</p>
-                        <p>🔮 <b class="text-red-800">행운의 물건:</b> ${res.object}</p>
+                        <p>🎨 <b>행운의 색:</b> ${res.color}</p>
+                        <p>🍀 <b>행운의 번호:</b> ${res.numbers}, ${extraNums}</p>
+                        <p>🧭 <b>행운의 방향:</b> ${res.direction}</p>
+                        <p>🔮 <b>행운의 물건:</b> ${res.object}</p>
                     </div>
-                    <p class="text-center text-xs mt-6 text-red-400">※ 이 리포트의 붉은 기운이 횡재를 불러옵니다.</p>
                 `;
-            }, 3000);
+                btn.innerText = "무료 횡재수 분석 시작";
+                btn.disabled = false;
+            }, 2500);
         }
     </script>
 </body>
