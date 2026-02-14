@@ -9,12 +9,25 @@
     <style>
         body { font-family: 'Pretendard', sans-serif; background-color: #F7F3E9; color: #4E342E; }
         .card-shadow { box-shadow: 0 10px 40px rgba(0,0,0,0.06); }
-        .gold-text { color: #B5A47D; }
+        
+        /* [핵심] 고품격 황금 물결 애니메이션 */
+        .gold-wave { 
+            background: linear-gradient(90deg, #B5A47D, #F9F1D0, #B5A47D, #E1C16E, #B5A47D);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shine 3s linear infinite;
+            font-weight: 800;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+
         .hidden { display: none; }
         input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; }
         .loader { width: 40px; height: 40px; border: 4px solid #E1C16E; border-bottom-color: #4E342E; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        /* 모달 스타일 */
+        
+        /* 모달 스타일 유지 */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: white; padding: 30px; border-radius: 40px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
         .legal-text { font-size: 12px; line-height: 1.8; color: #666; }
@@ -24,7 +37,10 @@
 
     <header class="text-center mb-10">
         <h1 class="text-4xl font-black mb-2 tracking-tight">인생대감</h1>
-        <p class="text-xl font-bold"><span class="text-gray-600">고품격 횡재수</span> <span class="gold-text text-2xl">분석 리포트</span></p>
+        <p class="text-xl flex flex-col sm:flex-row items-center justify-center gap-2">
+            <span class="text-gray-600 font-bold">고품격 횡재수</span> 
+            <span class="gold-wave text-2xl">분석 리포트</span>
+        </p>
     </header>
 
     <main id="input-section" class="w-full max-w-lg bg-white rounded-[50px] card-shadow p-10 space-y-8">
@@ -75,7 +91,7 @@
         <div class="bg-[#4E342E] rounded-t-[50px] p-12 text-center text-white space-y-4">
             <div class="text-3xl">🏮</div>
             <h2 class="text-3xl font-bold"><span id="res-name"></span> 대감님의</h2>
-            <p class="gold-text text-xl font-bold">정밀 횡재수 분석 리포트</p>
+            <p class="gold-wave text-xl font-bold">정밀 횡재수 분석 리포트</p>
         </div>
         <div class="bg-white rounded-b-[50px] card-shadow p-8 space-y-8 -mt-2">
             <div class="bg-[#FDF9F0] rounded-3xl p-8 text-center border border-[#F1EAD7]">
@@ -113,7 +129,6 @@
     </div>
 
     <script>
-        // 상세 약관 데이터 (표준 가이드 준수)
         const legalData = {
             privacy: {
                 title: "개인정보 수집 및 이용 동의",
@@ -136,7 +151,6 @@
         }
         function closeModal() { document.getElementById('legalModal').style.display = 'none'; }
 
-        // 약관 전체 동의 로직
         const allAgree = document.getElementById('all-agree');
         const subs = document.querySelectorAll('.sub-agree');
         document.getElementById('all-agree-area').onclick = (e) => {
