@@ -35,6 +35,10 @@ body { font-family: 'Pretendard', sans-serif; background-color: #FDF5E6; color: 
     .modal-body-text { font-size: 13px; line-height: 1.8; color: #555; text-align: justify; }
     
     .custom-chk { width: 1.25rem; height: 1.25rem; cursor: pointer; }
+
+    /* 결과창 애니메이션 */
+    #result-area { display: none; animation: fadeIn 0.5s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-10 px-4">
@@ -116,6 +120,11 @@ body { font-family: 'Pretendard', sans-serif; background-color: #FDF5E6; color: 
         <button onclick="runAnalysis()" id="submit-btn" class="w-full py-5 bg-[#4E342E] text-white rounded-[25px] text-xl font-bold mt-4 shadow-lg active:scale-95 transition-all">
             무료 횡재수 분석 시작
         </button>
+
+        <div id="result-area" class="mt-8 p-6 bg-[#FDF5E6] rounded-3xl border-2 border-[#D4AF37] text-sm leading-relaxed">
+            <h2 class="text-lg font-bold mb-4 text-center">🏮 대감님의 정밀 분석 결과 🏮</h2>
+            <div id="result-content" class="space-y-2"></div>
+        </div>
     </div></main><footer class="mt-12 text-center">
     <p class="text-[11px] text-gray-300">© 2026 인생대감 Insaeng Daegam. All Rights Reserved.</p></footer><div id="legalModal" class="modal">
     <div class="modal-content">
@@ -171,7 +180,6 @@ body { font-family: 'Pretendard', sans-serif; background-color: #FDF5E6; color: 
         if(!phone) return alert("휴대폰 번호를 입력해주세요.");
         if(!privacyOk || !termsOk) return alert("필수 항목에 동의하셔야 분석이 가능합니다.");
 
-        // 시간 데이터 조합
         const ampm = document.getElementById('ampm').value;
         const hour = document.getElementById('birth-hour').value;
         const minute = document.getElementById('birth-min').value;
@@ -201,15 +209,22 @@ body { font-family: 'Pretendard', sans-serif; background-color: #FDF5E6; color: 
             
             const data = await response.json();
             
-            alert(`🏮 대감님의 정밀 분석 결과가 도착했습니다 🏮\n\n` +
-                  `● 타고난 본신(本身) 기운: ${data.fiveElements || '토(土)의 기운'}\n` +
-                  `● 부족함을 채우는 행운 기운: ${data.luckyEnergy || '목(木)의 기운'}\n` +
-                  `* 본신의 기운이 강하더라도, 행운의 기운을 가까이해야 발복(發福)합니다.\n` +
-                  `------------------------------------------\n` +
-                  `● 🎨 행운의 색: ${data.luckyColor || '청색 및 녹색 계열'}\n` +
-                  `● 🍀 행운의 번호: ${data.luckyNumber || '3, 8'}\n` +
-                  `● 🧭 행운의 방향: ${data.luckyDirection || '동쪽 및 남동쪽'}\n` +
-                  `● 🔮 행운의 물건: ${data.luckyObject || '나무 소재의 소품이나 화분'}`);
+            // 결과창에 텍스트 주입
+            const resultContent = document.getElementById('result-content');
+            resultContent.innerHTML = `
+                <p>● 타고난 본신(本身) 기운: <b>${data.fiveElements || '토(土)의 기운'}</b></p>
+                <p>● 부족함을 채우는 행운 기운: <b>${data.luckyEnergy || '목(木)의 기운'}</b></p>
+                <p class="text-[12px] text-gray-500 mt-2">* 본신의 기운이 강하더라도, 행운의 기운을 가까이해야 발복(發福)합니다.</p>
+                <hr class="my-4 border-[#D4AF37] opacity-30">
+                <p>● 🎨 행운의 색: ${data.luckyColor || '청색 및 녹색 계열'}</p>
+                <p>● 🍀 행운의 번호: ${data.luckyNumber || '3, 8'}</p>
+                <p>● 🧭 행운의 방향: ${data.luckyDirection || '동쪽 및 남동쪽'}</p>
+                <p>● 🔮 행운의 물건: ${data.luckyObject || '나무 소재의 소품이나 화분'}</p>
+            `;
+            
+            // 결과 영역 보이기
+            document.getElementById('result-area').style.display = 'block';
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
             
         } catch (e) {
             console.log("분석 서버 연결 대기 중...");
