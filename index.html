@@ -28,9 +28,18 @@
         }
         
         .hidden { display: none; }
-        input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; }
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; transition: all 0.2s; }
+        input:focus, select:focus { border-color: #B5A47D !important; ring: 2px; ring-color: #B5A47D; }
         
+        /* 드롭다운 화살표 커스텀 */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23B5A47D'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.2em;
+        }
+
         .loader { 
             width: 48px; height: 48px; 
             border: 5px solid #FFF; border-bottom-color: #B5A47D; 
@@ -59,25 +68,36 @@
 
     <main id="input-section" class="w-full max-w-lg bg-white/90 backdrop-blur-sm rounded-[50px] card-shadow p-10 space-y-8">
         <div id="form-inner" class="space-y-6">
-            <div><label class="block text-lg font-bold mb-3">성함</label><input type="text" id="name" class="w-full p-5 rounded-2xl text-lg focus:ring-2 focus:ring-[#B5A47D]" placeholder="성함을 입력하세요"></div>
-            <div><label class="block text-lg font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-5 rounded-2xl text-lg focus:ring-2 focus:ring-[#B5A47D]" placeholder="01012345678"></div>
+            <div>
+                <label class="block text-lg font-bold mb-3">성함</label>
+                <input type="text" id="name" class="w-full p-5 rounded-2xl text-lg" placeholder="성함을 입력하세요">
+            </div>
+            
+            <div>
+                <label class="block text-lg font-bold mb-3">휴대폰 번호</label>
+                <input type="tel" id="phone" class="w-full p-5 rounded-2xl text-lg" placeholder="01012345678">
+            </div>
             
             <div class="flex gap-4">
                 <div class="w-1/2">
                     <label class="block text-lg font-bold mb-3">생년월일</label>
-                    <input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg focus:ring-2 focus:ring-[#B5A47D]" placeholder="19950815">
+                    <input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg" placeholder="19950815">
                 </div>
                 <div class="w-1/2">
                     <label class="block text-lg font-bold mb-3 text-center">태어난 시간</label>
                     <div class="flex flex-col gap-2">
-                        <select id="ampm" class="w-full p-4 rounded-2xl text-sm font-bold appearance-none text-center bg-gray-50">
+                        <select id="ampm" class="w-full p-4 rounded-2xl text-sm font-bold bg-gray-50">
                             <option value="AM">오전</option>
                             <option value="PM">오후</option>
                         </select>
                         <div class="flex gap-1 items-center">
-                            <input type="number" id="birth-hour" class="w-1/2 p-4 rounded-2xl text-sm text-center" placeholder="시" min="1" max="12">
+                            <select id="birth-hour" class="w-1/2 p-4 rounded-2xl text-sm text-center font-bold">
+                                <option value="">시</option>
+                            </select>
                             <span class="font-bold">:</span>
-                            <input type="number" id="birth-min" class="w-1/2 p-4 rounded-2xl text-sm text-center" placeholder="분" min="0" max="59">
+                            <select id="birth-min" class="w-1/2 p-4 rounded-2xl text-sm text-center font-bold">
+                                <option value="0">00분</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -156,19 +176,25 @@
     </div>
 
     <script>
+        // 시간/분 셀렉트 박스 생성
+        const hourSelect = document.getElementById('birth-hour');
+        const minSelect = document.getElementById('birth-min');
+
+        for(let i=1; i<=12; i++) {
+            let opt = document.createElement('option');
+            opt.value = i; opt.innerText = i + "시";
+            hourSelect.appendChild(opt);
+        }
+        for(let i=0; i<=50; i+=10) {
+            let opt = document.createElement('option');
+            opt.value = i; opt.innerText = i + "분";
+            minSelect.appendChild(opt);
+        }
+
         const legalData = {
-            privacy: {
-                title: "개인정보 수집 및 이용 동의 (상세)",
-                content: `인생대감 서비스(이하 '서비스')는 정보통신망법 및 개인정보보호법에 의거하여 이용자의 개인정보를 안전하게 처리하며, 서비스 제공을 위해 최소한의 정보만을 수집합니다.\n\n1. 수집하는 개인정보 항목\n- 필수항목: 성명, 휴대폰 번호, 생년월일, 성별, 태어난 시간\n- 서비스 이용 과정에서 생성되는 정보: 이용 기록, 접속 로그, 쿠키, IP 정보\n\n2. 수집 및 이용 목적\n- 개인별 맞춤형 사주 및 운세 분석 결과 생성\n- 서비스 이용에 따른 본인 식별 및 중복 가입 방지\n- 고지사항 전달 및 불만 처리 등 원활한 의사소통 경로 확보\n- 서비스 이용 내역 관리 및 부정이용 방지\n\n3. 개인정보의 보유 및 이용 기간\n- 이용자의 개인정보는 원칙적으로 서비스 제공 목적이 달성되면 지체 없이 파기합니다.\n- 단, 내부 방침에 의한 부정이용 방지를 위해 탈퇴 후 6개월간 보관하며, 관련 법령(전자상거래법 등)의 규정에 의하여 보존할 필요가 있는 경우 해당 법령에서 정한 기간 동안 보관합니다.\n\n4. 동의 거부 권리\n- 이용자는 본 개인정보 수집 및 이용 동의를 거부할 권리가 있습니다. 단, 필수항목에 대한 동의 거부 시 맞춤형 운세 분석 서비스 이용이 제한됩니다.`
-            },
-            terms: {
-                title: "서비스 이용약관 (상세)",
-                content: `제1조 (목적)\n본 약관은 인생대감(이하 '회사')이 제공하는 운세 서비스의 이용 조건 및 절차에 관한 사항을 규정함을 목적으로 합니다.\n\n제2조 (서비스의 내용)\n1. 회사는 이용자의 사주 정보를 바탕으로 한 데이터 분석 결과를 제공합니다.\n2. 본 서비스에서 제공하는 분석 내용은 동양 철학적 데이터를 근거로 하나, 이는 이용자의 흥미와 참고를 위한 오락용 콘텐츠입니다.\n\n제3조 (책임의 한계)\n1. 회사는 제공된 정보의 정확성이나 신뢰성에 대해 법적인 보증을 하지 않습니다.\n2. 분석 결과를 바탕으로 한 이용자의 주관적인 판단 및 행동(투자, 계약 등)에 의해 발생하는 유·무형의 손실에 대해 회사는 책임을 지지 않습니다.\n\n제4조 (이용자의 의무)\n1. 이용자는 자신의 정보를 정확하게 입력해야 하며, 허위 정보 입력으로 발생한 문제는 본인에게 책임이 있습니다.\n2. 타인의 정보를 도용하여 서비스를 이용하는 행위는 엄격히 금지됩니다.\n\n제5조 (서비스의 변경 및 중단)\n회사는 기술적 필요 또는 서비스 품질 향상을 위해 서비스 내용을 변경하거나 일시 중단할 수 있으며, 이에 대해 사전에 적절한 방법으로 공지합니다.`
-            },
-            marketing: {
-                title: "마케팅 활용 및 광고성 정보 수신 동의 (선택)",
-                content: `본 동의는 선택 사항이며, 거부하시더라도 기본 운세 서비스 이용에는 제한이 없습니다.\n\n1. 수집 및 이용 목적\n- 이벤트 및 프로모션 안내, 신규 서비스 출시 정보 제공\n- 맞춤형 행운 알림(오늘의 운세, 횡재수 알림 등) 발송\n- 서비스 개선을 위한 통계 분석 및 만족도 조사\n\n2. 수집 항목\n- 성명, 휴대폰 번호\n\n3. 이용 및 보유 기간\n- 동의 일로부터 서비스 탈퇴 시 또는 마케팅 동의 철회 시까지\n\n4. 수신 방법\n- SMS(문자), 카카오 알림톡, 앱 푸시 등\n\n이용자는 언제든지 고객센터 또는 서비스 설정을 통해 본 동의를 철회할 수 있습니다.`
-            }
+            privacy: { title: "개인정보 수집 및 이용 동의", content: "운세 분석을 위해 성함, 생년월일 정보를 수집합니다." },
+            terms: { title: "서비스 이용약관", content: "본 서비스는 참고용이며 법적 효력이 없습니다." },
+            marketing: { title: "마케팅 활용 동의", content: "이벤트 및 광고 정보를 수신합니다." }
         };
 
         function openModal(type) {
@@ -178,6 +204,7 @@
         }
         function closeModal() { document.getElementById('legalModal').style.display = 'none'; }
 
+        // 전체 동의 로직
         const allAgree = document.getElementById('all-agree');
         const subs = document.querySelectorAll('.sub-agree');
         document.getElementById('all-agree-area').onclick = (e) => {
@@ -198,7 +225,6 @@
             { el: "계수(癸수)", summary: "만물을 적시는 단비의 기운입니다. 소리 없이 스며드는 비처럼 재산이 소리 없이 불어납니다.", luck: "화(火)와 토(토)", color: "남색, 검은색", nums: "6, 2, 8", dir: "남쪽 및 중앙", obj: "검정 우산, 만년필", detail: "부드러움이 강함을 이깁니다. 무리한 경쟁보다는 유연한 대처로 실속을 챙기십시오. 하반기에 큰 횡재수가 기다립니다." }
         ];
 
-        /* [수정 1: 만세력 일간 계산 로직 추가] */
         function getSajuIndex(birthStr) {
             const year = parseInt(birthStr.substring(0, 4));
             const month = parseInt(birthStr.substring(4, 6));
@@ -213,12 +239,10 @@
         function runAnalysis() {
             const name = document.getElementById('name').value.trim();
             const birth = document.getElementById('birth').value.trim();
-            const hour = document.getElementById('birth-hour').value.trim();
-            const min = document.getElementById('birth-min').value.trim() || "0";
-            const ampm = document.getElementById('ampm').value;
+            const hour = document.getElementById('birth-hour').value;
 
             if(!name || birth.length !== 8 || !hour) {
-                alert("성함, 생년월일(8자리), 태어난 시를 모두 정확히 입력하십시오.");
+                alert("성함, 생년월일(8자리), 태어난 시간을 선택하십시오.");
                 return;
             }
             if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) {
@@ -229,7 +253,6 @@
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
 
-            /* [수정 2: 천간 인덱스 계산] */
             const totalIndex = getSajuIndex(birth);
             const res = sajuDatabase[totalIndex];
 
@@ -247,9 +270,8 @@
                 document.getElementById('res-obj').innerText = res.obj;
                 document.getElementById('res-detail').innerText = res.detail;
                 
-                /* [수정 3: 상단 스크롤 이동] */
                 window.scrollTo({top:0, behavior:'smooth'});
-            }, 3000);
+            }, 2500);
         }
     </script>
 </body>
