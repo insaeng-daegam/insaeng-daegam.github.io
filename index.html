@@ -28,7 +28,6 @@
         input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; transition: all 0.2s; }
         input:focus, select:focus { border-color: #E1C16E !important; ring: 2px; ring-color: #E1C16E; }
         
-        /* 로더 스타일 */
         .loader { 
             width: 48px; height: 48px; 
             border: 5px solid #FFF; border-bottom-color: #B5A47D; 
@@ -37,11 +36,10 @@
         }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* 모달 스타일 */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; padding: 30px; border-radius: 40px; width: 100%; max-width: 600px; max-height: 80vh; overflow-y: auto; }
-        .legal-text { font-size: 14px; line-height: 1.7; color: #444; }
-        .legal-text b { color: #222; }
+        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 550px; max-height: 80vh; overflow-y: auto; }
+        .legal-text { font-size: 13px; line-height: 1.6; color: #555; }
+        .legal-text h4 { font-weight: bold; color: #222; margin-top: 15px; margin-bottom: 5px; font-size: 14px; }
         .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
@@ -96,16 +94,25 @@
                 </div>
                 <div class="space-y-3 pt-2">
                     <div class="flex justify-between items-center text-sm text-gray-500">
-                        <div class="flex items-center gap-2"><input type="checkbox" id="p-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 개인정보 수집 및 이용 동의</span></div>
-                        <button onclick="openModal('privacy')" class="underline text-xs">상세보기</button>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="p-agree" class="sub-agree w-5 h-5 accent-[#4E342E]">
+                            <span>[필수] 개인정보 수집 및 이용 동의</span>
+                        </div>
+                        <button onclick="openModal('privacy')" class="underline text-xs hover:text-amber-700">상세보기</button>
                     </div>
                     <div class="flex justify-between items-center text-sm text-gray-500">
-                        <div class="flex items-center gap-2"><input type="checkbox" id="t-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 서비스 이용약관 동의</span></div>
-                        <button onclick="openModal('terms')" class="underline text-xs">상세보기</button>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="t-agree" class="sub-agree w-5 h-5 accent-[#4E342E]">
+                            <span>[필수] 서비스 이용약관 동의</span>
+                        </div>
+                        <button onclick="openModal('terms')" class="underline text-xs hover:text-amber-700">상세보기</button>
                     </div>
                     <div class="flex justify-between items-center text-sm text-gray-500">
-                        <div class="flex items-center gap-2"><input type="checkbox" id="m-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[선택] 마케팅 활용 동의</span></div>
-                        <button onclick="openModal('marketing')" class="underline text-xs">상세보기</button>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="m-agree" class="sub-agree w-5 h-5 accent-[#4E342E]">
+                            <span>[선택] 마케팅 활용 동의</span>
+                        </div>
+                        <button onclick="openModal('marketing')" class="underline text-xs hover:text-amber-700">상세보기</button>
                     </div>
                 </div>
             </div>
@@ -173,14 +180,13 @@
 
     <div id="legalModal" class="modal">
         <div class="modal-content">
-            <h3 id="modalTitle" class="text-xl font-bold mb-6 text-[#4E342E] border-b pb-4"></h3>
+            <h3 id="modalTitle" class="text-xl font-bold mb-4 text-[#4E342E] border-b pb-4"></h3>
             <div id="modalBody" class="legal-text whitespace-pre-wrap"></div>
             <button onclick="closeModal()" class="w-full mt-8 py-5 gold-gradient-bg text-white rounded-2xl font-bold shadow-lg">확인 및 닫기</button>
         </div>
     </div>
 
     <script>
-        // --- 데이터 라이브러리 ---
         const s_origin = ["강직한 소나무 (甲木)", "유연한 담쟁이 (乙木)", "태양의 열정 (丙火)", "따뜻한 등불 (丁火)", "넓은 대지 (戊土)", "비옥한 논밭 (己토)", "단단한 바위 (庚金)", "빛나는 보석 (辛金)", "깊은 바다 (壬水)", "맑은 샘물 (癸水)"];
         const s_luck = ["성장을 돕는 물", "따스한 햇살", "단단한 뿌리", "날카로운 결단력", "차분한 지혜", "활기찬 에너지"];
         const s_color = ["청색, 에메랄드", "적색, 버건디", "황색, 골드", "백색, 실버", "흑색, 네이비"];
@@ -193,25 +199,67 @@
             "주변 사람과의 화합이 곧 재물이 되는 형국입니다. 베푸는 만큼 배가 되어 돌아오니 인색함을 멀리하면 천운이 따를 것입니다."
         ];
 
-        // --- 약관 데이터 ---
+        // --- 수정된 상세 약관 데이터 ---
         const legalData = {
             privacy: { 
                 title: "개인정보 수집 및 이용 동의", 
-                content: "1. 수집항목: 성명, 생년월일, 태어난 시간\n2. 목적: 사주 기반 횡재수 분석 리포트 제공\n3. 보유기간: 서비스 목적 달성 후 6개월 보관 후 파기." 
+                content: `인생대감 서비스 이용을 위해 아래와 같이 개인정보를 수집 및 이용합니다.
+
+<h4>1. 수집하는 개인정보 항목</h4>
+- 필수항목: 성명, 생년월일, 태어난 시간
+- 수집방법: 서비스 내 입력 폼
+
+<h4>2. 수집 및 이용 목적</h4>
+- 명리학 기반의 사주 분석 및 결과 리포트 생성
+- 서비스 이용에 따른 본인 식별 및 고충 처리
+
+<h4>3. 보유 및 이용 기간</h4>
+- 이용 목적 달성 시 즉시 파기(단, 관계법령에 따라 보존할 필요가 있는 경우 해당 기간까지 보관)
+- 최대 보유 기간: 서비스 종료 후 6개월
+
+<h4>4. 동의 거부 권리</h4>
+- 귀하는 개인정보 수집 및 이용에 거부할 권리가 있습니다. 단, 필수항목 수집 미동의 시 분석 서비스 이용이 제한됩니다.` 
             },
             terms: { 
                 title: "서비스 이용약관", 
-                content: "본 서비스는 명리학적 해석을 바탕으로 제공되며, 과학적 근거를 보장하지 않습니다. 결과에 대한 최종적인 판단과 책임은 사용자 본인에게 있습니다." 
+                content: `인생대감 서비스 이용에 관한 안내 말씀 드립니다.
+
+<h4>제1조 (목적)</h4>
+본 약관은 '인생대감'이 제공하는 운세 및 분석 서비스의 이용 조건 및 절차를 규정함을 목적으로 합니다.
+
+<h4>제2조 (서비스의 성격)</h4>
+1. 본 서비스는 전통 명리학적 해석을 바탕으로 제공되는 가상의 분석 결과입니다.
+2. 결과값은 사용자의 입력 정보에 기초한 확률적 해석이며, 과학적/절대적 근거를 보장하지 않습니다.
+
+<h4>제3조 (책임의 한계)</h4>
+1. 서비스 결과에 따른 투자, 계약 등 모든 결정의 책임은 사용자 본인에게 있습니다.
+2. 당사는 서비스 결과로 인해 발생한 직/간접적 손해에 대해 법적 책임을 지지 않습니다.
+
+<h4>제4조 (이용 제한)</h4>
+비정상적인 방법(매크로 등)을 통한 서비스 이용 시 접속이 차단될 수 있습니다.` 
             },
             marketing: { 
                 title: "마케팅 활용 동의 (선택)", 
-                content: "신규 운세 서비스 알림 및 이벤트 정보를 제공합니다." 
+                content: `신규 운세 서비스 및 이벤트 소식을 가장 먼저 받아보세요.
+
+<h4>1. 수집 목적</h4>
+- 신규 서비스 출시 알림, 맞춤형 운세 정보 제공
+- 이벤트 및 프로모션 안내 (경품 당첨 안내 등)
+
+<h4>2. 수집 항목</h4>
+- 입력된 성함 및 분석 정보 기반의 개인 맞춤 정보
+
+<h4>3. 전송 방법</h4>
+- 앱 푸시 알림, 문자(SMS/LMS), 이메일 등
+
+<h4>4. 철회 및 거부 권리</h4>
+- 본 동의는 선택 사항이며 거부 시에도 기본 분석 서비스 이용이 가능합니다. 동의 후에도 고객센터를 통해 언제든 철회할 수 있습니다.` 
             }
         };
 
         function openModal(type) {
             document.getElementById('modalTitle').innerText = legalData[type].title;
-            document.getElementById('modalBody').innerText = legalData[type].content;
+            document.getElementById('modalBody').innerHTML = legalData[type].content;
             document.getElementById('legalModal').style.display = 'flex';
         }
         function closeModal() { document.getElementById('legalModal').style.display = 'none'; }
@@ -219,10 +267,22 @@
         // 전체 동의 로직
         const allAgree = document.getElementById('all-agree');
         const subs = document.querySelectorAll('.sub-agree');
+        
         document.getElementById('all-agree-area').onclick = (e) => {
-            if(e.target !== allAgree) allAgree.checked = !allAgree.checked;
+            if(e.target !== allAgree) {
+                allAgree.checked = !allAgree.checked;
+            }
             subs.forEach(s => s.checked = allAgree.checked);
         };
+
+        // 개별 체크박스 클릭 시 전체 동의 해제 로직 추가
+        subs.forEach(s => {
+            s.onclick = (e) => {
+                e.stopPropagation();
+                const allChecked = Array.from(subs).every(i => i.checked);
+                allAgree.checked = allChecked;
+            };
+        });
 
         // 분석 실행
         function runAnalysis() {
@@ -245,17 +305,14 @@
                 const seed = parseInt(birth);
                 const idx = (n, offset = 0) => (seed + offset) % n;
 
-                // [수정] 행운의 번호 생성 로직 (중복 제거 및 정렬)
                 const generateLuckyNumbers = (seed) => {
                     let numbers = new Set();
                     let i = 0;
                     while (numbers.size < 3) {
-                        // 단순히 %45만 하면 중복 가능성이 높아지므로 소수를 곱해 변동폭을 줌
                         let num = ((seed * (i + 7)) % 45) + 1;
                         numbers.add(num);
                         i++;
                     }
-                    // 오름차순 정렬 후 콤마로 연결
                     return Array.from(numbers).sort((a, b) => a - b).join(', ');
                 };
 
@@ -268,10 +325,7 @@
                 document.getElementById('res-origin').innerText = s_origin[idx(s_origin.length)];
                 document.getElementById('res-luck').innerText = s_luck[idx(s_luck.length, 3)];
                 document.getElementById('res-color').innerText = s_color[idx(s_color.length, 5)];
-                
-                // 수정된 번호 로직 적용
                 document.getElementById('res-num').innerText = generateLuckyNumbers(seed);
-                
                 document.getElementById('res-dir').innerText = s_dir[idx(s_dir.length, 2)];
                 document.getElementById('res-obj').innerText = s_obj[idx(s_obj.length, 4)];
                 document.getElementById('res-detail').innerText = s_detail[idx(s_detail.length)];
