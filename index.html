@@ -9,39 +9,36 @@
     <style>
         body { font-family: 'Pretendard', sans-serif; background-color: #F7F3E9; color: #4E342E; -webkit-user-select: none; user-select: none; }
         .card-shadow { box-shadow: 0 10px 40px rgba(0,0,0,0.06); }
-        .gold-wave { background: linear-gradient(90deg, #B5A47D, #F9F1D0, #B5A47D, #E1C16E, #B5A47D); background-size: 200% auto; color: transparent; -webkit-background-clip: text; background-clip: text; animation: shine 3s linear infinite; font-weight: 800; }
-        @keyframes shine { to { background-position: 200% center; } }
+        .gold-text { color: #B5A47D; }
         .hidden { display: none; }
-        input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; }
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 550px; max-height: 80vh; overflow-y: auto; }
-        .legal-text { font-size: 13px; line-height: 1.8; color: #555; text-align: left; }
+        input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; transition: 0.2s; }
         .loader { width: 40px; height: 40px; border: 4px solid #E1C16E; border-bottom-color: #4E342E; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .lotto-ball { width: 38px; height: 38px; border-radius: 50%; display: inline-flex; items-center; justify-content: center; font-weight: 800; color: white; margin: 3px; line-height: 38px; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; padding: 30px; border-radius: 40px; width: 100%; max-width: 500px; max-height: 80vh; overflow-y: auto; text-align: left; }
+        .legal-box { font-size: 13px; line-height: 1.8; color: #555; white-space: pre-wrap; word-break: break-all; }
+        .lotto-ball { width: 40px; height: 40px; border-radius: 50%; display: inline-flex; items-center; justify-content: center; font-weight: 800; color: white; margin: 3px; line-height: 40px; text-shadow: 1px 1px 1px rgba(0,0,0,0.2); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-12 px-4" oncontextmenu="return false">
+<body class="min-h-screen flex flex-col items-center py-12 px-4" oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
 
     <header class="text-center mb-10">
-        <h1 class="text-4xl font-black mb-2">인생대감</h1>
-        <p class="text-xl flex flex-col sm:flex-row items-center justify-center gap-2">
-            <span class="text-gray-600 font-bold">고품격 횡재수</span> 
-            <span class="gold-wave text-2xl">분석 리포트</span>
-        </p>
+        <h1 class="text-4xl font-black mb-2 tracking-tight">인생대감</h1>
+        <p class="text-xl font-bold"><span class="text-gray-600">고품격 횡재수</span> <span class="gold-text text-2xl">분석 리포트</span></p>
     </header>
 
     <main id="input-section" class="w-full max-w-lg bg-white rounded-[50px] card-shadow p-10 space-y-8">
         <div id="form-inner" class="space-y-6">
             <div><label class="block text-lg font-bold mb-3">성함</label><input type="text" id="name" class="w-full p-5 rounded-2xl text-lg" placeholder="성함을 입력하세요"></div>
             <div><label class="block text-lg font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-5 rounded-2xl text-lg" placeholder="01012345678"></div>
-            <div><label class="block text-lg font-bold mb-3">생년월일</label><input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg" placeholder="19950815"></div>
-            <div>
-                <label class="block text-lg font-bold mb-3">태어난 시간</label>
-                <div class="flex gap-2">
-                    <select id="ampm" class="w-1/3 p-5 rounded-2xl text-sm font-bold"><option value="0">오전</option><option value="12">오후</option></select>
-                    <select id="birth-hour" class="w-1/3 p-5 rounded-2xl text-sm font-bold"></select>
-                    <select id="birth-min" class="w-1/3 p-5 rounded-2xl text-sm font-bold"></select>
+            <div class="flex gap-4">
+                <div class="w-1/2"><label class="block text-lg font-bold mb-3">생년월일</label><input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg" placeholder="19950815"></div>
+                <div class="w-1/2">
+                    <label class="block text-lg font-bold mb-3 text-center">태어난 시간</label>
+                    <div class="flex gap-2">
+                        <select id="ampm" class="w-1/2 p-5 rounded-2xl text-sm font-bold"><option value="0">오전</option><option value="12">오후</option></select>
+                        <select id="birth-hour" class="w-1/2 p-5 rounded-2xl text-sm font-bold"></select>
+                    </div>
                 </div>
             </div>
 
@@ -50,10 +47,19 @@
                     <input type="checkbox" id="all-agree" class="w-6 h-6 accent-[#4E342E]">
                     <span class="font-bold text-lg">모든 약관에 전체 동의하기</span>
                 </div>
-                <div class="space-y-3 pt-2 text-sm text-gray-600">
-                    <div class="flex justify-between items-center"><label class="flex items-center gap-2"><input type="checkbox" id="p-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 개인정보 수집 및 이용</span></label><button onclick="openModal('privacy')" class="underline">보기</button></div>
-                    <div class="flex justify-between items-center"><label class="flex items-center gap-2"><input type="checkbox" id="t-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 서비스 이용약관</span></label><button onclick="openModal('terms')" class="underline">보기</button></div>
-                    <div class="flex justify-between items-center"><label class="flex items-center gap-2"><input type="checkbox" id="m-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[선택] 마케팅 정보 수신 동의</span></label><button onclick="openModal('marketing')" class="underline">보기</button></div>
+                <div class="space-y-3 pt-2">
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <div class="flex items-center gap-2"><input type="checkbox" id="p-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 개인정보 수집 및 이용 동의</span></div>
+                        <button onclick="openModal('privacy')" class="underline">보기</button>
+                    </div>
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <div class="flex items-center gap-2"><input type="checkbox" id="t-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 서비스 이용약관 동의</span></div>
+                        <button onclick="openModal('terms')" class="underline">보기</button>
+                    </div>
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <div class="flex items-center gap-2"><input type="checkbox" id="m-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[선택] 마케팅 활용 동의</span></div>
+                        <button onclick="openModal('marketing')" class="underline">보기</button>
+                    </div>
                 </div>
             </div>
             <button onclick="runAnalysis()" class="w-full py-6 bg-[#4E342E] text-white rounded-[35px] text-2xl font-bold shadow-xl active:scale-95 transition-all">무료 횡재수 분석 시작</button>
@@ -65,117 +71,134 @@
         </div>
     </main>
 
-    <div id="result-section" class="hidden w-full max-w-lg space-y-6 pb-20">
-        <div class="bg-[#4E342E] rounded-t-[50px] p-10 text-center text-white">
-            <h2 class="text-2xl font-bold mb-1"><span id="res-name" class="text-yellow-400"></span> 대감님의 리포트</h2>
+    <div id="result-section" class="hidden w-full max-w-lg space-y-6">
+        <div class="bg-[#4E342E] rounded-t-[50px] p-12 text-center text-white space-y-4">
+            <div class="text-3xl">🏮</div>
+            <h2 class="text-3xl font-bold"><span id="res-name"></span> 대감님의</h2>
+            <p class="gold-text text-xl font-bold">정밀 횡재수 분석 리포트</p>
         </div>
         <div class="bg-white rounded-b-[50px] card-shadow p-8 space-y-8 -mt-2">
-            <div id="res-ohaeng-box" class="bg-amber-50 rounded-3xl p-6 text-center border border-amber-100">
-                <p id="res-ohaeng" class="text-3xl font-black text-[#4E342E]"></p>
+            <div class="bg-[#FDF9F0] rounded-3xl p-8 text-center border border-[#F1EAD7]">
+                <p class="text-[#B5A47D] font-bold mb-4 italic">분석 총평</p>
+                <p id="res-summary" class="text-xl font-bold leading-relaxed text-[#4E342E]"></p>
             </div>
             <div class="grid grid-cols-2 gap-4">
-                <div class="p-4 bg-gray-50 rounded-2xl text-center"><p class="text-[10px] font-bold text-gray-400">색상</p><p id="res-color" class="font-black"></p></div>
-                <div class="p-4 bg-gray-50 rounded-2xl text-center"><p class="text-[10px] font-bold text-gray-400">방향</p><p id="res-dir" class="font-black"></p></div>
-                <div class="p-4 bg-gray-50 rounded-2xl text-center"><p class="text-[10px] font-bold text-gray-400">물건</p><p id="res-item" class="font-black"></p></div>
-                <div class="p-4 bg-gray-50 rounded-2xl text-center"><p class="text-[10px] font-bold text-gray-400">보완기운</p><p id="res-lucky" class="font-black"></p></div>
+                <div class="bg-white border border-gray-100 rounded-3xl p-6 text-center space-y-2 shadow-sm">
+                    <span class="text-2xl">🧘</span><p class="text-xs text-gray-400 font-bold">타고난 본신 기운</p><p id="res-origin" class="text-lg font-bold"></p>
+                </div>
+                <div class="bg-white border border-gray-100 rounded-3xl p-6 text-center space-y-2 shadow-sm">
+                    <span class="text-2xl">🍀</span><p class="text-xs text-gray-400 font-bold">행운 보완 기운</p><p id="res-luck" class="text-lg font-bold"></p>
+                </div>
             </div>
-            <div class="bg-[#F7F3E9] p-6 rounded-3xl border-2 border-dashed border-[#B5A47D] text-center">
-                <p class="font-bold text-[#4E342E] mb-3">✨ 대감님 맞춤 횡재 번호</p>
-                <div id="res-nums" class="flex flex-wrap justify-center gap-1"></div>
+            <div class="space-y-4">
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🎨</span><div><p class="text-xs text-gray-400 font-bold">행운의 색</p><p id="res-color" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🔢</span><div><p class="text-xs text-gray-400 font-bold">행운의 번호</p><div id="res-num-area" class="mt-1 flex flex-wrap gap-1"></div></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🧭</span><div><p class="text-xs text-gray-400 font-bold">행운의 방향</p><p id="res-dir" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl"><span class="text-2xl">🔮</span><div><p class="text-xs text-gray-400 font-bold">행운의 물건</p><p id="res-obj" class="font-bold text-lg"></p></div></div>
             </div>
-            <div class="bg-gray-50 p-6 rounded-3xl"><p id="res-desc" class="text-gray-700 text-sm leading-relaxed"></p></div>
-            <button onclick="location.reload()" class="w-full py-5 bg-gray-100 text-gray-500 rounded-2xl font-bold">다시 분석하기</button>
+            <div class="bg-gray-50 rounded-3xl p-8 space-y-4">
+                <div class="flex items-center gap-2 font-bold text-lg"><span>📜</span> 대감님의 훈수 (상세 해석)</div>
+                <p id="res-detail" class="text-gray-600 leading-relaxed text-base text-justify"></p>
+            </div>
+            <button onclick="location.reload()" class="w-full py-6 border-2 border-[#4E342E] text-[#4E342E] rounded-[35px] text-2xl font-bold hover:bg-[#4E342E] hover:text-white transition-all">다시 분석하기</button>
         </div>
     </div>
 
     <div id="legalModal" class="modal">
         <div class="modal-content">
-            <h3 id="modalTitle" class="text-xl font-bold mb-4 border-b pb-2"></h3>
-            <div id="modalBody" class="legal-text whitespace-pre-wrap"></div>
-            <button onclick="closeModal()" class="w-full mt-6 py-4 bg-[#4E342E] text-white rounded-xl font-bold">내용을 확인했습니다</button>
+            <h3 id="modalTitle" class="text-xl font-bold mb-6 text-[#4E342E] border-b pb-4 tracking-tight"></h3>
+            <div id="modalBody" class="legal-box"></div>
+            <button onclick="closeModal()" class="w-full mt-8 py-5 bg-[#4E342E] text-white rounded-2xl font-bold shadow-lg">내용을 확인했습니다</button>
         </div>
     </div>
 
     <script>
-        const hS = document.getElementById('birth-hour'); const mS = document.getElementById('birth-min');
-        for(let i=0; i<12; i++) { let o=document.createElement('option'); o.value=i; o.innerText=`${i===0?12:i}시`; hS.appendChild(o); }
-        for(let i=0; i<60; i++) { let o=document.createElement('option'); o.value=i; o.innerText=`${i}분`; mS.appendChild(o); }
+        /* [보안] 우회 방지 및 소스 보호 */
+        document.addEventListener('keydown', function(e) {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) {
+                e.preventDefault(); return false;
+            }
+        });
 
-        function openModal(t) {
-            const data = {
-                privacy: {
-                    title: "개인정보 수집 및 이용 동의",
-                    content: "본 서비스는 귀하의 정밀한 운세 분석을 위해 아래와 같은 개인정보를 수집합니다.\n\n1. 수집 항목: 성명, 휴대폰 번호, 생년월일, 태어난 시간\n2. 수집 목적: 명리학 기반의 개인별 횡재수 분석 리포트 제공, 본인 확인 및 서비스 이용에 따른 고객 상담 응대\n3. 보유 및 이용 기간: 수집된 정보는 서비스 제공 완료 후 6개월간 보관하며, 이후 관련 법령에 따라 지체 없이 파기합니다.\n4. 동의 거부 권리: 귀하는 본 동의를 거부할 권리가 있으나, 거부 시 분석 리포트 이용이 제한됩니다."
-                },
-                terms: {
-                    title: "서비스 이용약관",
-                    content: "제1조 (목적)\n본 약관은 '인생대감'이 제공하는 운세 분석 서비스의 이용 조건 및 절차를 규정합니다.\n\n제2조 (내용의 성격)\n본 서비스가 제공하는 모든 정보는 명리학적 데이터에 기반한 추정치이며, 과학적 근거가 없습니다. 제공되는 횡재수 및 행운의 번호는 재미와 참고를 위한 것이며 절대적인 결과를 보장하지 않습니다.\n\n제3조 (책임 제한)\n귀하가 본 서비스의 정보를 바탕으로 행하는 모든 경제적 활동(투자, 복권 구매 등)에 대한 결과와 책임은 전적으로 본인에게 있으며, '인생대감'은 이로 인해 발생하는 어떠한 손실에 대해서도 법적 책임을 지지 않습니다."
-                },
-                marketing: {
-                    title: "마케팅 정보 수신 동의 (선택)",
-                    content: "귀하의 운세 변화에 따른 맞춤형 횡재 정보 및 서비스 안내를 받아보실 수 있습니다.\n\n1. 수집 항목: 성명, 휴대폰 번호\n2. 수집 목적: 주간 횡재수 알림, 무료 운세 이벤트 안내, 신규 서비스 홍보\n3. 전송 방법: 카카오 알림톡, 문자 메시지(SMS)\n4. 보유 기간: 서비스 종료 시 또는 동의 철회 시까지 보관합니다.\n\n* 동의하지 않으셔도 무료 분석 서비스는 이용 가능합니다."
-                }
-            };
-            document.getElementById('modalTitle').innerText = data[t].title;
-            document.getElementById('modalBody').innerText = data[t].content;
-            document.getElementById('legalModal').style.display = 'flex';
-        }
+        // 시간 데이터 생성
+        const hS = document.getElementById('birth-hour');
+        for(let i=0; i<12; i++) { let o=document.createElement('option'); o.value=i; o.innerText=`${i==0?12:i}시`; hS.appendChild(o); }
+
+        function toggleAll() { const c = document.getElementById('all-agree').checked; document.querySelectorAll('.sub-agree').forEach(s => s.checked = !c); document.getElementById('all-agree').checked = !c; }
+
+        const legalData = {
+            privacy: {
+                title: "개인정보 수집 및 이용 동의",
+                content: `인생대감 서비스 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다.\n\n1. 수집 항목\n- 필수: 성명, 휴대폰 번호, 생년월일, 태어난 시간\n- 자동 수집: 서비스 접속 로그, IP 주소, 쿠키\n\n2. 수집 및 이용 목적\n- 명리학 기반 개인화 횡재수 분석 리포트 제공\n- 이용자 식별 및 부정 이용 방지\n- 고지사항 전달 및 불만 처리 등 원활한 의사소통 경로 확보\n\n3. 보유 및 이용 기간\n- 수집된 정보는 원칙적으로 서비스 종료 시까지 보유하며, 목적 달성 후 즉시 파기합니다.\n- 단, 상법 등 관련 법령에 따라 보존이 필요한 경우 법정 기간 동안 보존합니다.\n\n4. 동의 거부권\n- 귀하는 본 동의를 거부할 수 있으나, 거부 시 분석 서비스 이용이 제한됩니다.`
+            },
+            terms: {
+                title: "서비스 이용약관 동의",
+                content: `제1조 (목적)\n본 약관은 '인생대감'에서 제공하는 운세 서비스 이용과 관련한 권리, 의무를 규정합니다.\n\n제2조 (내용의 성격)\n1. 본 서비스는 통계적 명리학 데이터를 바탕으로 한 오락용 콘텐츠입니다.\n2. 분석 결과는 개인의 주관에 따라 다를 수 있으며, 회사는 결과의 정확성 및 특정 경제적 이익을 보증하지 않습니다.\n3. 분석 결과를 바탕으로 행한 이용자의 모든 경제적 판단(투자, 복권 등)에 대한 책임은 이용자 본인에게 있습니다.\n\n제3조 (이용 제한)\n회사는 타인의 정보를 도용하거나 비정상적인 방법으로 시스템에 접근하는 경우 이용을 제한할 수 있습니다.`
+            },
+            marketing: {
+                title: "마케팅 활용 동의 (선택)",
+                content: `인생대감의 횡재 소식 및 맞춤 혜택 정보를 안내합니다.\n\n1. 마케팅 활용 목적\n- 신규 서비스 알림 및 이벤트 광고성 정보 전송\n- 운세 흐름에 따른 개인별 맞춤 행운 비방 전수\n\n2. 수신 방법\n- 카카오 알림톡, SMS, 이메일\n\n3. 보유 및 이용 기간\n- 동의 철회 시 또는 서비스 종료 시까지\n\n* 본 동의는 선택 사항이며 거부하셔도 무료 분석 이용이 가능합니다.`
+            }
+        };
+
+        function openModal(t) { document.getElementById('modalTitle').innerText = legalData[t].title; document.getElementById('modalBody').innerText = legalData[t].content; document.getElementById('legalModal').style.display = 'flex'; }
         function closeModal() { document.getElementById('legalModal').style.display = 'none'; }
-        function toggleAll() { const c = document.getElementById('all-agree').checked; document.querySelectorAll('.sub-agree').forEach(e => e.checked = c); }
 
         function runAnalysis() {
             const name = document.getElementById('name').value;
             const birth = document.getElementById('birth').value;
             const hour = parseInt(document.getElementById('birth-hour').value) + parseInt(document.getElementById('ampm').value);
-            const min = parseInt(document.getElementById('birth-min').value);
 
-            if(!name || birth.length !== 8) return alert("성함과 생년월일 8자리를 입력하십시오.");
+            if(!name || birth.length !== 8) return alert("정보를 정확히 입력하십시오.");
             if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) return alert("필수 약관에 동의하셔야 합니다.");
 
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
 
-            let nameVal = 0; for(let i=0; i<name.length; i++) nameVal += name.charCodeAt(i);
-            const totalSeed = nameVal + parseInt(birth) + hour + min;
-            const ohaengIdx = totalSeed % 5;
-
-            const ohaengData = [
-                { type: "목(木) - 푸른 나무의 기운", color: "청록색", dir: "동쪽", item: "나무 빗", lucky: "화(火)", desc: `대감님의 성함(${name})에 서린 생명력과 ${hour}시의 정기가 만나 큰 숲을 이루는 형국입니다. 올해는 문서운이 강하니 동쪽에서 들려오는 계약 소식을 귀하게 여기소서.` },
-                { type: "화(火) - 타오르는 불의 기운", color: "붉은색", dir: "남쪽", item: "가죽 지갑", lucky: "토(土)", desc: `성함의 획수가 불꽃처럼 타올라 태어나신 시각의 열기를 더합니다. 횡재수가 남쪽에서 빛나고 있으니 붉은 기운을 가까이하여 재물운을 녹여 대감님의 것으로 만드소서.` },
-                { type: "토(土) - 기름진 흙의 기운", color: "황금색", dir: "중앙", item: "반지", lucky: "금(金)", desc: `모든 것을 품는 대지의 사주입니다. 생년월일과 생시의 합이 땅속 보물을 일깨우니, 멀리 가지 마시고 익숙한 곳에서 횡재의 기회를 잡으소서.` },
-                { type: "금(金) - 단단한 쇠의 기운", color: "은색", dir: "서쪽", item: "시계", lucky: "수(水)", desc: `결단력 있는 경금의 사주입니다. 이름 속 기운이 날카로운 칼날이 되어 재물을 베어낼 준비가 되었습니다. 서쪽의 기운을 받아 횡재의 타이밍을 단번에 잡으소서.` },
-                { type: "수(水) - 깊고 넓은 물의 기운", color: "검은색", dir: "북쪽", item: "향수", lucky: "목(木)", desc: `지혜가 넘치는 임수의 기운입니다. 사방에서 재물이 흘러 들어오는 형국이니, 북쪽의 기운을 막지 말고 유연하게 대처하여 큰 바다와 같은 부를 누리소서.` }
+            // [로직] 이름 획수 + 생일 + 생시 조합 알고리즘
+            let nScore = 0; for(let i=0; i<name.length; i++) nScore += name.charCodeAt(i);
+            const seed = nScore + parseInt(birth) + hour;
+            
+            const database = [
+                { el: "목(木)", summary: "청룡의 기운이 문서를 물고 오니 새로운 계약이나 투자가 횡재로 이어질 형국입니다.", origin: "강직한 소나무의 기운", luck: "따뜻한 화(火)의 기운", color: "청록색, 에메랄드", dir: "동쪽", obj: "나무 재질의 액세서리", detail: `성함(${name})에 깃든 목(木)의 에너지가 태어나신 ${hour}시의 정기와 조화를 이루어 '수생목'의 형국을 완성했습니다. 현재 대감님의 운세는 땅 위로 솟구치는 나무와 같아, 동쪽 방향에서 귀인을 만나거나 뜻밖의 정보를 얻어 큰 재물을 얻을 상입니다. 붉은색 계열의 옷차림이 기운을 돋워줄 것입니다.` },
+                { el: "화(火)", summary: "타오르는 불길이 황금을 녹여 담는 격이니, 과감한 결단이 곧 거대한 재물이 될 것입니다.", origin: "정열적인 태양의 기운", luck: "안정적인 토(土)의 기운", color: "진홍색, 오렌지", dir: "남쪽", obj: "가죽 지갑, 안경", detail: `대감님의 사주는 뜨거운 열기가 가득하여 추진력이 매우 뛰어납니다. 이름에서 오는 수치와 생시의 합이 '식신생재'의 흐름을 만들어내고 있으니, 남쪽에서 비치는 행운의 서광을 놓치지 마십시오. 금속 재질보다는 흙의 기운을 담은 도자기나 가죽 제품을 소지하면 재물이 흩어지지 않고 쌓이게 됩니다.` },
+                { el: "토(土)", summary: "모든 만물을 품는 비옥한 대지의 기운이니, 기다림 끝에 거대한 횡재가 땅에서 솟아날 상입니다.", origin: "풍요로운 대지의 기운", luck: "결실의 금(金)의 기운", color: "황금색, 브라운", dir: "중앙 및 거주지 인근", obj: "반지, 노란 손수건", detail: `모든 사주의 중재자인 토(土)의 기운을 타고나셨습니다. 성함의 획수가 태어난 날의 숫자와 합쳐져 '진술축미'의 강력한 재물창고를 형성했습니다. 횡재수는 멀리 있지 않고 대감님의 활동 반경 중앙에 숨어 있습니다. 반짝이는 금속 장신구를 착용하여 땅속의 보석을 일깨우면 횡재의 문이 활짝 열릴 것입니다.` },
+                { el: "금(金)", summary: "백호의 날카로운 기세가 재물을 베어내는 격이니 정확한 타이밍에 큰 이득을 취할 것입니다.", origin: "냉철한 바위의 기운", luck: "유연한 수(水)의 기운", color: "흰색, 실버", dir: "서쪽", obj: "시계, 스마트 기기", detail: `대감님은 칼날처럼 날카로운 직관과 결단력을 사주에 품고 계십니다. 이름에서 오는 기운이 금(金)의 기세를 보좌하여 재물을 취하는 데 있어 타의 추종을 불허하는 상입니다. 서쪽 방향에서 강력한 금전운이 흐르고 있으니, 흰색 코디와 세련된 금속 시계를 활용하십시오. 유연한 태도가 곧 재물을 가두는 그물이 될 것입니다.` },
+                { el: "수(水)", summary: "천하의 물줄기가 대감님의 연못으로 모이는 형국이니 가만히 있어도 재물이 스며들 상입니다.", origin: "지혜로운 바다의 기운", luck: "성장의 목(木)의 기운", color: "검은색, 네이비", dir: "북쪽", obj: "향수, 검은 신발", detail: `끊임없이 흐르는 지혜로운 수(水)의 기운이 대감님의 본신입니다. 성함과 생년월일의 조화가 '재성'을 자극하여 사방에서 재물이 흘러 들어오는 형국입니다. 북쪽 방향이 길하며, 밤 시간대의 행운이 매우 강합니다. 검은색 계열의 옷차림이 기운을 정화하고 재물운을 갈무리해 줄 것이니, 향기를 몸에 지니면 횡재수가 배가될 것입니다.` }
             ];
 
-            const res = ohaengData[ohaengIdx];
-            const luckyNums = [];
-            let i = 0; while(luckyNums.length < 6) {
-                let n = Math.floor(Math.abs(Math.sin(totalSeed + i)) * 45) + 1;
-                if(!luckyNums.includes(n)) luckyNums.push(n); i++;
+            const res = database[seed % 5];
+            
+            // 행운의 번호 생성 알고리즘 (이름+생일+시각 조합 랜덤)
+            let nums = [];
+            while(nums.length < 6) {
+                let n = Math.floor(Math.abs(Math.sin(seed + nums.length)) * 45) + 1;
+                if(!nums.includes(n)) nums.push(n);
             }
-            luckyNums.sort((a,b)=>a-b);
+            nums.sort((a,b)=>a-b);
 
             setTimeout(() => {
                 document.getElementById('input-section').classList.add('hidden');
                 document.getElementById('result-section').classList.remove('hidden');
                 document.getElementById('res-name').innerText = name;
-                document.getElementById('res-ohaeng').innerText = res.type;
+                document.getElementById('res-summary').innerText = `"${res.summary}"`;
+                document.getElementById('res-origin').innerText = res.origin;
+                document.getElementById('res-luck').innerText = res.luck;
                 document.getElementById('res-color').innerText = res.color;
                 document.getElementById('res-dir').innerText = res.dir;
-                document.getElementById('res-item').innerText = res.item;
-                document.getElementById('res-lucky').innerText = res.lucky;
-                document.getElementById('res-desc').innerText = res.desc;
+                document.getElementById('res-obj').innerText = res.obj;
+                document.getElementById('res-detail').innerText = res.detail;
 
-                const numArea = document.getElementById('res-nums');
-                numArea.innerHTML = '';
-                const colors = ['#fbc02d', '#1976d2', '#e53935', '#757575', '#43a047'];
-                luckyNums.forEach(n => {
-                    const b = document.createElement('span'); b.className = `lotto-ball`;
-                    b.style.backgroundColor = colors[Math.floor(n/10)] || '#8e24aa';
-                    b.innerText = n; numArea.appendChild(b);
+                const area = document.getElementById('res-num-area');
+                area.innerHTML = '';
+                const ballColors = ['#fbc02d','#1976d2','#e53935','#757575','#43a047'];
+                nums.forEach(n => {
+                    const b = document.createElement('span'); b.className = 'lotto-ball';
+                    b.style.backgroundColor = ballColors[Math.floor(n/10)] || '#8e24aa';
+                    b.innerText = n; area.appendChild(b);
                 });
                 window.scrollTo({top:0, behavior:'smooth'});
-            }, 2500);
+            }, 3000);
         }
     </script>
 </body>
