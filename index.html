@@ -213,5 +213,24 @@
             }
         }
     </script>
+    <script>
+    // 1. 마우스 오른쪽 클릭 방지
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        alert("대감님의 비책은 함부로 복사할 수 없습니다.");
+    });
+
+    // 2. 키보드 보안 (F12 개발자 도구, Ctrl+C 복사 방지)
+    document.onkeydown = function(e) {
+        if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) {
+            return false;
+        }
+        if (e.ctrlKey && e.keyCode == 67) {
+            alert("비책 유출 금지입니다!");
+            return false;
+        }
+    };
+</script>
 </body>
+
 </html>
