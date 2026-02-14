@@ -3,183 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>인생대감 - 정통 만세력 분석</title>
-    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
+    <title>인생대감 - 고품격 횡재수 분석</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/korean-lunar-calendar@1.0.4/dist/korean-lunar-calendar.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
-        body { font-family: 'Pretendard', sans-serif; background: #F7F3E9; color: #4E342E; }
-        .gold-gradient { background: linear-gradient(135deg, #B5A47D 0%, #E1C16E 50%, #B5A47D 100%); }
-        .card-shadow { box-shadow: 0 20px 50px rgba(78, 52, 46, 0.1); }
-        .hidden { display: none !important; }
-        .fade-up { opacity: 0; transform: translateY(20px); transition: 0.6s ease-out; }
-        .fade-up.visible { opacity: 1; transform: translateY(0); }
-        .loader { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #B5A47D; border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body { 
+            font-family: 'Pretendard', sans-serif; 
+            background: linear-gradient(-45deg, #F7F3E9, #E1C16E, #F7F3E9, #B5A47D);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #4E342E; 
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .card-shadow { box-shadow: 0 20px 50px rgba(78, 52, 46, 0.15); }
+        .gold-text { color: #B5A47D; }
+        .gold-gradient-bg {
+            background: linear-gradient(135deg, #B5A47D 0%, #E1C16E 50%, #B5A47D 100%);
+        }
+        
+        .hidden { display: none; }
+        input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        
+        .loader { 
+            width: 48px; height: 48px; 
+            border: 5px solid #FFF; border-bottom-color: #B5A47D; 
+            border-radius: 50%; display: inline-block; 
+            animation: rotation 1s linear infinite; 
+        }
+        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: white; padding: 30px; border-radius: 40px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
+        .legal-text { font-size: 12px; line-height: 1.8; color: #666; }
+
+        .animate-fadeIn { animation: fadeIn 0.8s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-10 px-4">
+<body class="min-h-screen flex flex-col items-center py-12 px-4">
 
-    <header class="text-center mb-8">
-        <h1 class="text-4xl font-black mb-2">인생대감</h1>
-        <p class="text-gray-600 font-bold">정통 만세력 기반 횡재수 리포트</p>
+    <header class="text-center mb-10">
+        <h1 class="text-4xl font-black mb-2 tracking-tight drop-shadow-sm">인생대감</h1>
+        <p class="text-xl font-bold">
+            <span class="text-gray-700">고품격 횡재수</span> 
+            <span class="gold-text text-2xl underline decoration-double decoration-[#E1C16E]">분석 리포트</span>
+        </p>
     </header>
 
-    <main id="input-section" class="w-full max-w-md bg-white rounded-[40px] card-shadow p-8 space-y-6">
-        <div id="form-inner">
-            <div class="space-y-4">
-                <div>
-                    <label class="block font-bold mb-2">성함</label>
-                    <input type="text" id="user-name" class="w-full p-4 rounded-xl border bg-gray-50" placeholder="홍길동">
+    <main id="input-section" class="w-full max-w-lg bg-white/90 backdrop-blur-sm rounded-[50px] card-shadow p-10 space-y-8">
+        <div id="form-inner" class="space-y-6">
+            <div><label class="block text-lg font-bold mb-3">성함</label><input type="text" id="name" class="w-full p-5 rounded-2xl text-lg focus:ring-2 focus:ring-[#B5A47D]" placeholder="성함을 입력하세요"></div>
+            <div><label class="block text-lg font-bold mb-3">휴대폰 번호</label><input type="tel" id="phone" class="w-full p-5 rounded-2xl text-lg focus:ring-2 focus:ring-[#B5A47D]" placeholder="01012345678"></div>
+            
+            <div class="flex gap-4">
+                <div class="w-1/2">
+                    <label class="block text-lg font-bold mb-3">생년월일</label>
+                    <input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg focus:ring-2 focus:ring-[#B5A47D]" placeholder="19950815">
                 </div>
-                <div>
-                    <label class="block font-bold mb-2">생년월일 (8자리)</label>
-                    <input type="number" id="user-birth" class="w-full p-4 rounded-xl border bg-gray-50" placeholder="19900101">
-                </div>
-                <div class="flex gap-2">
-                    <select id="user-ampm" class="w-1/2 p-4 rounded-xl border bg-gray-50 font-bold">
-                        <option value="AM">오전</option>
-                        <option value="PM">오후</option>
-                    </select>
-                    <select id="user-hour" class="w-1/2 p-4 rounded-xl border bg-gray-50 font-bold">
+                <div class="w-1/2">
+                    <label class="block text-lg font-bold mb-3 text-center">태어난 시간</label>
+                    <div class="flex flex-col gap-2">
+                        <select id="ampm" class="w-full p-4 rounded-2xl text-sm font-bold appearance-none text-center bg-gray-50">
+                            <option value="AM">오전</option>
+                            <option value="PM">오후</option>
                         </select>
-                </div>
-                <div class="p-4 bg-amber-50 rounded-xl text-sm flex items-center gap-2">
-                    <input type="checkbox" id="agree-check" checked>
-                    <span>개인정보 활용 및 결과 분석에 동의합니다.</span>
+                        <div class="flex gap-1 items-center">
+                            <input type="number" id="birth-hour" class="w-1/2 p-4 rounded-2xl text-sm text-center" placeholder="시" min="1" max="12">
+                            <span class="font-bold">:</span>
+                            <input type="number" id="birth-min" class="w-1/2 p-4 rounded-2xl text-sm text-center" placeholder="분" min="0" max="59">
+                        </div>
+                    </div>
                 </div>
             </div>
-            <button onclick="startAnalysis()" class="w-full mt-6 py-5 gold-gradient text-white rounded-2xl text-xl font-bold shadow-lg active:scale-95 transition-transform">
-                무료 분석 시작하기
-            </button>
+
+            <div class="bg-amber-50/50 rounded-3xl p-6 space-y-4 border border-amber-100">
+                <div class="flex items-center gap-3 cursor-pointer pb-4 border-b border-amber-200" id="all-agree-area">
+                    <input type="checkbox" id="all-agree" class="w-6 h-6 accent-[#4E342E]">
+                    <span class="font-bold text-lg">모든 약관에 전체 동의하기</span>
+                </div>
+                <div class="space-y-3 pt-2">
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <div class="flex items-center gap-2"><input type="checkbox" id="p-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 개인정보 수집 및 이용 동의</span></div>
+                        <button onclick="openModal('privacy')" class="underline">보기</button>
+                    </div>
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <div class="flex items-center gap-2"><input type="checkbox" id="t-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 서비스 이용약관 동의</span></div>
+                        <button onclick="openModal('terms')" class="underline">보기</button>
+                    </div>
+                    <div class="flex justify-between items-center text-sm text-gray-500">
+                        <div class="flex items-center gap-2"><input type="checkbox" id="m-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[선택] 마케팅 활용 동의</span></div>
+                        <button onclick="openModal('marketing')" class="underline">보기</button>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="runAnalysis()" class="w-full py-6 gold-gradient-bg text-white rounded-[35px] text-2xl font-bold shadow-xl active:scale-95 transition-all hover:brightness-110">무료 횡재수 분석 시작</button>
         </div>
 
-        <div id="loading-area" class="hidden flex flex-col items-center py-12 text-center">
-            <div class="loader mb-4"></div>
-            <p class="font-bold text-lg animate-pulse">대감님이 천기를 살피는 중...</p>
+        <div id="loading-area" class="hidden flex flex-col items-center py-20 space-y-6 text-center">
+            <span class="loader"></span>
+            <p class="text-xl font-black text-[#4E342E] animate-pulse">대감님이 천기를 살피는 중입니다...</p>
         </div>
     </main>
 
-    <div id="result-section" class="hidden w-full max-w-md space-y-6">
-        <div class="gold-gradient rounded-[40px] p-10 text-center text-white shadow-xl">
-            <h2 class="text-3xl font-bold mb-1"><span id="res-name"></span> 님</h2>
-            <p class="opacity-90 font-medium">귀하의 횡재수 분석 결과입니다</p>
-            <div id="res-ganji" class="mt-4 inline-block bg-black/10 px-4 py-1 rounded-full text-sm"></div>
+    <div id="result-section" class="hidden w-full max-w-lg space-y-6 animate-fadeIn">
+        <div class="gold-gradient-bg rounded-t-[50px] p-12 text-center text-white space-y-4 shadow-lg">
+            <div class="text-4xl drop-shadow-md">🧧</div>
+            <h2 class="text-3xl font-bold drop-shadow-sm"><span id="res-name"></span> 대표님의</h2>
+            <p class="text-white/90 text-xl font-bold">정밀 횡재수 분석 리포트</p>
         </div>
-
-        <div class="bg-white rounded-[40px] p-8 card-shadow space-y-6 -mt-10 relative z-10">
-            <div class="bg-amber-50 p-6 rounded-2xl border border-amber-100 text-center">
-                <p class="text-amber-700 font-bold text-sm mb-2">분석 총평</p>
-                <p id="res-summary" class="text-lg font-bold leading-relaxed"></p>
+        <div class="bg-white rounded-b-[50px] card-shadow p-8 space-y-8 -mt-2">
+            <div class="bg-[#FDF9F0] rounded-3xl p-8 text-center border border-[#F1EAD7] relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 gold-gradient-bg"></div>
+                <p class="text-[#B5A47D] font-bold mb-4 italic">분석 총평</p>
+                <p id="res-summary" class="text-xl font-bold leading-relaxed text-[#4E342E]"></p>
             </div>
-
             <div class="grid grid-cols-2 gap-4">
-                <div class="p-4 border rounded-2xl text-center">
-                    <p class="text-xs text-gray-400 font-bold">타고난 기운</p>
-                    <p id="res-origin" class="text-lg font-bold"></p>
+                <div class="bg-white border border-gray-100 rounded-3xl p-6 text-center space-y-2 shadow-sm">
+                    <span class="text-2xl">🧘</span><p class="text-xs text-gray-400 font-bold">타고난 본신 기운</p><p id="res-origin" class="text-lg font-bold"></p>
                 </div>
-                <div class="p-4 border rounded-2xl text-center">
-                    <p class="text-xs text-gray-400 font-bold">행운의 색</p>
-                    <p id="res-color" class="text-lg font-bold"></p>
+                <div class="bg-white border border-gray-100 rounded-3xl p-6 text-center space-y-2 shadow-sm">
+                    <span class="text-2xl">🍀</span><p class="text-xs text-gray-400 font-bold">채워야 할 행운 기운</p><p id="res-luck" class="text-lg font-bold"></p>
                 </div>
             </div>
-
-            <div class="space-y-3">
-                <div class="flex justify-between p-4 bg-gray-50 rounded-xl">
-                    <span class="text-gray-500 font-bold">행운 번호</span>
-                    <span id="res-num" class="font-black text-amber-600"></span>
-                </div>
-                <div class="flex justify-between p-4 bg-gray-50 rounded-xl">
-                    <span class="text-gray-500 font-bold">행운 방향</span>
-                    <span id="res-dir" class="font-black"></span>
-                </div>
+            <div class="space-y-4">
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🎨</span><div><p class="text-xs text-gray-400 font-bold">행운의 색</p><p id="res-color" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🔢</span><div><p class="text-xs text-gray-400 font-bold">행운의 번호</p><p id="res-num" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🧭</span><div><p class="text-xs text-gray-400 font-bold">행운의 방향</p><p id="res-dir" class="font-bold text-lg"></p></div></div>
+                <div class="flex items-center gap-5 p-5 bg-white border border-gray-50 rounded-3xl hover:bg-amber-50 transition-colors"><span class="text-2xl">🔮</span><div><p class="text-xs text-gray-400 font-bold">행운의 물건</p><p id="res-obj" class="font-bold text-lg"></p></div></div>
             </div>
-
-            <div class="p-6 bg-gray-900 text-white rounded-3xl">
-                <p class="text-amber-400 font-bold mb-2">대감님의 비책 📜</p>
-                <p id="res-detail" class="text-sm leading-relaxed opacity-90"></p>
+            <div class="bg-gray-50 rounded-3xl p-8 space-y-4 border-l-4 border-[#B5A47D]">
+                <div class="flex items-center gap-2 font-bold text-lg text-[#4E342E]"><span>📜</span> 대감님의 훈수 (상세 해석)</div>
+                <p id="res-detail" class="text-gray-600 leading-relaxed text-base"></p>
             </div>
+            <button onclick="location.reload()" class="w-full py-6 border-2 border-[#B5A47D] text-[#B5A47D] rounded-[35px] text-2xl font-bold hover:bg-[#B5A47D] hover:text-white transition-all">다시 분석하기</button>
+        </div>
+    </div>
 
-            <button onclick="location.reload()" class="w-full py-4 border-2 border-gray-200 text-gray-400 rounded-2xl font-bold">다시하기</button>
+    <div id="legalModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle" class="text-xl font-bold mb-6 text-[#4E342E] border-b pb-4"></h3>
+            <div id="modalBody" class="legal-text whitespace-pre-wrap"></div>
+            <button onclick="closeModal()" class="w-full mt-8 py-5 gold-gradient-bg text-white rounded-2xl font-bold">확인 및 닫기</button>
         </div>
     </div>
 
     <script>
-        // 초기 설정: 시간 드롭다운 생성
-        const hourBox = document.getElementById('user-hour');
-        for(let i=0; i<12; i++) {
-            let val = i === 0 ? 12 : i;
-            hourBox.innerHTML += `<option value="${i}">${val}시</option>`;
-        }
-
-        // 사주 DB
-        const sajuData = {
-            "甲": { el: "갑목(甲木)", summary: "큰 나무처럼 뻗어나가는 강력한 재운입니다.", color: "청록색", num: "3, 8", dir: "동쪽", detail: "강한 추진력이 큰 돈을 만듭니다. 이번 기회를 놓치지 마십시오." },
-            "乙": { el: "을목(乙木)", summary: "유연한 지혜로 실속을 챙기는 형국입니다.", color: "연두색", num: "1, 6", dir: "북동쪽", detail: "주변 인맥을 활용하세요. 예상치 못한 귀인이 횡재를 가져옵니다." },
-            "丙": { el: "병화(丙火)", summary: "태양처럼 재물운이 환하게 밝아오는 운때입니다.", color: "빨간색", num: "2, 7", dir: "남쪽", detail: "자신감을 가지세요. 당신의 직관이 가리키는 곳에 보물이 있습니다." },
-            "丁": { el: "정화(丁火)", summary: "밤을 밝히는 등불처럼 실속 있는 횡재가 따릅니다.", color: "보라색", num: "4, 9", dir: "남서쪽", detail: "차분한 분석이 큰 수익을 냅니다. 조용히 움직여야 길합니다." },
-            "戊": { el: "무토(戊土)", summary: "넓은 대지에 황금이 묻혀 있는 든든한 형상입니다.", color: "황토색", num: "5, 0", dir: "중앙", detail: "믿음직한 태도가 재물을 부릅니다. 장기적인 투자가 대박으로 이어집니다." },
-            "己": { el: "기토(己土)", summary: "정성껏 가꾼 밭에서 풍년의 기운이 돕니다.", color: "갈색", num: "0, 5", dir: "남동쪽", detail: "꾸준함이 횡재의 열쇠입니다. 작은 이득이 모여 큰 산을 이룹니다." },
-            "庚": { el: "경금(庚金)", summary: "단단한 바위에서 원석을 캐내는 강한 결단운입니다.", color: "백색", num: "4, 9", dir: "서쪽", detail: "망설임은 기회를 늦출 뿐입니다. 오늘 내리는 결정이 곧 돈입니다." },
-            "辛": { el: "신금(辛金)", summary: "섬세한 안목으로 보석 같은 틈새 수익을 낚습니다.", color: "은색", num: "1, 4", dir: "북서쪽", detail: "고급 정보에 귀를 기울이세요. 남들이 보지 못하는 곳에 횡재가 있습니다." },
-            "壬": { el: "임수(壬水)", summary: "큰 바다처럼 재산이 모여드는 유통의 대운입니다.", color: "검은색", num: "1, 6", dir: "북쪽", detail: "변화를 두려워 마세요. 새로운 환경에서 훨씬 큰 금전운이 터집니다." },
-            "癸": { el: "계수(癸水)", summary: "단비가 내려 메마른 재산을 채워주는 형국입니다.", color: "남색", num: "2, 8", dir: "북동쪽", detail: "지혜로운 처신이 빛을 발합니다. 실속을 차리면 평생 마르지 않습니다." }
+        const legalData = {
+            privacy: {
+                title: "개인정보 수집 및 이용 동의",
+                content: `인생대감 서비스 제공을 위해 아래와 같이 개인정보를 수집 및 이용합니다.\n\n1. 수집하는 개인정보 항목\n- 필수: 성명, 휴대폰 번호, 생년월일, 태어난 시간\n\n2. 수집 및 이용 목적\n- 개인별 사주/운세 분석 리포트 생성 및 제공\n\n3. 보유 및 이용 기간\n- 서비스 제공 목적 달성 시까지`
+            },
+            terms: {
+                title: "서비스 이용약관",
+                content: `본 서비스는 동양 철학 데이터를 바탕으로 한 오락용 콘텐츠입니다. 분석 결과에 대한 최종적인 판단과 행동의 책임은 이용자 본인에게 있습니다.`
+            },
+            marketing: {
+                title: "마케팅 활용 동의 (선택)",
+                content: `인생대감의 새로운 서비스 소식과 행운 알림을 받아보세요.`
+            }
         };
 
-        function startAnalysis() {
-            const name = document.getElementById('user-name').value;
-            const birth = document.getElementById('user-birth').value;
-            const hour = document.getElementById('user-hour').value;
-            const ampm = document.getElementById('user-ampm').value;
+        function openModal(type) {
+            document.getElementById('modalTitle').innerText = legalData[type].title;
+            document.getElementById('modalBody').innerText = legalData[type].content;
+            document.getElementById('legalModal').style.display = 'flex';
+        }
+        function closeModal() { document.getElementById('legalModal').style.display = 'none'; }
 
-            if(!name || birth.length !== 8) {
-                alert("성함과 생년월일 8자리를 확인해 주세요.");
+        const allAgree = document.getElementById('all-agree');
+        const subs = document.querySelectorAll('.sub-agree');
+        document.getElementById('all-agree-area').onclick = (e) => {
+            if(e.target !== allAgree) allAgree.checked = !allAgree.checked;
+            subs.forEach(s => s.checked = allAgree.checked);
+        };
+
+        const sajuDatabase = [
+            { el: "갑목(甲木)", summary: "거대한 소나무의 기운이 하늘을 찌르니, 올해는 큰 재물을 뿌리 아래 두는 형국입니다.", luck: "화(火)와 토(土)", color: "청록색, 황금색", nums: "3, 8, 5", dir: "동쪽 및 중앙", obj: "나무 향수, 원목 액세서리", detail: "강직한 성품이 재물을 부릅니다. 독불장군처럼 굴기보다는 주변 사람들과 정보를 나누면 횡재가 두 배로 돌아옵니다." },
+            { el: "을목(乙木)", summary: "유연한 넝쿨의 기운입니다. 바람을 타고 위기 속에서 예상치 못한 횡재을 거머쥘 운입니다.", luck: "수(水)와 목(木)", color: "연두색, 하늘색", nums: "1, 6, 3", dir: "북쪽 및 동쪽", obj: "작은 화분, 가죽 지갑", detail: "예술적 감각과 직관이 돈이 되는 사주입니다. 남들이 무시하는 작은 기회에서 큰 금전적 이득을 챙기게 될 것입니다." },
+            { el: "병화(丙火)", summary: "만물을 비추는 태양의 기운입니다. 숨겨진 보물을 찾아내는 안목이 이번 달 정점에 달합니다.", luck: "토(土)와 금(金)", color: "진한 빨강, 노란색", nums: "2, 7, 0", dir: "남쪽 및 서쪽", obj: "화려한 시계, 금테 안경", detail: "당신의 에너지가 가장 강할 때 횡재운이 터집니다. 정오 무렵이나 햇볕이 좋은 날 중요한 금전적 결정을 내리십시오." },
+            { el: "정화(丁火)", summary: "어둠을 밝히는 등불의 기운입니다. 세밀한 분석력으로 복권이나 투자에서 남다른 감각을 보입니다.", luck: "금(金)과 수(수)", color: "보라색, 은색", nums: "4, 9, 6", dir: "서쪽 및 북쪽", obj: "향초, 금속제 만년필", detail: "조용히 기회를 엿보다가 한 번에 낚아채는 운입니다. 꿈자리가 맑은 날, 동북쪽에서 들려오는 소식에 귀를 기울이세요." },
+            { el: "무토(戊土)", summary: "깊고 넓은 황금 대지의 기운입니다. 가만히 있어도 재물이 발밑으로 모여드는 길조가 보입니다.", luck: "화(火)와 금(金)", color: "황토색, 흰색", nums: "5, 0, 4", dir: "중앙 및 서쪽", obj: "수석(돌), 벨트", detail: "인내심의 끝에 큰 보상이 기다립니다. 성급한 투자보다는 장기적인 안목으로 기다리면 대박의 기운이 스며듭니다." },
+            { el: "기토(己土)", summary: "비옥한 전답의 기운입니다. 씨를 뿌린 것 이상의 수확을 거두는 '상생'의 횡재수가 강합니다.", luck: "목(木)과 화(화)", color: "갈색, 분홍색", nums: "0, 2, 7", dir: "동쪽 및 남쪽", obj: "도자기 그릇, 차(Tea) 세트", detail: "사람들과의 관계에서 돈이 들어옵니다. 예상치 못한 귀인의 도움으로 금전적 곤란이 해결되고 목돈이 생길 상입니다." },
+            { el: "경금(庚金)", summary: "단단한 바위와 원석의 기운입니다. 결단력이 곧 돈입니다. 망설이지 않을 때 큰 돈을 만집니다.", luck: "수(수)와 토(土)", color: "백색, 회색", nums: "4, 9, 5", dir: "서쪽 및 북쪽", obj: "은반지, 거울", detail: "강한 카리스마가 재운을 압도합니다. 큰 판을 벌릴수록 횡재의 크기도 커지니 본인의 직관을 100% 믿으셔도 좋습니다." },
+            { el: "신금(辛金)", summary: "정교한 보석의 기운입니다. 타고난 복이 많아 평생 금전적 마름이 없는 귀한 명식입니다.", luck: "목(木)과 수(수)", color: "투명한 색, 은회색", nums: "1, 4, 8", dir: "북쪽 및 동쪽", obj: "크리스탈 소품, 보석함", detail: "섬세한 정보 수집이 부를 만듭니다. 고급 정보나 남들이 모르는 틈새시장을 공략하면 순식간에 자산이 불어납니다." },
+            { el: "임수(壬수)", summary: "끝없이 흐르는 강물의 기운입니다. 유통과 변화 속에서 큰 재물을 낚아올리는 형상입니다.", luck: "목(木)과 금(金)", color: "검은색, 청색", nums: "1, 6, 9", dir: "북쪽 및 동쪽", obj: "어항, 푸른색 손수건", detail: "지혜가 곧 재물입니다. 먼 곳에서 재운이 들어오니 새로운 환경에 도전하거나 여행 중에 뜻밖의 횡재를 만납니다." },
+            { el: "계수(癸수)", summary: "만물을 적시는 단비의 기운입니다. 소리 없이 스며드는 비처럼 재산이 소리 없이 불어납니다.", luck: "화(화)와 토(토)", color: "남색, 검은색", nums: "6, 2, 8", dir: "남쪽 및 중앙", obj: "검정 우산, 만년필", detail: "부드러움이 강함을 이깁니다. 무리한 경쟁보다는 유연한 대처로 실속을 챙기십시오. 하반기에 큰 횡재수가 기다립니다." }
+        ];
+
+        // --- 수정된 실제 만세력 기반 분석 함수 ---
+        function runAnalysis() {
+            const name = document.getElementById('name').value.trim();
+            const birth = document.getElementById('birth').value.trim();
+            const hour = document.getElementById('birth-hour').value.trim();
+            const min = document.getElementById('birth-min').value.trim() || "0";
+            
+            // 유효성 검사
+            if(!name || birth.length !== 8 || !hour) {
+                alert("성함, 생년월일(8자리), 태어난 시를 모두 정확히 입력하십시오.");
+                return;
+            }
+            if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) {
+                alert("필수 이용약관에 동의하셔야 분석이 가능합니다.");
                 return;
             }
 
-            // 로딩 표시
+            // 로딩 애니메이션 활성화
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
 
+            // 1. 만세력 라이브러리를 이용한 데이터 추출
+            const calendar = new KoreanLunarCalendar();
+            const year = parseInt(birth.substring(0, 4));
+            const month = parseInt(birth.substring(4, 6));
+            const day = parseInt(birth.substring(6, 8));
+
+            // 양력 날짜 설정 (만세력 계산)
+            calendar.setSolarDate(year, month, day);
+            const sajuData = calendar.getSaju(); // 결과 예: "을미년 갑신월 경진일"
+            
+            // 2. 일주(日柱)에서 천간 글자 하나를 따옴 (본신의 기운)
+            const sajuArray = sajuData.split(' '); 
+            const ilju = sajuArray[2]; // 세 번째 단어인 "XX일" 가져오기
+            const ilgan = ilju[0];    // 그 중 첫 번째 글자 (예: '경')
+
+            // 3. 데이터베이스에서 해당 글자가 포함된 유형 찾기
+            const res = sajuDatabase.find(item => item.el.includes(ilgan));
+
+            // 결과 화면 처리
             setTimeout(() => {
-                try {
-                    // 만세력 계산
-                    const y = parseInt(birth.substring(0,4));
-                    const m = parseInt(birth.substring(4,6));
-                    const d = parseInt(birth.substring(6,8));
-                    let h = parseInt(hour);
-                    if(ampm === "PM" && h !== 12) h += 12;
-                    if(ampm === "AM" && h === 12) h = 0;
-
-                    const solar = Solar.fromYmdHms(y, m, d, h, 0, 0);
-                    const lunar = solar.getLunar();
-                    const eightChar = lunar.getEightChar();
-                    const dayGan = eightChar.getDayGan(); // 실제 천간 추출
-
-                    const info = sajuData[dayGan] || sajuData["甲"];
-
-                    // 결과 데이터 삽입
-                    document.getElementById('res-name').innerText = name;
-                    document.getElementById('res-ganji').innerText = `태어난 기운: ${eightChar.getDayInGanZhi()} 기운`;
-                    document.getElementById('res-summary').innerText = `"${info.summary}"`;
-                    document.getElementById('res-origin').innerText = info.el;
-                    document.getElementById('res-color').innerText = info.color;
-                    document.getElementById('res-num').innerText = info.num;
-                    document.getElementById('res-dir').innerText = info.dir;
-                    document.getElementById('res-detail').innerText = info.detail;
-
-                    // 화면 전환
-                    document.getElementById('input-section').classList.add('hidden');
-                    document.getElementById('result-section').classList.remove('hidden');
-
-                    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-                } catch (e) {
-                    console.error(e);
-                    alert("분석 중 오류가 발생했습니다. 생년월일을 다시 확인해 주세요.");
-                    location.reload();
-                }
-            }, 2500);
+                document.getElementById('input-section').classList.add('hidden');
+                document.getElementById('result-section').classList.remove('hidden');
+                
+                document.getElementById('res-name').innerText = name;
+                document.getElementById('res-summary').innerText = `"${res.summary}"`;
+                document.getElementById('res-origin').innerText = res.el + "의 기운";
+                document.getElementById('res-luck').innerText = res.luck + "의 기운";
+                document.getElementById('res-color').innerText = res.color;
+                document.getElementById('res-num').innerText = res.nums;
+                document.getElementById('res-dir').innerText = res.dir;
+                document.getElementById('res-obj').innerText = res.obj;
+                document.getElementById('res-detail').innerText = res.detail;
+                
+                window.scrollTo({top:0, behavior:'smooth'});
+            }, 3000);
         }
     </script>
 </body>
