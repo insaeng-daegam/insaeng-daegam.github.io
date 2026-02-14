@@ -7,7 +7,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
-        /* 드래그 및 선택 방지 추가 */
         body { 
             font-family: 'Pretendard', sans-serif; background-color: #F7F3E9; color: #4E342E;
             -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
@@ -23,12 +22,12 @@
         input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; transition: 0.2s; -webkit-user-select: text; user-select: text; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
         .modal-content { background: white; padding: 30px; border-radius: 30px; width: 100%; max-width: 550px; max-height: 70vh; overflow-y: auto; -webkit-user-select: text; user-select: text; }
-        .legal-box { font-size: 13px; line-height: 1.7; color: #444; }
         .loader { width: 40px; height: 40px; border: 4px solid #E1C16E; border-bottom-color: #4E342E; border-radius: 50%; display: inline-block; animation: rotation 1s linear infinite; }
         @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .lotto-ball { width: 35px; height: 35px; border-radius: 50%; display: inline-flex; items-center; justify-content: center; font-weight: bold; font-size: 14px; color: white; margin: 2px; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center py-12 px-4" oncontextmenu="return false" onselectstart="return false" ondragstart="return false">
+<body class="min-h-screen flex flex-col items-center py-12 px-4" oncontextmenu="return false">
 
     <header class="text-center mb-10">
         <h1 class="text-4xl font-black mb-2">인생대감</h1>
@@ -51,7 +50,6 @@
                     <select id="birth-min" class="w-1/3 p-5 rounded-2xl text-sm font-bold border-gray-200"></select>
                 </div>
             </div>
-
             <div class="bg-gray-50 rounded-3xl p-6 space-y-4">
                 <div class="flex items-center gap-3 cursor-pointer pb-4 border-b border-gray-200" onclick="toggleAll()">
                     <input type="checkbox" id="all-agree" class="w-6 h-6 accent-[#4E342E]">
@@ -60,7 +58,6 @@
                 <div class="space-y-3 pt-2 text-sm text-gray-600">
                     <div class="flex justify-between items-center"><label class="flex items-center gap-2"><input type="checkbox" id="p-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 개인정보 수집 및 이용</span></label><button onclick="openModal('privacy')" class="underline">보기</button></div>
                     <div class="flex justify-between items-center"><label class="flex items-center gap-2"><input type="checkbox" id="t-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[필수] 서비스 이용약관</span></label><button onclick="openModal('terms')" class="underline">보기</button></div>
-                    <div class="flex justify-between items-center"><label class="flex items-center gap-2"><input type="checkbox" id="m-agree" class="sub-agree w-5 h-5 accent-[#4E342E]"><span>[선택] 마케팅 활용 동의</span></label><button onclick="openModal('marketing')" class="underline">보기</button></div>
                 </div>
             </div>
             <button onclick="runAnalysis()" class="w-full py-6 bg-[#4E342E] text-white rounded-[35px] text-2xl font-bold shadow-xl active:scale-95 transition-all">무료 횡재수 분석 시작</button>
@@ -72,56 +69,113 @@
         </div>
     </main>
 
-    <div id="result-section" class="hidden w-full max-w-lg space-y-6">
+    <div id="result-section" class="hidden w-full max-w-lg space-y-6 pb-20">
         <div class="bg-[#4E342E] rounded-t-[50px] p-10 text-center text-white">
             <h2 class="text-2xl font-bold mb-1"><span id="res-name" class="text-yellow-400"></span> 대감님의</h2>
             <p class="gold-wave text-xl">정밀 오행 분석 리포트</p>
         </div>
-        <div class="bg-white rounded-b-[50px] card-shadow p-8 space-y-6 -mt-2">
+        
+        <div class="bg-white rounded-b-[50px] card-shadow p-8 space-y-8 -mt-2">
             <div class="bg-amber-50 rounded-3xl p-6 text-center border border-amber-100">
                 <p class="text-amber-800 font-bold mb-2 italic">대감님의 타고난 본신 기운</p>
                 <p id="res-ohaeng" class="text-3xl font-black text-[#4E342E]"></p>
             </div>
-            <div class="space-y-4">
-                <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl"><span class="text-2xl">🍀</span><div><p class="text-xs text-gray-400 font-bold">행운의 보완 기운</p><p id="res-lucky" class="font-bold"></p></div></div>
-                <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl"><span class="text-2xl">🧭</span><div><p class="text-xs text-gray-400 font-bold">재물이 들어오는 방향</p><p id="res-dir" class="font-bold"></p></div></div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 text-center">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Lucky Color</p>
+                    <p id="res-color" class="font-black text-lg"></p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 text-center">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Lucky Direction</p>
+                    <p id="res-dir" class="font-black text-lg"></p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 text-center">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Lucky Object</p>
+                    <p id="res-item" class="font-black text-lg"></p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 text-center">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Complementary</p>
+                    <p id="res-lucky" class="font-black text-lg"></p>
+                </div>
             </div>
-            <div class="bg-gray-50 rounded-3xl p-6 space-y-3">
-                <p class="font-bold flex items-center gap-2">📜 대감님을 위한 훈수</p>
-                <p id="res-desc" class="text-gray-600 leading-relaxed text-sm"></p>
+
+            <div class="bg-[#F7F3E9] p-6 rounded-3xl border-2 border-dashed border-[#B5A47D] text-center">
+                <p class="font-bold text-[#4E342E] mb-3">✨ 대감님께 하사하는 횡재 번호</p>
+                <div id="res-nums" class="flex flex-wrap justify-center gap-1"></div>
             </div>
+
+            <div class="space-y-3">
+                <p class="font-bold flex items-center gap-2 text-lg">📜 대감님을 위한 정밀 훈수</p>
+                <div class="bg-gray-50 p-6 rounded-3xl">
+                    <p id="res-desc" class="text-gray-700 leading-relaxed text-sm text-justify"></p>
+                </div>
+            </div>
+
             <button onclick="location.reload()" class="w-full py-5 bg-gray-100 text-gray-500 rounded-2xl font-bold">다시 분석하기</button>
         </div>
     </div>
 
-    <div id="legalModal" class="modal"><div class="modal-content"><h3 id="modalTitle" class="text-xl font-bold mb-4 border-b pb-2"></h3><div id="modalBody" class="legal-box whitespace-pre-wrap text-sm leading-relaxed"></div><button onclick="closeModal()" class="w-full mt-6 py-4 bg-[#4E342E] text-white rounded-xl font-bold">닫기</button></div></div>
+    <div id="legalModal" class="modal"><div class="modal-content"><h3 id="modalTitle" class="text-xl font-bold mb-4 border-b pb-2"></h3><div id="modalBody" class="legal-box whitespace-pre-wrap"></div><button onclick="closeModal()" class="w-full mt-6 py-4 bg-[#4E342E] text-white rounded-xl font-bold">닫기</button></div></div>
 
     <script>
-        // [보안] 우클릭 및 단축키 방지
-        document.addEventListener('contextmenu', e => e.preventDefault());
-        document.onkeydown = function(e) {
-            if(e.keyCode == 123) return false; // F12 방지
-            if(e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) return false; // Ctrl+Shift+I/J/C 방지
-            if(e.ctrlKey && e.keyCode == 85) return false; // 소스 보기(Ctrl+U) 방지
-        };
-
-        const hS = document.getElementById('birth-hour');
-        const mS = document.getElementById('birth-min');
+        // 시간 생성 로직 생략...
+        const hS = document.getElementById('birth-hour'); const mS = document.getElementById('birth-min');
         for(let i=0; i<12; i++) { let o=document.createElement('option'); o.value=i; o.innerText=`${i===0?12:i}시`; hS.appendChild(o); }
         for(let i=0; i<60; i++) { let o=document.createElement('option'); o.value=i; o.innerText=`${i}분`; mS.appendChild(o); }
 
+        // [데이터 보강] 행운의 사원소 및 장문 훈수
         const ohaengData = [
-            { type: "목(木) - 푸른 나무의 기운", lucky: "화(火)의 열기", dir: "동쪽 (청룡의 방향)", desc: "대감님은 성장과 시작을 의미하는 나무의 기운을 타고나셨습니다. 새로운 투자나 계획이 횡재로 이어질 확률이 높으니 동쪽에서 들려오는 소식을 귀담아들으십시오." },
-            { type: "화(火) - 타오르는 불의 기운", lucky: "토(土)의 안정", dir: "남쪽 (주작의 방향)", desc: "열정적이고 화려한 불의 기운입니다. 단기간에 큰 재물을 얻는 폭발적인 횡재수가 있으나, 이를 담을 흙의 기운이 필요하니 주변 사람들과의 신뢰를 먼저 쌓으소서." },
-            { type: "토(土) - 기름진 흙의 기운", lucky: "금(金)의 결실", dir: "중앙 (황룡의 방향)", desc: "모든 것을 품는 대지의 기운입니다. 횡재수가 땅속의 보석처럼 숨어있으니 조급해하지 마십시오. 중앙의 기운이 강하니 익숙한 곳에서 뜻밖의 이득이 생깁니다." },
-            { type: "금(金) - 단단한 쇠의 기운", lucky: "수(水)의 유연함", dir: "서쪽 (백호의 방향)", desc: "결단력과 결실을 상징하는 기운입니다. 칼로 베듯 정확한 타이밍에 횡재가 찾아옵니다. 서쪽 방향의 금속 재질 물건이 대감님의 재물운을 더욱 날카롭게 세워줄 것입니다." },
-            { type: "수(水) - 깊고 넓은 물의 기운", lucky: "목(木)의 성장", dir: "북쪽 (현무의 방향)", desc: "지혜와 흐름을 의미하는 물의 기운입니다. 사방에서 재물이 스며드는 형국입니다. 밤 시간대에 행운이 강하며, 북쪽에서 오는 귀인이 대감님의 곳간을 채워줄 상입니다." }
+            { 
+                type: "목(木) - 푸른 나무의 기운", 
+                lucky: "화(火)의 열기", 
+                dir: "동쪽 (청룡)", 
+                color: "청록색, 다크그린",
+                item: "목걸이, 나무 재질 소품",
+                desc: "대감님은 마르지 않는 생명력과 성장을 상징하는 나무의 기운을 타고나셨습니다. 현재 대감님의 운세는 뿌리가 깊게 내려 땅 위의 결실을 맺기 직전의 형국입니다. 횡재수는 주로 새로운 시작이나 문서운을 통해 들어오니, 동쪽 방향에서 들려오는 투자 소식이나 계약 건에 집중하십시오. 특히 불(火)의 기운을 가진 사람과 협력하면 나무가 타오르듯 재물운이 폭발할 상입니다. 조급함보다는 나무처럼 우직하게 기다리면 곧 큰 곳간이 열릴 것입니다.",
+                baseNums: [3, 8, 11, 24, 31, 42]
+            },
+            { 
+                type: "화(火) - 타오르는 불의 기운", 
+                lucky: "토(土)의 안정", 
+                dir: "남쪽 (주작)", 
+                color: "붉은색, 주홍색",
+                item: "가죽 지갑, 금속 안경테",
+                desc: "대감님은 사방을 밝히는 태양과 같은 정열적인 불의 기운입니다. 현재 대감님의 횡재수는 매우 뜨거우나, 자칫하면 재물이 증발할 수 있는 기운이 섞여 있습니다. 이를 진정시켜줄 흙(土)의 기운, 즉 부동산이나 장기적인 저축에 관심을 두는 것이 좋습니다. 남쪽 방향의 밝은 곳이 대감님의 기운을 돋워주며, 붉은색 포인트가 들어간 소품을 몸에 지니면 뜻밖의 장소에서 귀인을 만나 금전적 이득을 취할 강력한 횡재수가 예견되어 있습니다.",
+                baseNums: [2, 7, 15, 28, 33, 45]
+            },
+            { 
+                type: "토(土) - 기름진 흙의 기운", 
+                lucky: "금(金)의 결실", 
+                dir: "중앙 (황룡)", 
+                color: "황금색, 갈색",
+                item: "반지, 황토색 손수건",
+                desc: "모든 만물을 품어 기르는 대지의 기운을 타고나셨습니다. 대감님의 재물운은 땅속에 묻힌 거대한 금고와 같아, 한 번 터지면 걷잡을 수 없이 크게 들어옵니다. 현재 횡재수는 중앙, 즉 대감님이 가장 익숙한 거주지나 직장 근처에서 발생할 확률이 높습니다. 금(金)의 기운이 보강되어야 땅 속 보석이 밖으로 드러나므로, 금속 장신구를 착용하거나 서쪽으로 짧은 여행을 다녀오는 것이 좋습니다. 신용을 잃지 않는다면 올해 큰 횡재가 반드시 찾아옵니다.",
+                baseNums: [5, 10, 19, 22, 38, 41]
+            },
+            { 
+                type: "금(金) - 단단한 쇠의 기운", 
+                lucky: "수(水)의 유연함", 
+                dir: "서쪽 (백호)", 
+                color: "흰색, 은색",
+                item: "시계, 스마트 기기",
+                desc: "대감님은 예리한 칼날과 단단한 원석을 상징하는 기운입니다. 재물을 취할 때 누구보다 날카로운 직관력을 발휘하시는군요. 현재 횡재수는 찰나의 타이밍에 숨어 있습니다. 너무 강직하면 부러질 수 있으니 물(水)처럼 유연하게 상황에 대처하십시오. 서쪽 방향에 재물의 문이 열려 있으며, 흰색 옷이나 밝은 톤의 코디가 금전운을 극대화합니다. 정밀한 기계나 숫자를 다루는 일에서 의외의 횡재가 발생할 상이니, 로또나 주식 등 숫자와 관련된 운을 시험해 보기에 최적의 기운입니다.",
+                baseNums: [4, 9, 13, 27, 35, 40]
+            },
+            { 
+                type: "수(水) - 깊고 넓은 물의 기운", 
+                lucky: "목(木)의 성장", 
+                dir: "북쪽 (현무)", 
+                color: "검은색, 네이비",
+                item: "향수, 검은 신발",
+                desc: "끊임없이 흐르는 강물처럼 지혜롭고 깊은 기운입니다. 대감님의 재물운은 사방에서 모여드는 물줄기와 같아, 처음엔 작아 보여도 나중엔 큰 바다를 이룰 상입니다. 북쪽 방향의 차가운 기운이 대감님의 판단력을 흐리지 않게 돕습니다. 나무(木)의 기운이 필요한 시점이니, 식물이 많은 카페나 공원을 자주 방문하여 기운을 정화하십시오. 밤 시간대에 횡재수가 가장 강하게 발동하며, 어두운 계열의 옷이 대감님의 무게감을 더해 재물이 새어 나가는 것을 막아줄 것입니다.",
+                baseNums: [1, 6, 17, 21, 39, 44]
+            }
         ];
 
         const legalData = {
-            privacy: { title: "개인정보 수집 및 이용 동의", content: "1. 수집항목: 성명, 휴대폰 번호, 생년월일, 태어난 시간\n2. 수집목적: 사주오행 기반 횡재수 분석 리포트 제공 및 본인 식별\n3. 보유 및 이용기간: 이용 목적 달성 시 즉시 파기(단, 관련 법령에 따라 3년 보존)" },
-            terms: { title: "서비스 이용약관", content: "제1조: 본 서비스는 명리학적 알고리즘을 통한 참고용 데이터입니다.\n제2조: 회사는 본 결과로 인한 사용자의 주관적 투자 및 금전 거래 결과에 대해 어떠한 법적 책임도 지지 않습니다." },
-            marketing: { title: "마케팅 활용 동의 (선택)", content: "새로운 운세 소식 및 맞춤형 혜택 정보를 카카오톡이나 SMS로 받아보실 수 있습니다." }
+            privacy: { title: "개인정보 수집 및 이용 동의", content: "1. 수집항목: 성명, 번호, 생일\n2. 목적: 분석 리포트 제공\n3. 보유기간: 목적 달성 시 즉시 파기" },
+            terms: { title: "서비스 이용약관", content: "본 결과는 과학적 근거가 없는 명리학적 추정치이며, 모든 투자 및 결과의 책임은 본인에게 있습니다." }
         };
 
         function openModal(t) { document.getElementById('modalTitle').innerText = legalData[t].title; document.getElementById('modalBody').innerText = legalData[t].content; document.getElementById('legalModal').style.display = 'flex'; }
@@ -131,8 +185,8 @@
         function runAnalysis() {
             const name = document.getElementById('name').value;
             const birth = document.getElementById('birth').value;
-            if(!name || birth.length !== 8) return alert("정보를 정확히 입력하십시오.");
-            if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) return alert("필수 약관에 동의하셔야 합니다.");
+            if(!name || birth.length !== 8) return alert("정보를 입력하십시오.");
+            if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) return alert("약관에 동의하십시오.");
 
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
@@ -144,15 +198,28 @@
             setTimeout(() => {
                 document.getElementById('input-section').classList.add('hidden');
                 document.getElementById('result-section').classList.remove('hidden');
+                
                 document.getElementById('res-name').innerText = name;
                 document.getElementById('res-ohaeng').innerText = res.type;
                 document.getElementById('res-lucky').innerText = res.lucky;
                 document.getElementById('res-dir').innerText = res.dir;
+                document.getElementById('res-color').innerText = res.color;
+                document.getElementById('res-item').innerText = res.item;
                 document.getElementById('res-desc').innerText = res.desc;
+
+                // 행운의 번호 렌더링
+                const numArea = document.getElementById('res-nums');
+                numArea.innerHTML = '';
+                res.baseNums.forEach(n => {
+                    const b = document.createElement('span');
+                    b.className = `lotto-ball bg-gray-600`;
+                    b.innerText = n;
+                    numArea.appendChild(b);
+                });
+
                 window.scrollTo({top:0, behavior:'smooth'});
             }, 2500);
         }
     </script>
 </body>
 </html>
-       
