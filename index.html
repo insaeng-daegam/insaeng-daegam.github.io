@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>인생대감 - 고품격 횡재수 분석</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
     <style>
@@ -64,11 +63,6 @@
             <div>
                 <label class="block text-lg font-bold mb-3">성함</label>
                 <input type="text" id="name" class="w-full p-5 rounded-2xl text-lg" placeholder="성함을 입력하세요">
-            </div>
-
-            <div>
-                <label class="block text-lg font-bold mb-3">휴대폰 번호</label>
-                <input type="tel" id="phone" class="w-full p-5 rounded-2xl text-lg" placeholder="01012345678" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
             </div>
             
             <div>
@@ -197,11 +191,6 @@
     </div>
 
     <script>
-        // --- Supabase 초기화 (Netlify 환경변수 우선, 없으면 직접 입력값 사용) ---
-        const _supabaseUrl = window.env?.SUPABASE_URL || 'https://dyzotkvyzpimvmocubki.supabase.co';
-        const _supabaseKey = window.env?.SUPABASE_ANON_KEY || 'sb_publishable_ol0aMn8JWiIgK1gurqGnxg_10kg_2-K';
-        const supabaseClient = supabase.createClient(_supabaseUrl, _supabaseKey);
-
         const s_origin = ["강직한 소나무 (甲木)", "유연한 담쟁이 (乙木)", "태양의 열정 (丙火)", "따뜻한 등불 (丁火)", "넓은 대지 (戊土)", "비옥한 논밭 (己토)", "단단한 바위 (庚金)", "빛나는 보석 (辛金)", "깊은 바다 (壬水)", "맑은 샘물 (癸水)"];
         const s_luck = ["성장을 돕는 물", "따스한 햇살", "단단한 뿌리", "날카로운 결단력", "차분한 지혜", "활기찬 에너지"];
         const s_color = ["청색, 에메랄드", "적색, 버건디", "황색, 골드", "백색, 실버", "흑색, 네이비"];
@@ -219,20 +208,38 @@
                 title: "개인정보 수집 및 이용 동의", 
                 content: `
                     <h4>1. 수집하는 개인정보 항목</h4>
-                    <p>성명, 휴대폰 번호, 생년월일, 태어난 시간</p>
+                    <p>성명, 생년월일, 태어난 시간</p>
                     <h4>2. 수집 및 이용 목적</h4>
-                    <p>사주팔자 기반의 운세 및 횡재수 분석 결과 제공, 본인 식별 서비스 제공, 이벤트 당첨 안내</p>
+                    <p>사주팔자 기반의 운세 및 횡재수 분석 결과 제공, 본인 식별 서비스 제공</p>
                     <h4>3. 보유 및 이용 기간</h4>
-                    <p><strong>서비스 제공 완료 및 분석 목적 달성 시 즉시 파기</strong></p>
+                    <p><strong>서비스 제공 완료 및 분석 목적 달성 시 즉시 파기</strong> (단, 관계 법령에 따라 보존할 필요가 있는 경우 해당 기간 동안 보관)</p>
+                    <h4>4. 동의 거부 권리</h4>
+                    <p>귀하는 본 개인정보 수집 및 이용에 거부할 권리가 있습니다. 단, 거부 시 운세 분석 서비스 이용이 제한됩니다.</p>
                 ` 
             },
             terms: { 
                 title: "서비스 이용약관", 
-                content: "<h4>제1조 (목적)</h4><p>본 약관은 '인생대감'이 제공하는 운세 정보 서비스의 이용 조건 및 절차를 규정함을 목적으로 합니다.</p>" 
+                content: `
+                    <h4>제1조 (목적)</h4>
+                    <p>본 약관은 '인생대감'이 제공하는 운세 정보 서비스의 이용 조건 및 절차를 규정함을 목적으로 합니다.</p>
+                    <h4>제2조 (정보의 정확성)</h4>
+                    <p>제공되는 모든 운세 정보는 과학적 근거가 아닌 전통 명리학 해석에 기반하며, 결과에 대한 최종 책임은 이용자 본인에게 있습니다.</p>
+                    <h4>제3조 (서비스 중단)</h4>
+                    <p>시스템 점검이나 서버 교체 등 운영상 필요 시 서비스가 일시 중단될 수 있습니다.</p>
+                    <h4>제4조 (면책 조항)</h4>
+                    <p>회사는 이용자가 본 서비스를 통해 얻은 결과로 행한 투자, 계약 등의 유무형적 손실에 대해 책임을 지지 않습니다.</p>
+                ` 
             },
             marketing: { 
                 title: "마케팅 활용 동의 (선택)", 
-                content: "<h4>1. 마케팅 및 광고에의 활용</h4><p>신규 서비스 안내, 맞춤형 행운 알림 서비스, 이벤트 및 광고성 정보 제공</p>" 
+                content: `
+                    <h4>1. 마케팅 및 광고에의 활용</h4>
+                    <p>신규 서비스 안내, 맞춤형 행운 알림 서비스, 이벤트 및 광고성 정보 제공</p>
+                    <h4>2. 전송 방법</h4>
+                    <p>문자메시지(SMS/LMS), 이메일, 앱 푸시 알림</p>
+                    <h4>3. 수신 동의 및 철회</h4>
+                    <p>본 동의는 선택 사항이며, 거부하셔도 기본 운세 분석 서비스는 이용 가능합니다. 설정 메뉴에서 언제든지 수신 철회가 가능합니다.</p>
+                ` 
             }
         };
 
@@ -271,17 +278,12 @@
             fire(0.1, { spread: 120, startVelocity: 45 });
         }
 
-        async function runAnalysis() {
+        function runAnalysis() {
             const name = document.getElementById('name').value.trim();
-            const phone = document.getElementById('phone').value.trim();
             const birth = document.getElementById('birth').value.trim();
-            const ampm = document.getElementById('ampm').value;
-            const hour = document.getElementById('birth-hour').value;
-            const min = document.getElementById('birth-min').value;
-            const mAgree = document.getElementById('m-agree').checked;
             
-            if(!name || !phone || birth.length !== 8) {
-                alert("성함, 휴대폰 번호, 생년월일 8자리를 모두 정확히 입력해주세요.");
+            if(!name || birth.length !== 8) {
+                alert("성함과 생년월일 8자리를 정확히 입력해주세요.");
                 return;
             }
             if(!document.getElementById('p-agree').checked || !document.getElementById('t-agree').checked) {
@@ -291,20 +293,6 @@
 
             document.getElementById('form-inner').classList.add('hidden');
             document.getElementById('loading-area').classList.remove('hidden');
-
-            // --- Supabase 데이터 저장 ---
-            try {
-                const { error } = await supabaseClient.from('users').insert([{
-                    name: name,
-                    phone: phone,
-                    birth: birth,
-                    birth_time: `${ampm} ${hour}:${min}`,
-                    marketing_agree: mAgree
-                }]);
-                if(error) console.error("DB 저장 실패:", error);
-            } catch (e) {
-                console.error("오류 발생:", e);
-            }
 
             setTimeout(() => {
                 const seed = parseInt(birth);
