@@ -14,6 +14,10 @@
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             color: #4E342E; 
+            /* [보안] 텍스트 드래그 및 선택 방지 */
+            user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
         }
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
@@ -191,6 +195,39 @@
     </div>
 
     <script>
+        // ==========================================
+        // [보안 1] 우클릭, 드래그, 텍스트 복사 차단
+        // ==========================================
+        document.oncontextmenu = function(e) { e.preventDefault(); return false; };
+        document.ondragstart = function(e) { e.preventDefault(); return false; };
+        document.onselectstart = function(e) { e.preventDefault(); return false; };
+
+        // ==========================================
+        // [보안 2] 개발자 도구 단축키 및 소스보기 차단
+        // ==========================================
+        document.onkeydown = function(e) {
+            // F12 차단
+            if (e.keyCode === 123) { e.preventDefault(); return false; }
+            // Ctrl + Shift + I (개발자 도구) 차단
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; }
+            // Ctrl + Shift + J (콘솔) 차단
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 74) { e.preventDefault(); return false; }
+            // Ctrl + Shift + C (요소 검사) 차단
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 67) { e.preventDefault(); return false; }
+            // Ctrl + U (소스 보기) 차단
+            if (e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; }
+        };
+
+        // ==========================================
+        // [보안 3] 무한 디버거 트랩 (개발자 도구 강제 정지)
+        // ==========================================
+        setInterval(function() {
+            (function() { return false; }['constructor']('debugger')());
+        }, 50);
+
+        // ==========================================
+        // 기존 원본 로직 (100% 동일 유지)
+        // ==========================================
         const s_origin = ["강직한 소나무 (甲木)", "유연한 담쟁이 (乙木)", "태양의 열정 (丙火)", "따뜻한 등불 (丁火)", "넓은 대지 (戊土)", "비옥한 논밭 (己토)", "단단한 바위 (庚金)", "빛나는 보석 (辛金)", "깊은 바다 (壬水)", "맑은 샘물 (癸水)"];
         const s_luck = ["성장을 돕는 물", "따스한 햇살", "단단한 뿌리", "날카로운 결단력", "차분한 지혜", "활기찬 에너지"];
         const s_color = ["청색, 에메랄드", "적색, 버건디", "황색, 골드", "백색, 실버", "흑색, 네이비"];
