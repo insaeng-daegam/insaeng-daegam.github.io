@@ -29,8 +29,9 @@
         input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; transition: all 0.2s; }
         input:focus, select:focus { border-color: #E1C16E !important; ring: 2px; ring-color: #E1C16E; }
         
-        /* 라디오 버튼 선택 시 스타일 */
-        .gender-label:has(input:checked) {
+        /* 라디오 버튼 선택 시 스타일 (성별 및 양음력 공통) */
+        .gender-label:has(input:checked),
+        .calendar-label:has(input:checked) {
             border-color: #E1C16E !important;
             background-color: #FEF3C7 !important; /* amber-100 */
             color: #4E342E;
@@ -76,6 +77,16 @@
             <div>
                 <label class="block text-lg font-bold mb-3">생년월일 (8자리)</label>
                 <input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg" placeholder="예: 19900101">
+                <div class="flex gap-3 mt-3">
+                    <label class="calendar-label flex-1 flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] cursor-pointer hover:border-[#E1C16E] transition-all">
+                        <input type="radio" name="calendar" value="solar" class="w-4 h-4 accent-[#4E342E]" checked>
+                        <span class="text-base">양력</span>
+                    </label>
+                    <label class="calendar-label flex-1 flex items-center justify-center gap-2 p-3 rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] cursor-pointer hover:border-[#E1C16E] transition-all">
+                        <input type="radio" name="calendar" value="lunar" class="w-4 h-4 accent-[#4E342E]">
+                        <span class="text-base">음력</span>
+                    </label>
+                </div>
             </div>
 
             <div>
@@ -235,7 +246,7 @@
                 title: "개인정보 수집 및 이용 동의", 
                 content: `
                     <h4>1. 수집하는 개인정보 항목</h4>
-                    <p>성명, 생년월일, 태어난 시간, 성별, <strong>휴대폰 번호</strong></p>
+                    <p>성명, 생년월일(양/음력), 태어난 시간, 성별, <strong>휴대폰 번호</strong></p>
                     <h4>2. 수집 및 이용 목적</h4>
                     <p>사주팔자 기반의 운세 및 횡재수 분석 결과 제공, 본인 식별 서비스 제공</p>
                     <h4>3. 보유 및 이용 기간</h4>
@@ -323,7 +334,15 @@
             document.getElementById('loading-area').classList.remove('hidden');
 
             setTimeout(() => {
-                const seed = parseInt(birth);
+                // 음력 선택 여부 확인
+                const calendarType = document.querySelector('input[name="calendar"]:checked').value;
+                let seed = parseInt(birth);
+                
+                // 음력이 선택되었을 경우 결과값에 변주를 주기 위해 시드값 조정 (단순 로직)
+                if (calendarType === 'lunar') {
+                    seed = seed + 12345;
+                }
+
                 const idx = (n, offset = 0) => (seed + offset) % n;
 
                 const generateLuckyNumbers = (seed) => {
