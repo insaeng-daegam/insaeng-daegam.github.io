@@ -29,6 +29,14 @@
         input, select { background-color: #F9FAFB !important; border: 1px solid #E5E7EB !important; outline: none; transition: all 0.2s; }
         input:focus, select:focus { border-color: #E1C16E !important; ring: 2px; ring-color: #E1C16E; }
         
+        /* 라디오 버튼 선택 시 스타일 */
+        .gender-label:has(input:checked) {
+            border-color: #E1C16E !important;
+            background-color: #FEF3C7 !important; /* amber-100 */
+            color: #4E342E;
+            font-weight: bold;
+        }
+
         .loader { 
             width: 48px; height: 48px; 
             border: 5px solid #FFF; border-bottom-color: #B5A47D; 
@@ -68,6 +76,20 @@
             <div>
                 <label class="block text-lg font-bold mb-3">생년월일 (8자리)</label>
                 <input type="number" id="birth" class="w-full p-5 rounded-2xl text-lg" placeholder="예: 19900101">
+            </div>
+
+            <div>
+                <label class="block text-lg font-bold mb-3">성별</label>
+                <div class="flex gap-3">
+                    <label class="gender-label flex-1 flex items-center justify-center gap-2 p-5 rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] cursor-pointer hover:border-[#E1C16E] transition-all">
+                        <input type="radio" name="gender" value="male" class="w-5 h-5 accent-[#4E342E]" checked>
+                        <span class="text-lg">남자</span>
+                    </label>
+                    <label class="gender-label flex-1 flex items-center justify-center gap-2 p-5 rounded-2xl bg-[#F9FAFB] border border-[#E5E7EB] cursor-pointer hover:border-[#E1C16E] transition-all">
+                        <input type="radio" name="gender" value="female" class="w-5 h-5 accent-[#4E342E]">
+                        <span class="text-lg">여자</span>
+                    </label>
+                </div>
             </div>
 
             <div>
@@ -213,7 +235,7 @@
                 title: "개인정보 수집 및 이용 동의", 
                 content: `
                     <h4>1. 수집하는 개인정보 항목</h4>
-                    <p>성명, 생년월일, 태어난 시간, <strong>휴대폰 번호</strong></p>
+                    <p>성명, 생년월일, 태어난 시간, 성별, <strong>휴대폰 번호</strong></p>
                     <h4>2. 수집 및 이용 목적</h4>
                     <p>사주팔자 기반의 운세 및 횡재수 분석 결과 제공, 본인 식별 서비스 제공</p>
                     <h4>3. 보유 및 이용 기간</h4>
